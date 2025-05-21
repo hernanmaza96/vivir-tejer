@@ -17,7 +17,7 @@
   </div>
 
   <header class="header">
-    <img src="logo_vivirtejer.png.png" alt="Logo Vivir Tejer" class="logo-header" width="180" height="170">
+    <img src="logo_vivirtejer.png" alt="Logo Vivir Tejer" class="logo-header" width="180" height="170">
     <h1>Somos <span class="brand">Vivir_tejer</span></h1>
     <p>En esta página vas a encontrar patrones y cursos en crochet</p>
     <p>Para más información seguime en <a href="#redes">mis redes</a></p>
@@ -558,6 +558,9 @@
         }
         if (!modalElement) { return;} 
 
+        // Agregar estado al historial para manejar el botón de retroceso
+        history.pushState({modalOpen: true}, '', `#${categoryKey}`);
+        
         modalElement.style.display = 'block';
         indices[categoryKey] = indices[categoryKey] || 0; 
         const currentCategoryProducts = galerias[categoryKey].products;
@@ -578,7 +581,13 @@
 
     function closeModal(modalId) {
       const modalElement = document.getElementById(modalId);
-      if (modalElement) modalElement.style.display = 'none';
+      if (modalElement) {
+        modalElement.style.display = 'none';
+        // Restaurar el estado de la página cuando se cierra el modal
+        if (window.location.hash) {
+          history.pushState(null, null, window.location.pathname);
+        }
+      }
     }
 
     function changeSlide(categoryKey, paso) {
@@ -748,9 +757,26 @@
         renderCart();
         showNotification('Tu carrito ha sido vaciado', 'info'); 
     }
-  function checkout() { const cart = JSON.parse(localStorage.getItem('cart')) || []; if (cart.length === 0) { showNotification('Tu carrito está vacío', 'error'); return; } let message = "¡Hola! Quiero realizar la siguiente compra:\n\n"; let total = 0; cart.forEach(item => { const quantity = item.quantity || 1; const subtotal = item.price * quantity; message += `- ${item.desc} (${quantity} x ${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}) = ${subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}\n`; total += subtotal; }); message += `\nTotal: ${total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}\n\n`; message += "Por favor, indíquenme cómo proceder con el pago y envío. ¡Gracias!"; const encodedMessage = encodeURIComponent(message); window.open(`https://wa.me/5492266535128?text=${encodedMessage}`, '_blank'); }
+    function checkout() { 
+        const cart = JSON.parse(localStorage.getItem('cart')) || []; 
+        if (cart.length === 0) { 
+            showNotification('Tu carrito está vacío', 'error'); 
+            return; 
+        } 
+        let message = "¡Hola! Quiero realizar la siguiente compra:\n\n"; 
+        let total = 0; 
+        cart.forEach(item => { 
+            const quantity = item.quantity || 1; 
+            const subtotal = item.price * quantity; 
+            message += `- ${item.desc} (${quantity} x ${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}) = ${subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}\n`; 
+            total += subtotal; 
+        }); 
+        message += `\nTotal: ${total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}\n\n`; 
+        message += "Por favor, indíquenme cómo proceder con el pago y envío. ¡Gracias!"; 
+        const encodedMessage = encodeURIComponent(message); 
+        window.open(`https://wa.me/5492266535128?text=${encodedMessage}`, '_blank'); 
+    }
   
-    
     function updateCartBadge() {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
@@ -765,6 +791,19 @@
         badge.dataset.prevCount = totalItems;
     }
     
+    // Manejar el botón de retroceso en móviles
+    window.addEventListener('popstate', function(event) {
+      const openModals = document.querySelectorAll('.modal[style*="display: block"]');
+      if (openModals.length > 0) {
+        event.preventDefault();
+        openModals.forEach(modal => {
+          closeModal(modal.id);
+        });
+        // Restaurar el estado de la página
+        history.pushState(null, null, window.location.pathname);
+      }
+    });
+
     document.addEventListener('keydown', function(e) {
       // Manejar tecla Enter en el formulario de producto
       if (e.key === 'Enter' && document.getElementById('adminFormProductModal').style.display === 'block') {

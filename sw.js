@@ -4,7 +4,7 @@ const urlsToCache = [
   '/index.html',
   '/estilos/estilo.css',
   '/estilos/modal.css',
-  '/logo_vivirtejer.png.png',
+  '/logo_vivirtejer.png',
   // Deberías listar aquí todas las imágenes que quieres que estén precacheadas.
   // Las imágenes agregadas dinámicamente por el admin no estarán aquí a menos que actualices este array.
   'imagenes/amigurumis1.jpeg',

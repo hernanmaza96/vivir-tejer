@@ -185,3 +185,65 @@ button.admin-nav-button:hover {
 button.admin-nav-button i {
     font-size: 1.1em; 
 }
+
+/* Media queries para móviles */
+@media screen and (max-width: 768px) {
+  /* Ocultar carrito cuando el carrusel está abierto */
+  .modal:not(#cartModal)[style*="display: block"] ~ .cart-icon {
+    display: none !important;
+  }
+  
+  /* Ajustar galería para móviles */
+  .galeria {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .galeria section {
+    padding: 1rem;
+  }
+  
+  /* Ajustar header para móviles */
+  .header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .header .brand {
+    font-size: 1.5rem;
+  }
+  
+  /* Ajustar navegación para móviles */
+  .nav ul {
+    flex-direction: column;
+  }
+  
+  .nav li {
+    margin: 0.3rem 0;
+  }
+  
+  .nav ul .nav-admin-add-category {
+    margin-left: 0;
+    border-left: none;
+    padding-left: 0;
+    margin-top: 1rem;
+  }
+  
+  /* Ajustar footer para móviles */
+  .footer {
+    padding: 1.5rem 1rem;
+  }
+  
+  .redes-sociales img {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Ajustar notificaciones para móviles */
+  .notification {
+    min-width: 90%;
+    max-width: 90%;
+    right: 5%;
+    bottom: 10px;
+  }
+}
