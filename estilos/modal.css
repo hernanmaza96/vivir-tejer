@@ -1,0 +1,249 @@
+/* Estilos de Modales Base */
+.modal {
+    display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+    width: 100%; height: 100%; overflow: auto;
+    background-color: rgba(0, 0, 0, 0.85);
+    animation: fadeInModal 0.3s ease-in-out;
+}
+@keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeOutModal { from { opacity: 1; } to { opacity: 0; } }
+.modal.fade-out { animation: fadeOutModal 0.3s ease-in-out forwards; }
+
+.modal-content {
+    position: relative; margin: 5% auto; padding: 1.5rem;
+    width: 90%; max-width: 700px;
+    background-color: #fff; border-radius: 15px;
+    text-align: center; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    animation: scaleInModal 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes scaleInModal {
+    from { transform: translateY(-30px) scale(0.9); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modal img {
+    width: 100%; max-height: 450px; object-fit: contain;
+    border-radius: 10px; transition: opacity 0.4s ease; opacity: 1;
+    margin-bottom: 10px;
+}
+.modal img.fade-out { opacity: 0; }
+.modal img[src$="placeholder_categoria_vacia.jpg"], 
+.modal img[src$="placeholder_error_producto.jpg"],
+.modal img[src$="placeholder_imagen_no_encontrada.jpg"] {
+    height: 300px; object-fit: scale-down; opacity: 0.7;
+}
+
+.info-overlay {
+    margin: 10px 0; font-size: 1.1em; color: #444; font-style: normal;
+    background-color: #f9f9f9; padding: 10px 15px; border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.close, .prev, .next {
+    cursor: pointer; position: absolute; font-size: 2.2rem;
+    color: #d94f70; font-weight: bold; user-select: none;
+    background: rgba(255,255,255,0.7); border-radius:50%; width: 40px; height: 40px;
+    display:flex; align-items:center; justify-content:center;
+    border: none; transition: all 0.25s ease;
+}
+.close:hover, .prev:hover, .next:hover { transform: scale(1.1); color: #fff; background-color: #b03a5b;}
+.close { top: 15px; right: 15px; z-index: 10; width:35px; height:35px; font-size:1.8rem;}
+.prev, .next { top: calc(50% - 20px); }
+.prev { left: 15px; }
+.next { right: 15px; }
+
+/* Botón "Agregar al Carrito" */
+.add-to-cart {
+    margin-top: 15px; padding: 12px 25px;
+    background-image: linear-gradient(to right, #d94f70 0%, #ff85a1 100%);
+    color: #fff; border: none; border-radius: 25px; cursor: pointer;
+    font-weight: bold; font-size: 1em; text-transform: uppercase;
+    letter-spacing: 0.5px; transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.add-to-cart:hover {
+    background-image: linear-gradient(to right, #b03a5b 0%, #d94f70 100%);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+.add-to-cart:active { transform: translateY(0); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+
+/* Modal del Carrito */
+.cart-modal { max-width: 650px; padding: 2rem; background-color: #fff9fb; border: 1px solid #ffe0ec; }
+.cart-modal h2 { color: #d94f70; font-family: 'Lora', serif; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px;}
+.cart-item { display: flex; align-items: center; border-bottom: 1px solid #ffe0ec; padding: 1rem 0; gap: 15px; }
+.cart-item img { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; }
+.cart-item-info { flex-grow: 1; text-align: left; }
+.cart-item-info p { margin: 0.3rem 0; color: #333; }
+.cart-item-quantity { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+.quantity-btn { background-color: #ffc5d9; color: #d94f70; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; transition: background-color 0.2s; }
+.quantity-btn:hover { background-color: #ffb3c8; }
+.remove-item-btn { background: none; border: none; color: #f44336; font-size: 1.2em; cursor: pointer; margin-left: auto; padding: 5px; transition: color 0.2s;}
+.remove-item-btn:hover { color: #d32f2f; }
+#cartTotal { margin-top: 1.5rem; font-size: 1.3rem; font-weight: bold; color: #d94f70; text-align: right; }
+.cart-actions { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 10px; } /* Gap entre botones */
+.clear-cart-btn, .checkout-btn { 
+    padding: 10px 20px; border: none; border-radius: 20px; 
+    color: white; cursor: pointer; font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    flex-grow: 1; /* Para que ocupen el espacio disponible si son pocos */
+}
+.clear-cart-btn { background-color: #ff85a1; }
+.clear-cart-btn:hover { background-color: #f76f8e; transform: translateY(-1px); }
+.checkout-btn { background-color: #d94f70; }
+.checkout-btn:hover { background-color: #c23b5b; transform: translateY(-1px); }
+
+
+/* === INICIO ESTILOS PANEL DE ADMINISTRACIÓN === */
+.admin-panel { position: fixed; bottom: 25px; right: 25px; z-index: 2000; }
+.admin-access-btn {
+    background: linear-gradient(135deg, #d94f70, #ff85a1); color: white;
+    width: 55px; height: 55px; border-radius: 50%; border: none; font-size: 22px;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transition: all 0.3s ease; display: flex; align-items: center; justify-content: center;
+}
+.admin-access-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 6px 18px rgba(0,0,0,0.3); }
+
+.admin-controls { 
+    display: none; grid-template-columns: auto auto; /* Ajustado, ya no tiene 3er botón */
+    gap: 10px; align-items: center;
+    background: rgba(255, 240, 246, 0.98); backdrop-filter: blur(8px);
+    padding: 10px 15px; border-radius: 30px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); border: 1px solid #ffe0ec;
+}
+.admin-controls p { color: #d94f70; font-weight: bold; font-size: 0.9em; margin: 0; }
+
+.admin-btn {
+    color: white; padding: 8px 15px; 
+    border: none; border-radius: 20px; cursor: pointer;
+    font-size: 0.85em; 
+    font-weight: bold; text-align: center;
+    transition: all 0.25s ease; display: inline-flex;
+    align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-transform: uppercase; 
+    letter-spacing: 0.5px;
+}
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    opacity: 0.95;
+}
+.admin-btn i { line-height: 1; font-size: 1.1em; }
+
+.admin-logout-btn { background-color: #ff6b81 !important; }
+.admin-logout-btn:hover { background-color: #f53f5b !important; }
+/* El .admin-add-category-btn ahora está en la nav, su estilo principal está en estilo.css */
+
+
+.modal.admin-login .modal-content {
+    max-width: 380px; background-color: #fff0f6; border: 2px solid #ff85a1;
+    border-radius: 15px; padding: 2rem;
+}
+.admin-login .modal-content h2 { color: #d94f70; margin-bottom: 1.5rem; font-family: 'Lora', serif; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.admin-login .modal-content input[type="password"] {
+    width: 100%; padding: 12px; margin-bottom: 1.5rem;
+    border: 1px solid #ffc5d9; border-radius: 20px;
+    text-align: center; font-size: 1em;
+}
+.admin-login .modal-content .admin-btn { /* Botón de ingresar */
+    width: 100%; padding: 12px; font-size: 1.1em;
+    background-color: #d94f70; /* Asegurar color primario */
+}
+.admin-login .modal-content .admin-btn:hover {
+    background-color: #b03a5b;
+}
+
+
+.admin-welcome {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: linear-gradient(135deg, #d94f70 0%, #ff85a1 100%); /* Tema rosa */
+    padding: 25px 40px; border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    text-align: center; font-family: 'Lora', serif;
+    color: white; font-size: 1.8em; 
+    display: none; z-index: 3000; opacity: 0;
+    animation: popInWelcome 0.4s 0.1s ease-out forwards, fadeOutWelcome 0.4s 2.1s ease-in forwards;
+}
+.admin-welcome h2 { margin: 0; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+@keyframes popInWelcome { to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+@keyframes fadeOutWelcome { to { transform: translate(-50%, -40%) scale(0.95); opacity: 0; } }
+
+
+.admin-category-controls, .admin-product-controls {
+    margin: 15px auto 10px auto; 
+    padding: 12px; 
+    background-color: rgba(255, 240, 246, 0.8); 
+    border-radius: 10px; 
+    display: flex; flex-wrap: wrap; gap: 12px;
+    justify-content: center; 
+    border-top: 1px solid rgba(217, 79, 112, 0.2); 
+}
+.admin-category-controls .admin-btn,
+.admin-product-controls .admin-btn {
+    padding: 8px 18px; 
+    font-size: 0.8em;
+}
+/* Colores específicos para botones de acción en carrusel */
+.admin-category-controls .admin-btn[style*="#4CAF50"] { background-color: #4CAF50 !important; } /* Agregar a categoría */
+.admin-category-controls .admin-btn[style*="#4CAF50"]:hover { background-color: #45a049 !important; }
+.admin-product-controls .admin-btn[style*="#FFC107"] { background-color: #FFC107 !important; color: #333 !important; } /* Editar */
+.admin-product-controls .admin-btn[style*="#FFC107"]:hover { background-color: #f0b400 !important; }
+.admin-product-controls .admin-btn[style*="#F44336"] { background-color: #F44336 !important; } /* Eliminar */
+.admin-product-controls .admin-btn[style*="#F44336"]:hover { background-color: #e53935 !important; }
+
+
+
+.modal.admin-form-modal .modal-content { 
+    max-width: 520px; background-color: #fff; border: none; 
+    padding: 2rem; border-radius: 15px;
+}
+.admin-form-modal .modal-content h2 { 
+    color: #d94f70; margin-bottom: 1.5rem; text-align: center; 
+    font-family: 'Lora', serif; display: flex; align-items: center; 
+    justify-content: center; gap: 10px;
+}
+.admin-form-modal .form-group { margin-bottom: 1.3rem; text-align: left; }
+.admin-form-modal .form-group label { 
+    display: block; margin-bottom: .5rem; color: #c84262; 
+    font-weight: 600; font-size: 0.9em; 
+}
+.admin-form-modal .form-group input[type="text"],
+.admin-form-modal .form-group input[type="number"] { 
+    width: 100%; padding: 12px 15px; 
+    border: 1px solid #f7d4e0; 
+    border-radius: 8px; font-size: 1em; box-sizing: border-box; 
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.admin-form-modal .form-group input:focus { 
+    border-color: #d94f70; box-shadow: 0 0 0 3px rgba(217, 79, 112, 0.15); 
+    outline: none;
+}
+.admin-form-modal .form-group small { font-size: 0.8em; color: #888; display: block; margin-top: 4px; }
+
+.admin-form-modal .file-input label[for="adminProductImageFileSelector"] {
+    display: inline-block; padding: 10px 15px; background-color: #ff85a1;
+    color: white; border-radius: 8px; cursor: pointer; font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+.admin-form-modal .file-input label[for="adminProductImageFileSelector"]:hover { background-color: #d94f70; }
+.admin-form-modal .file-input input[type="file"] {
+    opacity: 0; position: absolute; width: 0.1px; height: 0.1px;
+    overflow: hidden; z-index: -1;
+}
+.admin-form-modal .selected-file { font-size: 0.85em; color: #555; margin-left: 10px; font-style: italic; }
+
+.admin-form-modal .form-actions { 
+    display: flex; gap: 12px; margin-top: 2rem; /* Más margen superior */
+    justify-content: flex-end; 
+}
+.admin-form-modal .form-actions .admin-btn { /* Botones Guardar/Cancelar en forms */
+    padding: 10px 22px; 
+    font-size: 0.95em;
+}
+.admin-form-modal .save-btn { background-color: #4CAF50; } /* Estilo para botón de Guardar/Crear */
+.admin-form-modal .save-btn:hover { background-color: #45a049; }
+.admin-form-modal .cancel-btn { background-color: #aaa; }
+.admin-form-modal .cancel-btn:hover { background-color: #888; }

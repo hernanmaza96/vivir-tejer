@@ -1,0 +1,187 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Tipografía general */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fafafa;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Encabezado */
+.header {
+    background-color: #ffe0ec;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.header .brand { color: #d94f70; font-weight: bold; font-size: 2rem; }
+.header p a { color: #d94f70; text-decoration: none; font-weight: 600; transition: color 0.3s; }
+.header p a:hover { color: #b03a5b; text-decoration: underline; }
+
+/* Navegación */
+.nav { background-color: #fff0f6; padding: 1rem; text-align: center; }
+.nav ul { list-style: none; padding-left: 0; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
+.nav li { display: inline-block; margin: 0.5rem 1rem; /* Margen para wrap */ }
+.nav a { text-decoration: none; color: #d94f70; font-weight: bold; transition: color 0.3s; padding: 5px 0;}
+.nav a:hover { color: #b03a5b; }
+
+/* Galería principal */
+.galeria {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+.galeria section {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.galeria section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+}
+.galeria img {
+    max-width: 100%;
+    height: 250px; 
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+/* Pie de página */
+.footer {
+    background-color: #ffe0ec;
+    text-align: center;
+    padding: 2rem;
+    margin-top: 2rem;
+    border-top: 3px solid #ff85a1;
+}
+.footer h3 { color: #d94f70; font-size: 1.5rem; margin-bottom: 1rem; }
+.redes-sociales a { margin: 0 1rem; display: inline-block; transition: transform 0.3s, opacity 0.3s; }
+.redes-sociales img { width: 50px; height: 50px; transition: transform 0.3s; }
+.redes-sociales a:hover img { transform: scale(1.2); }
+.volver-inicio a { color: #d94f70; text-decoration: none; font-weight: 600; transition: color 0.3s; }
+.volver-inicio a:hover { color: #b03a5b; text-decoration: underline; }
+
+/* Estilo para el mensaje de bienvenida (si aún se usa, no es el de admin) */
+.welcome-modal {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff0f6; padding: 2rem; border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); z-index: 2000;
+    text-align: center; font-family: 'Lora', serif; color: #d94f70;
+    font-size: 1.8rem; animation: fadeInWelcome 0.5s ease-in-out;
+    border: 2px solid #ff85a1;
+}
+.welcome-modal h2 { margin: 0; font-weight: 700; }
+@keyframes fadeInWelcome {
+    from { opacity: 0; transform: translate(-50%, -60%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+/* Estilos del Carrito (icono y badge) */
+.cart-icon {
+  position: fixed; top: 20px; right: 20px; font-size: 24px;
+  color: #d94f70; cursor: pointer; z-index: 1001; background: white;
+  padding: 10px; border-radius: 50%; box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+}
+.cart-icon:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.cart-badge {
+  position: absolute; top: -5px; right: -5px; background: #d94f70;
+  color: white; border-radius: 50%; width: 20px; height: 20px;
+  font-size: 12px; display: flex; align-items: center; justify-content: center;
+  font-weight: bold; transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.cart-badge.update-animation { animation: badgePulse 0.5s ease-out; }
+@keyframes badgePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); background-color: #ff85a1; }
+  100% { transform: scale(1); }
+}
+
+/* Estilos para la notificación */
+.notification {
+    position: fixed; bottom: 20px; right: 20px;
+    background-color: #fff0f6; 
+    border-left: 5px solid #ff85a1; 
+    border-radius: 8px; padding: 12px 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    display: none; align-items: center; gap: 12px; 
+    z-index: 1500; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 280px; max-width: 350px; opacity: 0; 
+}
+.notification.show {
+    display: flex; opacity: 1;
+    animation: slideInRight 0.4s ease-out forwards, 
+               fadeOutNotification 0.4s ease-in 2.6s forwards; 
+}
+.notification .notification-icon { font-size: 1.4em; color: #d94f70; }
+.notification .notification-message { font-size: 0.95em; line-height: 1.4; color: #333; }
+.notification.success { background-color: #e8f5e9; border-left-color: #4CAF50; }
+.notification.success .notification-icon { color: #4CAF50; }
+.notification.success .notification-message { color: #2e7d32; }
+.notification.error { background-color: #ffebee; border-left-color: #F44336; }
+.notification.error .notification-icon { color: #F44336; }
+.notification.error .notification-message { color: #c62828; }
+.notification.info { background-color: #fff0f6; border-left-color: #d94f70; }
+.notification.info .notification-icon { color: #d94f70; }
+.notification.info .notification-message { color: #5c2c39; }
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOutNotification {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(5%); }
+}
+
+/* Estilos para el botón "Agregar Nueva Categoría" en la Navegación */
+.nav ul .nav-admin-add-category {
+    margin-left: 1.5rem; /* Espacio para separarlo de las categorías */
+    border-left: 2px solid #ffc5d9; /* Separador visual sutil */
+    padding-left: 1.5rem;
+}
+
+button.admin-nav-button { /* Es un button, no un <a> */
+    background-color: #d94f70; 
+    color: white;
+    border: none;
+    padding: 8px 18px; /* Consistente con .admin-btn */
+    border-radius: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-size: 0.9em; 
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase; /* Para diferenciarlo */
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+button.admin-nav-button:hover {
+    background-color: #b03a5b; 
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+button.admin-nav-button i {
+    font-size: 1.1em; 
+}

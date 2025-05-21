@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vivir_tejer</title>
+  <link rel="stylesheet" href="estilos/estilo.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="estilos/modal.css">
+</head>
+<body id="top">
+  <div class="cart-icon" onclick="openCartModal()">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-badge" id="cartBadge">0</span>
+  </div>
+
+  <header class="header">
+    <img src="logo_vivirtejer.png.png" alt="Logo Vivir Tejer" class="logo-header" width="180" height="170">
+    <h1>Somos <span class="brand">Vivir_tejer</span></h1>
+    <p>En esta página vas a encontrar patrones y cursos en crochet</p>
+    <p>Para más información seguime en <a href="#redes">mis redes</a></p>
+    <nav class="nav">
+      <h2>Trabajos</h2>
+      <ul>
+        </ul>
+    </nav>
+  </header>
+
+  <main class="galeria">
+    </main>
+
+  <div id="cartModal" class="modal">
+    <div class="modal-content cart-modal">
+      <span class="close" onclick="closeModal('cartModal')">&times;</span>
+      <h2><i class="fas fa-shopping-cart"></i> Tu Carrito de Compras</h2>
+      <div id="cartItems"></div>
+      <div id="cartTotal" class="cart-total"></div>
+      <div class="cart-actions">
+        <button onclick="clearCart()" class="clear-cart-btn"><i class="fas fa-trash"></i> Vaciar Carrito</button>
+        <button onclick="checkout()" class="checkout-btn"><i class="fas fa-check"></i> Finalizar Compra</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer" id="redes">
+    <h3>Seguinos en nuestras redes sociales</h3>
+    <div class="redes-sociales">
+      <a href="https://www.instagram.com/vivir_tejer?igsh=NnhxZGljOHhnOXF3" target="_blank" aria-label="Instagram">
+        <img src="instagram.png" alt="Icono Instagram" width="50" height="50">
+      </a>    
+      <a href="https://wa.me/5492266535128" target="_blank" aria-label="WhatsApp">
+        <img src="icons8-whatsapp-50.png" alt="Icono WhatsApp" width="50" height="50">
+      </a>
+      <a href="https://www.facebook.com/share/15T45N7PsQ/" target="_blank" aria-label="Facebook">
+        <img src="facebook.png" alt="Icono Facebook" width="50" height="50">
+      </a>
+    </div>
+    <div class="volver-inicio">
+      <a href="#top">⬆ Volver al inicio</a>
+    </div>
+  </footer>
+
+  <div class="admin-panel">
+    <button id="adminAccessBtn" class="admin-access-btn" onclick="openAdminLoginModal()">
+      <i class="fas fa-user-shield"></i>
+    </button>
+    <div id="adminControls" class="admin-controls">
+        <p>Modo Admin</p>
+        <button onclick="adminLogout()" class="admin-btn admin-logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</button>
+    </div>
+  </div>
+  
+  <div id="adminLoginModal" class="modal admin-login">
+    <div class="modal-content">
+      <span class="close" onclick="closeAdminLoginModal()">&times;</span>
+      <h2><i class="fas fa-lock"></i> Acceso Administrador</h2>
+      <input type="password" id="adminPasswordInput" placeholder="Contraseña">
+      <button onclick="handleAdminLoginAttempt()" class="admin-btn" style="background-color: #d94f70;">Ingresar</button>
+      <p id="adminLoginError" style="color:red; margin-top:10px; display:none;"></p>
+    </div>
+  </div>
+  
+  <div id="adminWelcomeModal" class="admin-welcome">
+    <h2 id="adminWelcomeMessageText"></h2>
+  </div>
+
+  <div id="addCategoryModal" class="modal admin-form-modal"> 
+    <div class="modal-content">
+      <span class="close" onclick="closeAddCategoryModal()">&times;</span>
+      <h2><i class="fas fa-folder-plus"></i> Agregar Nueva Categoría</h2>
+      <div class="form-group">
+        <label for="newCategoryName">Nombre de la Categoría:</label>
+        <input type="text" id="newCategoryName" placeholder="Ej: Bufandas">
+      </div>
+      <div class="form-group">
+        <label for="newCategoryImage">Imagen Portada (ej: imagenes/bufandas_portada.jpg):</label>
+        <input type="text" id="newCategoryImage" placeholder="imagenes/portada_categoria.jpg">
+        <small>Esta imagen se mostrará en la sección principal de la galería.</small>
+      </div>
+      <div class="form-actions">
+          <button onclick="handleAddCategory()" class="admin-btn save-btn"><i class="fas fa-plus"></i> Crear Categoría</button>
+          <button type="button" class="admin-btn cancel-btn" onclick="closeAddCategoryModal()"><i class="fas fa-times"></i> Cancelar</button>
+      </div>
+      <p id="addCategoryError" style="color:red; margin-top:10px; display:none;"></p>
+    </div>
+  </div>
+
+  <div id="adminFormProductModal" class="modal admin-form-modal"> 
+    <div class="modal-content admin-form">
+      <span class="close" onclick="closeAdminFormProductModal()">&times;</span>
+      <h2 id="adminFormProductTitle"></h2>
+      <form id="adminProductFormInstance">
+        <input type="hidden" id="adminEditModeCategoryKey">
+        <input type="hidden" id="adminEditModeProductIndex">
+        <div class="form-group">
+          <label for="adminProductDesc">Descripción:</label>
+          <input type="text" id="adminProductDesc" required>
+        </div>
+        <div class="form-group">
+          <label for="adminProductPriceValue">Precio (ARS):</label>
+          <input type="number" id="adminProductPriceValue" required min="0" step="0.01">
+        </div>
+        <div class="form-group">
+          <label for="adminProductImageSrcPath">Ruta Imagen (ej: imagenes/foto.jpg):</label>
+          <input type="text" id="adminProductImageSrcPath" placeholder="imagenes/nombre_archivo.jpg" required>
+          <small>Asegúrate que la imagen exista en esa ruta dentro de tu carpeta 'imagenes'.</small>
+        </div>
+        <div class="form-group file-input">
+            <label for="adminProductImageFileSelector"><i class="fas fa-upload"></i> Seleccionar Archivo (para nombre)</label>
+            <input type="file" id="adminProductImageFileSelector" accept="image/*">
+            <span id="adminProductImageSelectedFileName" class="selected-file"></span>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="admin-btn save-btn"><i class="fas fa-save"></i> Guardar</button>
+            <button type="button" class="admin-btn cancel-btn" onclick="closeAdminFormProductModal()"><i class="fas fa-times"></i> Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    const DEFAULT_GALERIAS = {
+      amigurumis: {
+        displayName: "Amigurumis",
+        sectionImage: "amigurumis3.jpeg",
+        products: [
+          { src: 'amigurumis3.jpeg', desc: 'Muñeco de crochet', price: 15990 }, { src: 'amigurumis1.jpeg', desc: 'Osito adorable', price: 12500 }, { src: 'amigurumis2.jpeg', desc: 'Conejo suave', price: 14000 }, { src: 'muñecos.jpeg', desc: 'Personaje personalizado', price: 20000 }, { src: 'amigurumis5.jpeg', desc: 'Perrito amigurumi', price: 13750 }, { src: 'amigurumis6.jpeg', desc: 'Gatito kawaii', price: 11990 }, { src: 'amigurumis7.jpeg', desc: 'Unicornio mágico', price: 18500 }, { src: 'amigurumis8.jpeg', desc: 'Elefante tierno', price: 16250 }, { src: 'amigurumis9.jpeg', desc: 'Zorro encantador', price: 17000 }
+        ]
+      },
+      tops: {
+        displayName: "Tops",
+        sectionImage: "tops1.jpeg",
+        products: [
+          { src: 'tops1.jpeg', desc: 'Top veraniego', price: 25000 }, { src: 'tops.jpeg', desc: 'Top elegante', price: 22500 }, { src: 'tops2.jpeg', desc: 'Top casual', price: 20000 }, { src: 'tops3.jpeg', desc: 'Top bohemio', price: 27500 }, { src: 'tops4.jpeg', desc: 'Top floral', price: 23750 }, { src: 'tops5.jpeg', desc: 'Top moderno', price: 21990 }
+        ]
+      },
+      apego: {
+        displayName: "De Apego",
+        sectionImage: "amigurumis4.jpeg",
+        products: [
+          { src: 'amigurumis4.jpeg', desc: 'Muñeco de apego', price: 10000 }, { src: 'apego.jpeg', desc: 'Conejo de apego', price: 9500 }, { src: 'apego1.jpeg', desc: 'Oso de apego', price: 11000 }, { src: 'apego2.jpeg', desc: 'Elefante de apego', price: 12000 }, { src: 'apego3.jpeg', desc: 'Gatito de apego', price: 10750 }
+        ]
+      },
+      gorritos: {
+        displayName: "Gorritos",
+        sectionImage: "gorritos4.jpeg",
+        products: [
+          { src: 'gorritos4.jpeg', desc: 'Gorro de lana', price: 8990 }, { src: 'gorritos2.jpeg', desc: 'Gorro con pompones', price: 9500 }, { src: 'gorritos3.jpeg', desc: 'Gorro infantil', price: 7990 }, { src: 'gorritos1.jpeg', desc: 'Gorro clásico', price: 10000 }, { src: 'gorritos5.jpeg', desc: 'Gorro colorido', price: 9250 }, { src: 'gorritos6.jpeg', desc: 'Gorro navideño', price: 11500 }, { src: 'gorritos7.jpeg', desc: 'Gorro de animales', price: 12000 }, { src: 'gorritos8.jpeg', desc: 'Gorro personalizado', price: 13000 }
+        ]
+      }
+    };
+
+    let galerias = {}; 
+    const indices = {}; 
+
+    let isAdminLoggedIn = false;
+    const ADMIN_PANEL_PASSWORD = "Happiness281013";
+
+    function generateCategoryKey(name) {
+        return name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_ñ]/gi, ''); // Permitir guion bajo
+    }
+
+    function loadGaleriasFromStorage() {
+        const storedGalerias = localStorage.getItem('vivirTejerGalerias');
+        if (storedGalerias) {
+            galerias = JSON.parse(storedGalerias);
+            for (const key in DEFAULT_GALERIAS) {
+                if (!galerias[key] || typeof galerias[key].products === 'undefined' || typeof galerias[key].displayName === 'undefined') {
+                    galerias[key] = JSON.parse(JSON.stringify(DEFAULT_GALERIAS[key]));
+                }
+            }
+            for (const key in galerias) {
+                if (galerias.hasOwnProperty(key) && typeof indices[key] === 'undefined') {
+                    indices[key] = 0;
+                }
+            }
+        } else {
+            galerias = JSON.parse(JSON.stringify(DEFAULT_GALERIAS));
+            for (const key in galerias) { 
+                if (galerias.hasOwnProperty(key)) {
+                    indices[key] = 0;
+                }
+            }
+            saveGaleriasToStorage();
+        }
+    }
+
+    function saveGaleriasToStorage() {
+        localStorage.setItem('vivirTejerGalerias', JSON.stringify(galerias));
+    }
+
+    function openAdminLoginModal() {
+        if (isAdminLoggedIn) {
+            document.getElementById('adminControls').style.display = 'grid';
+            return;
+        }
+        document.getElementById('adminPasswordInput').value = '';
+        document.getElementById('adminLoginError').style.display = 'none';
+        document.getElementById('adminLoginModal').style.display = 'block';
+    }
+
+    function closeAdminLoginModal() {
+        document.getElementById('adminLoginModal').style.display = 'none';
+    }
+
+    function handleAdminLoginAttempt() {
+        const password = document.getElementById('adminPasswordInput').value;
+        if (password === ADMIN_PANEL_PASSWORD) {
+            isAdminLoggedIn = true;
+            closeAdminLoginModal();
+            document.getElementById('adminAccessBtn').style.display = 'none'; 
+            document.getElementById('adminControls').style.display = 'grid'; 
+            
+            const welcomeModal = document.getElementById('adminWelcomeModal');
+            document.getElementById('adminWelcomeMessageText').textContent = "Bienvenida Meri";
+            welcomeModal.style.display = 'block';
+            setTimeout(() => { welcomeModal.style.display = 'none'; }, 2500);
+            
+            updateNavigationAndGallerySections(); // ACTUALIZAR NAV AL LOGUEARSE
+            updateAdminControlsInOpenModals(); 
+        } else {
+            document.getElementById('adminLoginError').textContent = 'Contraseña incorrecta.';
+            document.getElementById('adminLoginError').style.display = 'block';
+        }
+    }
+
+    function adminLogout() {
+        isAdminLoggedIn = false;
+        document.getElementById('adminControls').style.display = 'none';
+        document.getElementById('adminAccessBtn').style.display = 'flex'; 
+        showNotification("Sesión de administrador cerrada.", "info");
+        updateNavigationAndGallerySections(); // ACTUALIZAR NAV AL DESLOGUEARSE
+        updateAdminControlsInOpenModals(); 
+    }
+    
+    function updateAdminControlsInOpenModals() {
+        const openProductModal = document.querySelector('.modal[id$="Modal"][style*="display: block"]:not(#cartModal):not(#adminLoginModal):not(#adminFormProductModal):not(#addCategoryModal):not(#adminWelcomeModal)');
+        if(openProductModal) {
+            const categoryKey = openProductModal.id.replace('Modal','');
+            const modalContentElement = openProductModal.querySelector('.modal-content');
+            
+            if(categoryKey && galerias[categoryKey] && modalContentElement){
+                modalContentElement.querySelectorAll('.admin-category-controls, .admin-product-controls').forEach(el => el.remove());
+                if(isAdminLoggedIn){
+                    addAdminCategoryControlsToProductModal(categoryKey, modalContentElement);
+                    const currentCategoryProducts = galerias[categoryKey].products;
+                    if(currentCategoryProducts && currentCategoryProducts.length > 0 && indices[categoryKey] < currentCategoryProducts.length && currentCategoryProducts[indices[categoryKey]]) {
+                         addAdminItemSpecificControls(categoryKey, indices[categoryKey], modalContentElement);
+                    }
+                }
+            }
+        }
+    }
+    
+    function openAddCategoryModal() {
+        document.getElementById('newCategoryName').value = '';
+        document.getElementById('newCategoryImage').value = '';
+        document.getElementById('addCategoryError').style.display = 'none';
+        document.getElementById('addCategoryModal').style.display = 'block';
+    }
+
+    function closeAddCategoryModal() {
+        document.getElementById('addCategoryModal').style.display = 'none';
+    }
+
+    function handleAddCategory() {
+        const categoryNameInput = document.getElementById('newCategoryName');
+        const categoryImageInput = document.getElementById('newCategoryImage');
+        const categoryName = categoryNameInput.value.trim();
+        const categoryImage = categoryImageInput.value.trim();
+        const errorP = document.getElementById('addCategoryError');
+        errorP.style.display = 'none';
+
+        if (!categoryName) {
+            errorP.textContent = 'El nombre de la categoría no puede estar vacío.';
+            errorP.style.display = 'block'; return;
+        }
+        if (!categoryImage) {
+            errorP.textContent = 'La imagen de portada no puede estar vacía.';
+            errorP.style.display = 'block'; return;
+        }
+
+        const categoryKey = generateCategoryKey(categoryName);
+        if (galerias[categoryKey]) {
+            errorP.textContent = 'Ya existe una categoría con un nombre similar.';
+            errorP.style.display = 'block'; return;
+        }
+
+        galerias[categoryKey] = {
+            displayName: categoryName,
+            sectionImage: categoryImage,
+            products: []
+        };
+        indices[categoryKey] = 0; 
+
+        saveGaleriasToStorage();
+        updateNavigationAndGallerySections(); 
+        showNotification(`Categoría "${categoryName}" agregada.`, "success");
+        closeAddCategoryModal();
+    }
+
+    function updateNavigationAndGallerySections() {
+        const navUl = document.querySelector('.nav ul');
+        const galeriaMain = document.querySelector('main.galeria');
+        if (!navUl || !galeriaMain) { console.error("Error: Contenedores de navegación o galería no encontrados."); return;}
+
+        navUl.innerHTML = ''; 
+        galeriaMain.innerHTML = ''; 
+
+        for (const key in galerias) {
+            if (galerias.hasOwnProperty(key)) {
+                const categoryData = galerias[key];
+                const displayName = categoryData.displayName || key.charAt(0).toUpperCase() + key.slice(1);
+                const sectionImage = categoryData.sectionImage || (categoryData.products && categoryData.products.length > 0 ? categoryData.products[0].src : 'imagenes/placeholder_general.jpg');
+
+                const navLi = document.createElement('li');
+                const navA = document.createElement('a');
+                navA.href = `#${key}`; 
+                navA.textContent = displayName;
+                navA.onclick = (e) => { e.preventDefault(); openModal(key); };
+                navLi.appendChild(navA);
+                navUl.appendChild(navLi);
+
+                const section = document.createElement('section');
+                section.id = key; 
+                const h3 = document.createElement('h3');
+                h3.textContent = displayName;
+                const img = document.createElement('img');
+                img.src = sectionImage; 
+                img.alt = displayName;
+                img.title = `Ver ${displayName}`;
+                img.onerror = function() { this.src = 'imagenes/placeholder_error.jpg'; };
+                img.onclick = () => openModal(key);
+                section.appendChild(h3);
+                section.appendChild(img);
+                galeriaMain.appendChild(section);
+
+                if (!document.getElementById(`${key}Modal`)) {
+                    createModalForCategory(key, displayName);
+                }
+            }
+        }
+        // Añadir botón "Agregar Nueva Categoría" a la navegación si admin está logueado
+        if (isAdminLoggedIn) {
+            const addCategoryLi = document.createElement('li');
+            addCategoryLi.className = 'nav-admin-add-category';
+            const addCategoryBtn = document.createElement('button');
+            addCategoryBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Nueva Categoría';
+            addCategoryBtn.className = 'admin-nav-button'; 
+            addCategoryBtn.onclick = openAddCategoryModal;
+            addCategoryLi.appendChild(addCategoryBtn);
+            navUl.appendChild(addCategoryLi);
+        }
+    }
+
+    function createModalForCategory(categoryKey, displayName) {
+        const modalDiv = document.createElement('div');
+        modalDiv.id = `${categoryKey}Modal`;
+        modalDiv.className = 'modal';
+        modalDiv.innerHTML = `
+            <div class="modal-content">
+              <span class="close" onclick="closeModal('${categoryKey}Modal')">&times;</span>
+              <span class="prev" onclick="changeSlide('${categoryKey}', -1)">&#10094;</span>
+              <img id="${categoryKey}Slide" src="" alt="Galería ${displayName}">
+              <span class="next" onclick="changeSlide('${categoryKey}', 1)">&#10095;</span>
+              <div class="info-overlay" id="${categoryKey}Info"></div>
+              <button class="add-to-cart" onclick="addToCart('${categoryKey}')">Agregar al Carrito</button>
+            </div>
+        `;
+        document.body.appendChild(modalDiv);
+    }
+    
+    function addAdminCategoryControlsToProductModal(categoryKey, modalContentElement) {
+        if (!isAdminLoggedIn || !modalContentElement) return;
+        const categoryData = galerias[categoryKey];
+        if (!categoryData) return;
+
+        modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove()); // Limpiar antes de agregar
+
+        const categoryControlsDiv = document.createElement('div');
+        categoryControlsDiv.className = 'admin-category-controls';
+        const btnAdd = document.createElement('button');
+        btnAdd.innerHTML = `<i class="fas fa-plus-circle"></i> Agregar a ${categoryData.displayName}`;
+        btnAdd.className = 'admin-btn';
+        btnAdd.style.backgroundColor = '#4CAF50';
+        btnAdd.onclick = () => openAdminFormProductModal('add', categoryKey);
+        categoryControlsDiv.appendChild(btnAdd);
+        
+        const addToCartBtn = modalContentElement.querySelector('.add-to-cart');
+        if (addToCartBtn) {
+            addToCartBtn.parentNode.insertBefore(categoryControlsDiv, addToCartBtn);
+        } else { 
+            modalContentElement.appendChild(categoryControlsDiv);
+        }
+    }
+
+    function addAdminItemSpecificControls(categoryKey, productIndex, modalContentElement) {
+        if (!isAdminLoggedIn || !galerias[categoryKey] || !galerias[categoryKey].products || !galerias[categoryKey].products[productIndex]) return;
+        
+        modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
+
+        const productControlsDiv = document.createElement('div');
+        productControlsDiv.className = 'admin-product-controls';
+
+        const btnEdit = document.createElement('button');
+        btnEdit.innerHTML = '<i class="fas fa-edit"></i> Editar Producto';
+        btnEdit.className = 'admin-btn';
+        btnEdit.style.backgroundColor = '#FFC107'; btnEdit.style.color = '#333';
+        btnEdit.onclick = () => {
+            // Cerrar el modal del carrusel antes de abrir el editor
+            closeModal(`${categoryKey}Modal`);
+            openAdminFormProductModal('edit', categoryKey, productIndex);
+        };
+        productControlsDiv.appendChild(btnEdit);
+
+        const btnDelete = document.createElement('button');
+        btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Producto';
+        btnDelete.className = 'admin-btn';
+        btnDelete.style.backgroundColor = '#F44336';
+        btnDelete.onclick = () => handleDeleteProductConfirmation(categoryKey, productIndex);
+        productControlsDiv.appendChild(btnDelete);
+
+        const infoOverlay = modalContentElement.querySelector('.info-overlay');
+        const targetElementForProductControls = infoOverlay || modalContentElement.querySelector('.admin-category-controls') || modalContentElement.querySelector('.add-to-cart');
+
+        if (targetElementForProductControls === infoOverlay && infoOverlay.nextSibling) {
+            infoOverlay.parentNode.insertBefore(productControlsDiv, infoOverlay.nextSibling);
+        } else if (targetElementForProductControls) {
+             targetElementForProductControls.parentNode.insertBefore(productControlsDiv, targetElementForProductControls);
+        } else {
+            modalContentElement.appendChild(productControlsDiv);
+        }
+    }
+    
+    function openAdminFormProductModal(mode, categoryKey, productIndex = -1) {
+        const formModal = document.getElementById('adminFormProductModal');
+        const form = document.getElementById('adminProductFormInstance');
+        form.reset();
+        document.getElementById('adminProductImageSelectedFileName').textContent = '';
+        document.getElementById('adminEditModeCategoryKey').value = categoryKey;
+        document.getElementById('adminEditModeProductIndex').value = productIndex;
+        const categoryDisplayName = galerias[categoryKey] ? galerias[categoryKey].displayName : categoryKey;
+
+        if (mode === 'add') {
+            document.getElementById('adminFormProductTitle').textContent = `Agregar Producto a ${categoryDisplayName}`;
+        } else if (mode === 'edit' && galerias[categoryKey] && galerias[categoryKey].products[productIndex]) {
+            document.getElementById('adminFormProductTitle').textContent = `Editar Producto de ${categoryDisplayName}`;
+            const product = galerias[categoryKey].products[productIndex];
+            document.getElementById('adminProductDesc').value = product.desc;
+            document.getElementById('adminProductPriceValue').value = product.price;
+            document.getElementById('adminProductImageSrcPath').value = product.src;
+        } else { console.error("Error al abrir formulario de producto: modo o datos inválidos."); return; }
+        formModal.style.display = 'block';
+        
+        // Enfocar el primer campo del formulario
+        document.getElementById('adminProductDesc').focus();
+    }
+    
+    document.getElementById('adminProductImageFileSelector').onchange = function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            document.getElementById('adminProductImageSelectedFileName').textContent = `Seleccionado: ${file.name}`;
+            document.getElementById('adminProductImageSrcPath').value = `imagenes/${file.name}`;
+        } else {
+            document.getElementById('adminProductImageSelectedFileName').textContent = '';
+        }
+    };
+    
+    document.getElementById('adminProductFormInstance').onsubmit = function(event) {
+        event.preventDefault();
+        const categoryKey = document.getElementById('adminEditModeCategoryKey').value;
+        const productIndex = parseInt(document.getElementById('adminEditModeProductIndex').value, 10);
+        const desc = document.getElementById('adminProductDesc').value.trim();
+        const price = parseFloat(document.getElementById('adminProductPriceValue').value);
+        const src = document.getElementById('adminProductImageSrcPath').value.trim();
+
+        if (!desc || isNaN(price) || price < 0 || !src || !categoryKey) {
+            showNotification("Por favor, completa todos los campos correctamente.", "error"); return;
+        }
+        const productData = { src, desc, price };
+
+        if (!galerias[categoryKey] || !galerias[categoryKey].products) { // Si la categoría o el array de productos no existe
+             galerias[categoryKey] = galerias[categoryKey] || { displayName: categoryKey, sectionImage: '', products: [] }; // Crear si es necesario
+             galerias[categoryKey].products = galerias[categoryKey].products || [];
+        }
+
+        if (productIndex === -1) { 
+            galerias[categoryKey].products.push(productData);
+            showNotification("Producto agregado.", "success");
+            indices[categoryKey] = galerias[categoryKey].products.length - 1;
+        } else { 
+            galerias[categoryKey].products[productIndex] = productData;
+            showNotification("Producto actualizado.", "success");
+        }
+        saveGaleriasToStorage();
+        closeAdminFormProductModal();
+        updateSlide(categoryKey); 
+        updateAdminControlsInOpenModals(); 
+    };
+
+    function closeAdminFormProductModal() {
+        document.getElementById('adminFormProductModal').style.display = 'none';
+    }
+
+    function handleDeleteProductConfirmation(categoryKey, productIndex) {
+        const product = galerias[categoryKey].products[productIndex];
+        if (confirm(`¿Estás seguro de que quieres eliminar "${product.desc}"?`)) {
+            galerias[categoryKey].products.splice(productIndex, 1);
+            saveGaleriasToStorage();
+            showNotification(`"${product.desc}" ha sido eliminado.`, "info");
+            if (indices[categoryKey] >= galerias[categoryKey].products.length && galerias[categoryKey].products.length > 0) {
+                indices[categoryKey] = galerias[categoryKey].products.length - 1;
+            } else if (galerias[categoryKey].products.length === 0) {
+                 indices[categoryKey] = 0; 
+            }
+            updateSlide(categoryKey);
+            updateAdminControlsInOpenModals();
+        }
+    }
+
+    function openModal(categoryKey) {
+        const modalId = `${categoryKey}Modal`;
+        let modalElement = document.getElementById(modalId);
+
+        if (!galerias[categoryKey]) { // Si la categoría no existe en los datos (ej. eliminada y luego click en link viejo)
+            showNotification("Categoría no encontrada.", "error");
+            updateNavigationAndGallerySections(); // Refrescar por si acaso
+            return;
+        }
+
+        if (!modalElement) { 
+            const categoryData = galerias[categoryKey];
+            if (categoryData) {
+                createModalForCategory(categoryKey, categoryData.displayName);
+                modalElement = document.getElementById(modalId);
+            } else { return; }
+        }
+        if (!modalElement) { return;} 
+
+        modalElement.style.display = 'block';
+        indices[categoryKey] = indices[categoryKey] || 0; 
+        const currentCategoryProducts = galerias[categoryKey].products;
+        if (currentCategoryProducts && currentCategoryProducts.length > 0 && indices[categoryKey] >= currentCategoryProducts.length) {
+            indices[categoryKey] = 0;
+        }
+        updateSlide(categoryKey); 
+
+        if (isAdminLoggedIn) {
+            const modalContentElement = modalElement.querySelector('.modal-content');
+            modalContentElement.querySelectorAll('.admin-category-controls, .admin-product-controls').forEach(el => el.remove());
+            addAdminCategoryControlsToProductModal(categoryKey, modalContentElement);
+            if(currentCategoryProducts && currentCategoryProducts.length > 0 && currentCategoryProducts[indices[categoryKey]]) {
+                addAdminItemSpecificControls(categoryKey, indices[categoryKey], modalContentElement);
+            }
+        }
+    }
+
+    function closeModal(modalId) {
+      const modalElement = document.getElementById(modalId);
+      if (modalElement) modalElement.style.display = 'none';
+    }
+
+    function changeSlide(categoryKey, paso) {
+      if (!galerias[categoryKey] || !galerias[categoryKey].products || galerias[categoryKey].products.length === 0) return;
+      const total = galerias[categoryKey].products.length;
+      indices[categoryKey] = (indices[categoryKey] + paso + total) % total;
+      updateSlide(categoryKey);
+    }
+
+    function updateSlide(categoryKey) {
+        const modalId = `${categoryKey}Modal`;
+        const modalElement = document.getElementById(modalId);
+        if (!modalElement) return;
+
+        const imgElement = document.getElementById(`${categoryKey}Slide`);
+        const infoElement = document.getElementById(`${categoryKey}Info`);
+        const modalContentElement = modalElement.querySelector('.modal-content');
+        const prevButton = modalElement.querySelector('.prev');
+        const nextButton = modalElement.querySelector('.next');
+        const addToCartButton = modalContentElement.querySelector('.add-to-cart');
+
+        if (!imgElement || !infoElement || !modalContentElement || !prevButton || !nextButton || !addToCartButton) {
+             console.warn(`Elementos del modal para '${categoryKey}' no encontrados.`);
+             return; 
+        }
+
+        if(isAdminLoggedIn) { 
+             modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
+        }
+        
+        const currentCategory = galerias[categoryKey];
+        if (!currentCategory || !currentCategory.products || currentCategory.products.length === 0) {
+            imgElement.src = 'imagenes/placeholder_categoria_vacia.jpg'; 
+            imgElement.alt = `No hay productos en ${currentCategory ? currentCategory.displayName : categoryKey}.`;
+            infoElement.textContent = 'Categoría vacía.';
+            prevButton.style.display = 'none';
+            nextButton.style.display = 'none';
+            addToCartButton.style.display = 'none';
+            if(isAdminLoggedIn){
+                modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove()); // Limpiar por si acaso
+                addAdminCategoryControlsToProductModal(categoryKey, modalContentElement); // Asegurar que el botón de "Agregar a X" siga ahí
+            }
+            return;
+        }
+        
+        prevButton.style.display = currentCategory.products.length > 1 ? 'block' : 'none';
+        nextButton.style.display = currentCategory.products.length > 1 ? 'block' : 'none';
+        addToCartButton.style.display = 'block';
+
+        const currentProductIndex = indices[categoryKey];
+        const item = currentCategory.products[currentProductIndex];
+        
+        if (!item) { 
+            if (currentCategory.products.length > 0) { 
+                indices[categoryKey] = 0;
+                updateSlide(categoryKey); 
+            } else {
+                 imgElement.src = 'imagenes/placeholder_error_producto.jpg';
+                 imgElement.alt = 'Error al cargar producto.';
+                 infoElement.textContent = 'Error.';
+            }
+            return;
+        }
+
+        imgElement.classList.add('fade-out');
+        setTimeout(() => {
+            imgElement.src = item.src;
+            imgElement.onerror = function() { this.src = 'imagenes/placeholder_imagen_no_encontrada.jpg'; };
+            imgElement.alt = item.desc;
+            imgElement.classList.remove('fade-out');
+            infoElement.textContent = `${item.desc} - ${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}`;
+            if (isAdminLoggedIn) {
+                addAdminItemSpecificControls(categoryKey, currentProductIndex, modalContentElement);
+            }
+        }, 300);
+    }
+
+    function addToCart(categoryKey) {
+      if (!galerias[categoryKey] || !galerias[categoryKey].products || galerias[categoryKey].products.length === 0 || !galerias[categoryKey].products[indices[categoryKey]]) {
+          showNotification("Este producto no está disponible.", "error"); return;
+      }
+      const itemData = galerias[categoryKey].products[indices[categoryKey]];
+      const item = { ...itemData }; 
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const existingItem = cart.find(cartItem => cartItem.src === item.src && cartItem.desc === item.desc && cartItem.price === item.price);
+      if (existingItem) {
+        existingItem.quantity = (existingItem.quantity || 1) + 1;
+      } else {
+        item.quantity = 1;
+        cart.push(item);
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartBadge();
+      showNotification('¡Producto agregado!', 'success');
+    }
+
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`; 
+      let iconClass = 'info-circle'; 
+      if (type === 'success') { iconClass = 'check-circle'; } 
+      else if (type === 'error') { iconClass = 'exclamation-circle'; }
+      notification.innerHTML = `<i class="fas fa-${iconClass} notification-icon"></i><span class="notification-message">${message}</span>`;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.classList.add('show'), 10); 
+      setTimeout(() => {
+        notification.classList.remove('show'); 
+        setTimeout(() => notification.remove(), 400); 
+      }, 3000); 
+    }
+
+    function openCartModal() { document.getElementById('cartModal').style.display = 'block'; renderCart(); }
+    function renderCart() {
+        const cartItemsDiv = document.getElementById('cartItems');
+        const cartTotalDiv = document.getElementById('cartTotal');
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cartItemsDiv.innerHTML = '';
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = '<p>Tu carrito está vacío.</p>';
+            cartTotalDiv.innerHTML = '';
+            updateCartBadge(); 
+            return;
+        }
+        let total = 0;
+        cart.forEach((item, index) => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'cart-item';
+            const itemSubtotal = item.price * (item.quantity || 1);
+            itemElement.innerHTML = `
+            <img src="${item.src}" alt="${item.desc}" onerror="this.src='imagenes/placeholder_imagen_no_encontrada.jpg';">
+            <div class="cart-item-info">
+                <p><strong>${item.desc}</strong></p>
+                <p>${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} x ${item.quantity || 1} = ${itemSubtotal.toLocaleString('es-AR', {style: 'currency', currency: 'ARS'})}</p>
+                <div class="cart-item-quantity">
+                Cantidad: 
+                <button onclick="updateQuantity(${index}, -1)" class="quantity-btn">-</button>
+                <span>${item.quantity || 1}</span>
+                <button onclick="updateQuantity(${index}, 1)" class="quantity-btn">+</button>
+                </div>
+            </div>
+            <button onclick="removeFromCart(${index})" class="remove-item-btn"><i class="fas fa-times"></i></button>
+            `;
+            cartItemsDiv.appendChild(itemElement);
+            total += itemSubtotal;
+        });
+        cartTotalDiv.innerHTML = `<p><strong>Total: ${total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</strong></p>`;
+        updateCartBadge();
+    }
+
+    function updateQuantity(index, change) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cart[index]) {
+            cart[index].quantity = (cart[index].quantity || 1) + change;
+            if (cart[index].quantity < 1) cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+    }
+    function removeFromCart(index) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+    }
+    function clearCart() {
+        localStorage.removeItem('cart');
+        renderCart();
+        showNotification('Tu carrito ha sido vaciado', 'info'); 
+    }
+  function checkout() { const cart = JSON.parse(localStorage.getItem('cart')) || []; if (cart.length === 0) { showNotification('Tu carrito está vacío', 'error'); return; } let message = "¡Hola! Quiero realizar la siguiente compra:\n\n"; let total = 0; cart.forEach(item => { const quantity = item.quantity || 1; const subtotal = item.price * quantity; message += `- ${item.desc} (${quantity} x ${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}) = ${subtotal.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}\n`; total += subtotal; }); message += `\nTotal: ${total.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}\n\n`; message += "Por favor, indíquenme cómo proceder con el pago y envío. ¡Gracias!"; const encodedMessage = encodeURIComponent(message); window.open(`https://wa.me/5492266535128?text=${encodedMessage}`, '_blank'); }
+  
+    
+    function updateCartBadge() {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        const badge = document.getElementById('cartBadge');
+        if (!badge) return;
+        badge.textContent = totalItems;
+        const prevCount = parseInt(badge.dataset.prevCount || "0");
+        if (totalItems !== prevCount && !badge.classList.contains('update-animation')) { 
+            badge.classList.add('update-animation');
+            setTimeout(() => badge.classList.remove('update-animation'), 500);
+        }
+        badge.dataset.prevCount = totalItems;
+    }
+    
+    document.addEventListener('keydown', function(e) {
+      // Manejar tecla Enter en el formulario de producto
+      if (e.key === 'Enter' && document.getElementById('adminFormProductModal').style.display === 'block') {
+        e.preventDefault();
+        document.getElementById('adminProductFormInstance').dispatchEvent(new Event('submit'));
+      }
+      
+      // Manejar tecla Escape para cerrar modales
+      if (e.key === 'Escape') {
+        if (document.getElementById('addCategoryModal').style.display === 'block') closeAddCategoryModal();
+        else if (document.getElementById('adminFormProductModal').style.display === 'block') closeAdminFormProductModal();
+        else if (document.getElementById('adminLoginModal').style.display === 'block') closeAdminLoginModal();
+        else { 
+            document.querySelectorAll('.modal:not(#adminWelcomeModal)').forEach(modal => {
+                if (modal.style.display === 'block') closeModal(modal.id);
+            });
+        }
+      }
+      
+      // Manejar flechas izquierda/derecha en el carrusel
+      const activeProductModalContainer = document.querySelector('.modal[id$="Modal"][style*="display: block"]:not(#cartModal):not(.admin-login):not(.admin-form-modal):not(#addCategoryModal)');
+      if(activeProductModalContainer){
+          const categoryKey = activeProductModalContainer.id.replace('Modal','');
+           if (galerias[categoryKey] && galerias[categoryKey].products && galerias[categoryKey].products.length > 0) { // Solo si hay productos para navegar
+                if (e.key === 'ArrowLeft') changeSlide(categoryKey, -1);
+                if (e.key === 'ArrowRight') changeSlide(categoryKey, 1);
+           }
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadGaleriasFromStorage();
+        updateNavigationAndGallerySections();
+        updateCartBadge();
+    });
+  </script>
+</body>
+</html>

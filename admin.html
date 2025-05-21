@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Vivir_tejer</title>
+  <link rel="stylesheet" href="estilos/estilo.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="estilos/modal.css">
+</head>
+<body id="top">
+  <!-- Modal de autenticación -->
+  <div id="adminLogin" class="modal" style="display: block;">
+    <div class="modal-content admin-login">
+      <h2>Iniciar Sesión</h2>
+      <input type="password" id="adminPassword" placeholder="Contraseña" onkeydown="handleEnter(event)">
+      <button onclick="loginAdmin()">Iniciar Sesión</button>
+    </div>
+  </div>
+
+  <!-- Modal de edición/agregar -->
+  <div id="editModal" class="modal">
+    <div class="modal-content edit-modal">
+      <h2 id="editModalTitle">Editar Producto</h2>
+      <input type="file" id="editImage" accept="image/*">
+      <textarea id="editDesc" placeholder="Descripción"></textarea>
+      <input type="number" id="editPrice" placeholder="Precio" step="0.01">
+      <div class="button-group">
+        <button onclick="saveEdit()">Guardar</button>
+        <button onclick="closeModal('editModal')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="header">
+    <img src="logo_vivirtejer.png.png" alt="Logo Vivir Tejer" class="logo-header" width="180" height="170">
+    <h1>Somos <span class="brand">Vivir_tejer</span></h1>
+    <p>En esta página vas a encontrar patrones y cursos en crochet</p>
+    <p>Para más información seguime en <a href="#redes">mis redes</a></p>
+    <nav class="nav">
+      <h2>Trabajos</h2>
+      <ul>
+        <li><a href="#" onclick="openModal('amigurumis')">Amigurumis</a></li>
+        <li><a href="#" onclick="openModal('tops')">Tops</a></li>
+        <li><a href="#" onclick="openModal('apego')">De Apego</a></li>
+        <li><a href="#" onclick="openModal('gorritos')">Gorritos</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="galeria">
+    <section id="amigurumis">
+      <h3>Amigurumis</h3>
+      <img src="amigurumis3.jpeg" alt="Amigurumis" title="Ver Amigurumis" onclick="openModal('amigurumis')">
+    </section>
+    <section id="tops">
+      <h3>Tops</h3>
+      <img src="tops1.jpeg" alt="Tops" title="Ver Tops" onclick="openModal('tops')">
+    </section>
+    <section id="apego">
+      <h3>De Apego</h3>
+      <img src="amigurumis4.jpeg" alt="Apego" title="Ver Apego" onclick="openModal('apego')">
+    </section>
+    <section id="gorritos">
+      <h3>Gorritos</h3>
+      <img src="gorritos4.jpeg" alt="Gorritos" title="Ver Gorritos" onclick="openModal('gorritos')">
+    </section>
+  </main>
+
+  <!-- Modales para el carrusel con panel de administración -->
+  <div id="amigurumisModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('amigurumisModal')">×</span>
+      <span class="prev" onclick="changeSlide('amigurumis', -1)">❮</span>
+      <img id="amigurumisSlide" src="" alt="Galería Amigurumis">
+      <span class="next" onclick="changeSlide('amigurumis', 1)">❯</span>
+      <div class="info-overlay" id="amigurumisInfo"></div>
+      <div class="admin-buttons" id="amigurumisAdmin" style="display: none;">
+        <button onclick="editImage('amigurumis')">Editar</button>
+        <button onclick="deleteImage('amigurumis')">Eliminar</button>
+        <button onclick="addImage('amigurumis')">Agregar Nueva</button>
+      </div>
+    </div>
+  </div>
+  <div id="topsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('topsModal')">×</span>
+      <span class="prev" onclick="changeSlide('tops', -1)">❮</span>
+      <img id="topsSlide" src="" alt="Galería Tops">
+      <span class="next" onclick="changeSlide('tops', 1)">❯</span>
+      <div class="info-overlay" id="topsInfo"></div>
+      <div class="admin-buttons" id="topsAdmin" style="display: none;">
+        <button onclick="editImage('tops')">Editar</button>
+        <button onclick="deleteImage('tops')">Eliminar</button>
+        <button onclick="addImage('tops')">Agregar Nueva</button>
+      </div>
+    </div>
+  </div>
+  <div id="apegoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('apegoModal')">×</span>
+      <span class="prev" onclick="changeSlide('apego', -1)">❮</span>
+      <img id="apegoSlide" src="" alt="Galería Apego">
+      <span class="next" onclick="changeSlide('apego', 1)">❯</span>
+      <div class="info-overlay" id="apegoInfo"></div>
+      <div class="admin-buttons" id="apegoAdmin" style="display: none;">
+        <button onclick="editImage('apego')">Editar</button>
+        <button onclick="deleteImage('apego')">Eliminar</button>
+        <button onclick="addImage('apego')">Agregar Nueva</button>
+      </div>
+    </div>
+  </div>
+  <div id="gorritosModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('gorritosModal')">×</span>
+      <span class="prev" onclick="changeSlide('gorritos', -1)">❮</span>
+      <img id="gorritosSlide" src="" alt="Galería Gorritos">
+      <span class="next" onclick="changeSlide('gorritos', 1)">❯</span>
+      <div class="info-overlay" id="gorritosInfo"></div>
+      <div class="admin-buttons" id="gorritosAdmin" style="display: none;">
+        <button onclick="editImage('gorritos')">Editar</button>
+        <button onclick="deleteImage('gorritos')">Eliminar</button>
+        <button onclick="addImage('gorritos')">Agregar Nueva</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer" id="redes">
+    <h3>Seguinos en nuestras redes sociales</h3>
+    <div class="redes-sociales">
+      <a href="https://www.instagram.com/vivir_tejer?igsh=NnhxZGljOHhnOXF3" target="_blank" aria-label="Instagram">
+        <img src="instagram.png" alt="Icono Instagram">
+      </a>    
+      <a href="https://wa.me/5492266535128" target="_blank" aria-label="WhatsApp">
+        <img src="icons8-whatsapp-50.png" alt="Icono WhatsApp">
+      </a>
+      <a href="https://www.facebook.com/share/15T45N7PsQ/" target="_blank" aria-label="Facebook">
+        <img src="facebook.png" alt="Icono Facebook">
+      </a>
+    </div>
+    <div class="volver-inicio">
+      <a href="#top">⬆ Volver al inicio</a>
+    </div>
+  </footer>
+
+  <script>
+    // Cargar galerías desde LocalStorage o usar las iniciales
+    const galerias = JSON.parse(localStorage.getItem('galerias')) || {
+      amigurumis: [
+        { src: 'amigurumis3.jpeg', desc: 'Muñeco de crochet', price: 15990 },
+        { src: 'amigurumis1.jpeg', desc: 'Osito adorable', price: 12500 },
+        { src: 'amigurumis2.jpeg', desc: 'Conejo suave', price: 14000 },
+        { src: 'muñecos.jpeg', desc: 'Personaje personalizado', price: 20000 },
+        { src: 'amigurumis5.jpeg', desc: 'Perrito amigurumi', price: 13750 },
+        { src: 'amigurumis6.jpeg', desc: 'Gatito kawaii', price: 11990 },
+        { src: 'amigurumis7.jpeg', desc: 'Unicornio mágico', price: 18500 },
+        { src: 'amigurumis8.jpeg', desc: 'Elefante tierno', price: 16250 },
+        { src: 'amigurumis9.jpeg', desc: 'Zorro encantador', price: 17000 }
+      ],
+      tops: [
+        { src: 'tops1.jpeg', desc: 'Top veraniego', price: 25000 },
+        { src: 'tops.jpeg', desc: 'Top elegante', price: 22500 },
+        { src: 'tops2.jpeg', desc: 'Top casual', price: 20000 },
+        { src: 'tops3.jpeg', desc: 'Top bohemio', price: 27500 },
+        { src: 'tops4.jpeg', desc: 'Top floral', price: 23750 },
+        { src: 'tops5.jpeg', desc: 'Top moderno', price: 21990 }
+      ],
+      apego: [
+        { src: 'amigurumis4.jpeg', desc: 'Muñeco de apego', price: 10000 },
+        { src: 'apego.jpeg', desc: 'Conejo de apego', price: 9500 },
+        { src: 'apego1.jpeg', desc: 'Oso de apego', price: 11000 },
+        { src: 'apego2.jpeg', desc: 'Elefante de apego', price: 12000 },
+        { src: 'apego3.jpeg', desc: 'Gatito de apego', price: 10750 }
+      ],
+      gorritos: [
+        { src: 'gorritos4.jpeg', desc: 'Gorro de lana', price: 8990 },
+        { src: 'gorritos2.jpeg', desc: 'Gorro con pompones', price: 9500 },
+        { src: 'gorritos3.jpeg', desc: 'Gorro infantil', price: 7990 },
+        { src: 'gorritos1.jpeg', desc: 'Gorro clásico', price: 10000 },
+        { src: 'gorritos5.jpeg', desc: 'Gorro colorido', price: 9250 },
+        { src: 'gorritos6.jpeg', desc: 'Gorro navideño', price: 11500 },
+        { src: 'gorritos7.jpeg', desc: 'Gorro de animales', price: 12000 },
+        { src: 'gorritos8.jpeg', desc: 'Gorro personalizado', price: 13000 }
+      ]
+    };
+
+    const indices = {
+      amigurumis: 0,
+      tops: 0,
+      apego: 0,
+      gorritos: 0
+    };
+
+    let isAuthenticated = false;
+    let currentEdit = { categoria: null, index: null, isNew: false };
+
+    // Funciones del carrusel
+    function openModal(categoria) {
+      document.getElementById(`${categoria}Modal`).style.display = 'block';
+      indices[categoria] = 0;
+      updateSlide(categoria);
+      if (isAuthenticated) {
+        document.getElementById(`${categoria}Admin`).style.display = 'flex';
+      }
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function changeSlide(categoria, paso) {
+      const total = galerias[categoria].length;
+      indices[categoria] = (indices[categoria] + paso + total) % total;
+      updateSlide(categoria);
+    }
+
+    function updateSlide(categoria) {
+      const imgElement = document.getElementById(`${categoria}Slide`);
+      const infoElement = document.getElementById(`${categoria}Info`);
+      const item = galerias[categoria][indices[categoria]];
+
+      imgElement.classList.add('fade-out');
+      setTimeout(() => {
+        imgElement.src = item.src;
+        imgElement.classList.remove('fade-out');
+        if (infoElement) {
+          infoElement.textContent = `${item.desc} - ${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}`;
+        }
+      }, 300);
+    }
+
+    // Funciones de autenticación
+    function loginAdmin() {
+      const password = document.getElementById('adminPassword').value;
+      if (password === 'Happiness281013') {
+        isAuthenticated = true;
+        document.getElementById('adminLogin').style.display = 'none';
+        // Mostrar botones de administración en los modales abiertos
+        document.querySelectorAll('.modal').forEach(modal => {
+          if (modal.style.display === 'block') {
+            const categoria = modal.id.replace('Modal', '');
+            document.getElementById(`${categoria}Admin`).style.display = 'flex';
+          }
+        });
+      } else {
+        document.getElementById('adminPassword').value = '';
+        document.getElementById('adminPassword').placeholder = 'Contraseña incorrecta';
+      }
+    }
+
+    function handleEnter(event) {
+      if (event.key === 'Enter') {
+        loginAdmin();
+      }
+    }
+
+    // Funciones de administración
+    function editImage(categoria) {
+      closeModal(`${categoria}Modal`);
+      currentEdit = { categoria, index: indices[categoria], isNew: false };
+      const item = galerias[categoria][indices[categoria]];
+      document.getElementById('editModalTitle').textContent = 'Editar Producto';
+      document.getElementById('editImage').value = '';
+      document.getElementById('editDesc').value = item.desc;
+      document.getElementById('editPrice').value = item.price;
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    function addImage(categoria) {
+      closeModal(`${categoria}Modal`);
+      currentEdit = { categoria, index: null, isNew: true };
+      document.getElementById('editModalTitle').textContent = 'Agregar Producto';
+      document.getElementById('editImage').value = '';
+      document.getElementById('editDesc').value = '';
+      document.getElementById('editPrice').value = '';
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    function deleteImage(categoria) {
+      if (confirm('¿Seguro que quieres eliminar esta imagen?')) {
+        const currentIndex = indices[categoria];
+        galerias[categoria].splice(currentIndex, 1);
+        localStorage.setItem('galerias', JSON.stringify(galerias));
+        closeModal(`${categoria}Modal`);
+        if (galerias[categoria].length > 0) {
+          indices[categoria] = Math.min(currentIndex, galerias[categoria].length - 1);
+          openModal(categoria);
+        }
+      }
+    }
+
+    function saveEdit() {
+      const imageFile = document.getElementById('editImage').files[0];
+      const desc = document.getElementById('editDesc').value;
+      const price = parseFloat(document.getElementById('editPrice').value);
+
+      if (!desc || isNaN(price)) {
+        alert('Por favor, completa todos los campos.');
+        return;
+      }
+
+      if (currentEdit.isNew && !imageFile) {
+        alert('Por favor, selecciona una imagen.');
+        return;
+      }
+
+      const saveItem = (src) => {
+        if (currentEdit.isNew) {
+          galerias[currentEdit.categoria].push({ src, desc, price });
+          indices[currentEdit.categoria] = galerias[currentEdit.categoria].length - 1;
+        } else {
+          const item = galerias[currentEdit.categoria][currentEdit.index];
+          item.src = src || item.src;
+          item.desc = desc;
+          item.price = price;
+        }
+        localStorage.setItem('galerias', JSON.stringify(galerias));
+        closeModal('editModal');
+        openModal(currentEdit.categoria);
+      };
+
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => saveItem(e.target.result);
+        reader.readAsDataURL(imageFile);
+      } else {
+        saveItem();
+      }
+    }
+
+    // Controles por teclado
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
+      }
+      const categorias = Object.keys(galerias);
+      for (const categoria of categorias) {
+        const modal = document.getElementById(`${categoria}Modal`);
+        if (modal.style.display === 'block') {
+          if (e.key === 'ArrowLeft') changeSlide(categoria, -1);
+          if (e.key === 'ArrowRight') changeSlide(categoria, 1);
+          break;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
