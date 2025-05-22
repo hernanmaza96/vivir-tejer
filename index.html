@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vivir_tejer</title>
+  <link rel="icon" href="logo_vivirtejer.jpg" type="image/jpeg"> {/* <-- AÑADE ESTA LÍNEA */}
   <link rel="stylesheet" href="estilos/estilo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,6 +18,7 @@
   </div>
 
   <header class="header">
+    {/* Has cambiado el nombre de la imagen del logo en el header a .png, pero el favicon puede ser .jpg */}
     <img src="logo_vivirtejer.png" alt="Logo Vivir Tejer" class="logo-header" width="180" height="170">
     <h1>Somos <span class="brand">Vivir_tejer</span></h1>
     <p>En esta página vas a encontrar patrones y cursos en crochet</p>
@@ -540,7 +542,6 @@
         closeAllModalsExcept([modalId]); 
         
         modalElement.style.display = 'block';
-        // Solo agregar la clase si es un modal de carrusel de producto
         if (modalElement.classList.contains('product-carousel-modal')) {
             document.body.classList.add('product-modal-open');
         }
@@ -577,7 +578,10 @@
 
         if (!fromPopState) { 
             const categoryKey = modalId.replace('Modal', '');
-            if (window.location.hash === `#${categoryKey}`) {
+             // Solo modificar el historial si el hash actual corresponde al modal que se cierra
+            if (window.location.hash === `#${categoryKey}` || 
+                (modalId === 'cartModal' && window.location.hash === '#cart') || // Ejemplo para otros modales
+                (modalId === 'adminLoginModal' && window.location.hash === '#adminLogin') ) { // Ejemplo
                  history.replaceState(null, '', window.location.pathname + window.location.search);
             }
         }
@@ -587,11 +591,13 @@
     function closeAllModalsExcept(excludeIds = []) {
         document.querySelectorAll('.modal').forEach(modal => {
             if (!excludeIds.includes(modal.id) && modal.style.display === 'block') {
-                // Si el modal que se va a cerrar es un product-carousel-modal, quitar la clase del body
                 if (modal.classList.contains('product-carousel-modal')) {
                     document.body.classList.remove('product-modal-open');
                 }
-                closeModal(modal.id, true); 
+                // No llamar a closeModal con fromPopState=true aquí directamente,
+                // ya que este es un cierre proactivo, no una reacción al botón atrás.
+                // La lógica de historial se manejará en el closeModal individual.
+                closeModal(modal.id); 
             }
         });
     }
@@ -708,6 +714,9 @@
     function openCartModal() { 
         closeAllModalsExcept(['cartModal']); 
         document.getElementById('cartModal').style.display = 'block'; 
+        if (window.location.hash !== '#cart') { // Solo empujar al historial si no estamos ya ahí
+            history.pushState({ openedModalId: 'cartModal' }, '', '#cart');
+        }
         renderCart(); 
     }
     function renderCart() {
@@ -802,39 +811,30 @@
     }
     
     window.addEventListener('popstate', function(event) {
-        let modalWasOpen = false;
-        document.querySelectorAll('.modal.product-carousel-modal[style*="display: block"]').forEach(modal => {
-            closeModal(modal.id, true); 
-            modalWasOpen = true;
-        });
+        // Este evento se dispara cuando el usuario presiona "atrás" o "adelante" en el navegador.
+        // Si hay un estado guardado y ese estado indica que un modal estaba abierto,
+        // o si simplemente hay un hash que podría corresponder a un modal, intentamos cerrarlo.
         
-        // Considerar otros tipos de modales si también usan historial
-        const cartModal = document.getElementById('cartModal');
-        if (cartModal && cartModal.style.display === 'block') {
-            closeModal('cartModal', true);
-            modalWasOpen = true;
-        }
+        // Primero, intentamos cerrar cualquier modal de producto que coincida con el hash anterior
+        // o que simplemente esté abierto.
+        let modalIdFromState = event.state ? event.state.openedModalId : null;
 
-        const adminLoginModal = document.getElementById('adminLoginModal');
-        if (adminLoginModal && adminLoginModal.style.display === 'block') {
-             closeModal('adminLoginModal', true);
-             modalWasOpen = true;
-        }
-        const addCategoryModalElement = document.getElementById('addCategoryModal');
-         if (addCategoryModalElement && addCategoryModalElement.style.display === 'block') {
-             closeModal('addCategoryModal', true);
-             modalWasOpen = true;
-         }
-         const adminFormProductModalElement = document.getElementById('adminFormProductModal');
-         if (adminFormProductModalElement && adminFormProductModalElement.style.display === 'block') {
-             closeModal('adminFormProductModal', true);
-             modalWasOpen = true;
-         }
+        document.querySelectorAll('.modal[style*="display: block"]').forEach(openModal => {
+            // Si el modal abierto es el que causó el estado anterior, O si no hay estado (pero hay hash), ciérralo.
+            // O si el hash actual es la URL base (sin hash), cierra todos los modales de producto.
+            if (openModal.classList.contains('product-carousel-modal') || openModal.id === 'cartModal' || openModal.id.includes('admin')) {
+                 if (!window.location.hash || (modalIdFromState && openModal.id === modalIdFromState) || (window.location.hash && openModal.id.toLowerCase().includes(window.location.hash.substring(1).toLowerCase()))) {
+                    closeModal(openModal.id, true); // 'true' indica que es desde popstate
+                 } else if (!window.location.hash && openModal.style.display === 'block') { // Si no hay hash, cierra cualquier modal abierto
+                    closeModal(openModal.id, true);
+                 }
+            }
+        });
 
-        // Si cerramos algún modal debido al popstate y el hash ahora está vacío,
-        // es bueno asegurarse de que el estado de la URL refleje esto limpiamente.
-        if (modalWasOpen && !window.location.hash) {
-            history.replaceState(null, '', window.location.pathname + window.location.search);
+        // Asegurar que la clase del body se limpie si no hay modales de producto abiertos
+        const anyProductModalOpen = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
+        if (!anyProductModalOpen) {
+            document.body.classList.remove('product-modal-open');
         }
     });
 
@@ -854,11 +854,12 @@
       }
       
       if (e.key === 'Escape') {
-        const modalsToCheck = [
+        const modalsToCheckOrder = [ // Prioridad para cerrar
             'addCategoryModal', 'adminFormProductModal', 'adminLoginModal', 'cartModal'
         ];
-        // Primero, intentar cerrar modales de admin o carrito
-        for (const modalId of modalsToCheck) {
+        
+        // Primero, modales específicos (admin, carrito)
+        for (const modalId of modalsToCheckOrder) {
             const modalElement = document.getElementById(modalId);
             if (modalElement && modalElement.style.display === 'block') {
                 closeModal(modalId);
@@ -866,12 +867,13 @@
                 break; 
             }
         }
-        // Si no se cerró un modal de admin/carrito, cerrar modales de producto
+        // Luego, modales de carrusel de producto
         if (!modalHandledByEscape) {
-            document.querySelectorAll('.modal.product-carousel-modal[style*="display: block"]').forEach(modal => {
-                closeModal(modal.id);
+            const openProductCarousel = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
+            if (openProductCarousel) {
+                closeModal(openProductCarousel.id);
                 modalHandledByEscape = true;
-            });
+            }
         }
         if(modalHandledByEscape) e.preventDefault();
       }
@@ -890,6 +892,10 @@
         loadGaleriasFromStorage();
         updateNavigationAndGallerySections();
         updateCartBadge();
+        // Limpiar cualquier hash al cargar la página por primera vez
+        if (window.location.hash) {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
     });
   </script>
 </body>

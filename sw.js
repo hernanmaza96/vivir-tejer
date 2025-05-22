@@ -1,10 +1,11 @@
-const CACHE_NAME = 'vivir-tejer-v13'; // Nueva versión por si acaso
+const CACHE_NAME = 'vivir-tejer-v14'; // Nueva versión
 const urlsToCache = [
   '/',
   '/index.html',
   '/estilos/estilo.css',
   '/estilos/modal.css',
-  '/logo_vivirtejer.png',
+  '/logo_vivirtejer.png', // Logo del header
+  '/logo_vivirtejer.jpg', // Favicon que acabamos de agregar
   // Imágenes de productos
   'imagenes/amigurumis1.jpeg', 'imagenes/amigurumis2.jpeg', 'imagenes/amigurumis3.jpeg', 'imagenes/amigurumis4.jpeg', 'imagenes/amigurumis5.jpeg', 'imagenes/amigurumis6.jpeg', 'imagenes/amigurumis7.jpeg', 'imagenes/amigurumis8.jpeg', 'imagenes/amigurumis9.jpeg',
   'imagenes/tops1.jpeg', 'imagenes/tops.jpeg', 'imagenes/tops2.jpeg', 'imagenes/tops3.jpeg', 'imagenes/tops4.jpeg', 'imagenes/tops5.jpeg',
@@ -15,8 +16,8 @@ const urlsToCache = [
   'imagenes/placeholder_categoria_vacia.jpg',
   'imagenes/placeholder_error_producto.jpg',
   'imagenes/placeholder_imagen_no_encontrada.jpg',
-  'imagenes/placeholder_general.jpg', // Si tienes una imagen general para secciones nuevas
-  'imagenes/placeholder_error.jpg', // Fallback general para imágenes de sección
+  'imagenes/placeholder_general.jpg', 
+  'imagenes/placeholder_error.jpg', 
   // Otros assets
   'instagram.png',
   'icons8-whatsapp-50.png',
@@ -73,7 +74,7 @@ self.addEventListener('fetch', function(event) {
             var responseToCache = networkResponse.clone();
             caches.open(CACHE_NAME)
               .then(function(cache) {
-                if (event.request.url.startsWith('http')) { // Solo cachear recursos http/https
+                if (event.request.url.startsWith('http')) { 
                     cache.put(event.request, responseToCache);
                 }
               });
@@ -81,8 +82,6 @@ self.addEventListener('fetch', function(event) {
           }
         ).catch(function() {
           console.log('Fetch fallido y no en caché para:', event.request.url);
-          // Podrías devolver un recurso offline aquí si lo tienes cacheado.
-          // Ejemplo: return caches.match('/offline.html');
         });
       })
   );
