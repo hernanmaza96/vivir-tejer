@@ -74,7 +74,7 @@
   
   <div id="adminLoginModal" class="modal admin-login">
     <div class="modal-content">
-      <span class="close" onclick="closeAdminLoginModal()">&times;</span>
+      <span class="close" onclick="closeModal('adminLoginModal')">&times;</span>
       <h2><i class="fas fa-lock"></i> Acceso Administrador</h2>
       <input type="password" id="adminPasswordInput" placeholder="Contraseña">
       <button onclick="handleAdminLoginAttempt()" class="admin-btn" style="background-color: #d94f70;">Ingresar</button>
@@ -88,7 +88,7 @@
 
   <div id="addCategoryModal" class="modal admin-form-modal"> 
     <div class="modal-content">
-      <span class="close" onclick="closeAddCategoryModal()">&times;</span>
+      <span class="close" onclick="closeModal('addCategoryModal')">&times;</span>
       <h2><i class="fas fa-folder-plus"></i> Agregar Nueva Categoría</h2>
       <div class="form-group">
         <label for="newCategoryName">Nombre de la Categoría:</label>
@@ -101,7 +101,7 @@
       </div>
       <div class="form-actions">
           <button onclick="handleAddCategory()" class="admin-btn save-btn"><i class="fas fa-plus"></i> Crear Categoría</button>
-          <button type="button" class="admin-btn cancel-btn" onclick="closeAddCategoryModal()"><i class="fas fa-times"></i> Cancelar</button>
+          <button type="button" class="admin-btn cancel-btn" onclick="closeModal('addCategoryModal')"><i class="fas fa-times"></i> Cancelar</button>
       </div>
       <p id="addCategoryError" style="color:red; margin-top:10px; display:none;"></p>
     </div>
@@ -109,7 +109,7 @@
 
   <div id="adminFormProductModal" class="modal admin-form-modal"> 
     <div class="modal-content admin-form">
-      <span class="close" onclick="closeAdminFormProductModal()">&times;</span>
+      <span class="close" onclick="closeModal('adminFormProductModal')">&times;</span>
       <h2 id="adminFormProductTitle"></h2>
       <form id="adminProductFormInstance">
         <input type="hidden" id="adminEditModeCategoryKey">
@@ -134,7 +134,7 @@
         </div>
         <div class="form-actions">
             <button type="submit" class="admin-btn save-btn"><i class="fas fa-save"></i> Guardar</button>
-            <button type="button" class="admin-btn cancel-btn" onclick="closeAdminFormProductModal()"><i class="fas fa-times"></i> Cancelar</button>
+            <button type="button" class="admin-btn cancel-btn" onclick="closeModal('adminFormProductModal')"><i class="fas fa-times"></i> Cancelar</button>
         </div>
       </form>
     </div>
@@ -178,7 +178,7 @@
     const ADMIN_PANEL_PASSWORD = "Happiness281013";
 
     function generateCategoryKey(name) {
-        return name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_ñ]/gi, ''); // Permitir guion bajo
+        return name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_ñ]/gi, '');
     }
 
     function loadGaleriasFromStorage() {
@@ -217,18 +217,16 @@
         }
         document.getElementById('adminPasswordInput').value = '';
         document.getElementById('adminLoginError').style.display = 'none';
+        closeAllModalsExcept(['adminLoginModal']);
         document.getElementById('adminLoginModal').style.display = 'block';
+        document.getElementById('adminPasswordInput').focus();
     }
-
-    function closeAdminLoginModal() {
-        document.getElementById('adminLoginModal').style.display = 'none';
-    }
-
+    
     function handleAdminLoginAttempt() {
         const password = document.getElementById('adminPasswordInput').value;
         if (password === ADMIN_PANEL_PASSWORD) {
             isAdminLoggedIn = true;
-            closeAdminLoginModal();
+            closeModal('adminLoginModal');
             document.getElementById('adminAccessBtn').style.display = 'none'; 
             document.getElementById('adminControls').style.display = 'grid'; 
             
@@ -237,7 +235,7 @@
             welcomeModal.style.display = 'block';
             setTimeout(() => { welcomeModal.style.display = 'none'; }, 2500);
             
-            updateNavigationAndGallerySections(); // ACTUALIZAR NAV AL LOGUEARSE
+            updateNavigationAndGallerySections();
             updateAdminControlsInOpenModals(); 
         } else {
             document.getElementById('adminLoginError').textContent = 'Contraseña incorrecta.';
@@ -250,12 +248,12 @@
         document.getElementById('adminControls').style.display = 'none';
         document.getElementById('adminAccessBtn').style.display = 'flex'; 
         showNotification("Sesión de administrador cerrada.", "info");
-        updateNavigationAndGallerySections(); // ACTUALIZAR NAV AL DESLOGUEARSE
+        updateNavigationAndGallerySections(); 
         updateAdminControlsInOpenModals(); 
     }
     
     function updateAdminControlsInOpenModals() {
-        const openProductModal = document.querySelector('.modal[id$="Modal"][style*="display: block"]:not(#cartModal):not(#adminLoginModal):not(#adminFormProductModal):not(#addCategoryModal):not(#adminWelcomeModal)');
+        const openProductModal = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
         if(openProductModal) {
             const categoryKey = openProductModal.id.replace('Modal','');
             const modalContentElement = openProductModal.querySelector('.modal-content');
@@ -277,13 +275,11 @@
         document.getElementById('newCategoryName').value = '';
         document.getElementById('newCategoryImage').value = '';
         document.getElementById('addCategoryError').style.display = 'none';
+        closeAllModalsExcept(['addCategoryModal']);
         document.getElementById('addCategoryModal').style.display = 'block';
+        document.getElementById('newCategoryName').focus();
     }
-
-    function closeAddCategoryModal() {
-        document.getElementById('addCategoryModal').style.display = 'none';
-    }
-
+    
     function handleAddCategory() {
         const categoryNameInput = document.getElementById('newCategoryName');
         const categoryImageInput = document.getElementById('newCategoryImage');
@@ -317,7 +313,7 @@
         saveGaleriasToStorage();
         updateNavigationAndGallerySections(); 
         showNotification(`Categoría "${categoryName}" agregada.`, "success");
-        closeAddCategoryModal();
+        closeModal('addCategoryModal');
     }
 
     function updateNavigationAndGallerySections() {
@@ -361,7 +357,6 @@
                 }
             }
         }
-        // Añadir botón "Agregar Nueva Categoría" a la navegación si admin está logueado
         if (isAdminLoggedIn) {
             const addCategoryLi = document.createElement('li');
             addCategoryLi.className = 'nav-admin-add-category';
@@ -377,7 +372,7 @@
     function createModalForCategory(categoryKey, displayName) {
         const modalDiv = document.createElement('div');
         modalDiv.id = `${categoryKey}Modal`;
-        modalDiv.className = 'modal';
+        modalDiv.className = 'modal product-carousel-modal'; 
         modalDiv.innerHTML = `
             <div class="modal-content">
               <span class="close" onclick="closeModal('${categoryKey}Modal')">&times;</span>
@@ -395,18 +390,18 @@
         if (!isAdminLoggedIn || !modalContentElement) return;
         const categoryData = galerias[categoryKey];
         if (!categoryData) return;
-
-        modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove()); // Limpiar antes de agregar
-
+        modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove());
         const categoryControlsDiv = document.createElement('div');
         categoryControlsDiv.className = 'admin-category-controls';
         const btnAdd = document.createElement('button');
         btnAdd.innerHTML = `<i class="fas fa-plus-circle"></i> Agregar a ${categoryData.displayName}`;
         btnAdd.className = 'admin-btn';
         btnAdd.style.backgroundColor = '#4CAF50';
-        btnAdd.onclick = () => openAdminFormProductModal('add', categoryKey);
+        btnAdd.onclick = () => {
+             closeModal(`${categoryKey}Modal`); 
+             openAdminFormProductModal('add', categoryKey);
+        };
         categoryControlsDiv.appendChild(btnAdd);
-        
         const addToCartBtn = modalContentElement.querySelector('.add-to-cart');
         if (addToCartBtn) {
             addToCartBtn.parentNode.insertBefore(categoryControlsDiv, addToCartBtn);
@@ -417,33 +412,26 @@
 
     function addAdminItemSpecificControls(categoryKey, productIndex, modalContentElement) {
         if (!isAdminLoggedIn || !galerias[categoryKey] || !galerias[categoryKey].products || !galerias[categoryKey].products[productIndex]) return;
-        
         modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
-
         const productControlsDiv = document.createElement('div');
         productControlsDiv.className = 'admin-product-controls';
-
         const btnEdit = document.createElement('button');
         btnEdit.innerHTML = '<i class="fas fa-edit"></i> Editar Producto';
         btnEdit.className = 'admin-btn';
         btnEdit.style.backgroundColor = '#FFC107'; btnEdit.style.color = '#333';
         btnEdit.onclick = () => {
-            // Cerrar el modal del carrusel antes de abrir el editor
             closeModal(`${categoryKey}Modal`);
             openAdminFormProductModal('edit', categoryKey, productIndex);
         };
         productControlsDiv.appendChild(btnEdit);
-
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Producto';
         btnDelete.className = 'admin-btn';
         btnDelete.style.backgroundColor = '#F44336';
         btnDelete.onclick = () => handleDeleteProductConfirmation(categoryKey, productIndex);
         productControlsDiv.appendChild(btnDelete);
-
         const infoOverlay = modalContentElement.querySelector('.info-overlay');
         const targetElementForProductControls = infoOverlay || modalContentElement.querySelector('.admin-category-controls') || modalContentElement.querySelector('.add-to-cart');
-
         if (targetElementForProductControls === infoOverlay && infoOverlay.nextSibling) {
             infoOverlay.parentNode.insertBefore(productControlsDiv, infoOverlay.nextSibling);
         } else if (targetElementForProductControls) {
@@ -471,9 +459,8 @@
             document.getElementById('adminProductPriceValue').value = product.price;
             document.getElementById('adminProductImageSrcPath').value = product.src;
         } else { console.error("Error al abrir formulario de producto: modo o datos inválidos."); return; }
+        closeAllModalsExcept(['adminFormProductModal']);
         formModal.style.display = 'block';
-        
-        // Enfocar el primer campo del formulario
         document.getElementById('adminProductDesc').focus();
     }
     
@@ -499,12 +486,10 @@
             showNotification("Por favor, completa todos los campos correctamente.", "error"); return;
         }
         const productData = { src, desc, price };
-
-        if (!galerias[categoryKey] || !galerias[categoryKey].products) { // Si la categoría o el array de productos no existe
-             galerias[categoryKey] = galerias[categoryKey] || { displayName: categoryKey, sectionImage: '', products: [] }; // Crear si es necesario
+        if (!galerias[categoryKey] || !galerias[categoryKey].products) {
+             galerias[categoryKey] = galerias[categoryKey] || { displayName: categoryKey, sectionImage: '', products: [] };
              galerias[categoryKey].products = galerias[categoryKey].products || [];
         }
-
         if (productIndex === -1) { 
             galerias[categoryKey].products.push(productData);
             showNotification("Producto agregado.", "success");
@@ -514,15 +499,9 @@
             showNotification("Producto actualizado.", "success");
         }
         saveGaleriasToStorage();
-        closeAdminFormProductModal();
-        updateSlide(categoryKey); 
-        updateAdminControlsInOpenModals(); 
+        closeModal('adminFormProductModal'); 
     };
-
-    function closeAdminFormProductModal() {
-        document.getElementById('adminFormProductModal').style.display = 'none';
-    }
-
+    
     function handleDeleteProductConfirmation(categoryKey, productIndex) {
         const product = galerias[categoryKey].products[productIndex];
         if (confirm(`¿Estás seguro de que quieres eliminar "${product.desc}"?`)) {
@@ -543,9 +522,9 @@
         const modalId = `${categoryKey}Modal`;
         let modalElement = document.getElementById(modalId);
 
-        if (!galerias[categoryKey]) { // Si la categoría no existe en los datos (ej. eliminada y luego click en link viejo)
+        if (!galerias[categoryKey]) {
             showNotification("Categoría no encontrada.", "error");
-            updateNavigationAndGallerySections(); // Refrescar por si acaso
+            updateNavigationAndGallerySections(); 
             return;
         }
 
@@ -558,10 +537,19 @@
         }
         if (!modalElement) { return;} 
 
-        // Agregar estado al historial para manejar el botón de retroceso
-        history.pushState({modalOpen: true}, '', `#${categoryKey}`);
+        closeAllModalsExcept([modalId]); 
         
         modalElement.style.display = 'block';
+        // Solo agregar la clase si es un modal de carrusel de producto
+        if (modalElement.classList.contains('product-carousel-modal')) {
+            document.body.classList.add('product-modal-open');
+        }
+        
+        const currentHash = `#${categoryKey}`;
+        if (window.location.hash !== currentHash) {
+            history.pushState({ openedModalId: modalId }, '', currentHash);
+        }
+        
         indices[categoryKey] = indices[categoryKey] || 0; 
         const currentCategoryProducts = galerias[categoryKey].products;
         if (currentCategoryProducts && currentCategoryProducts.length > 0 && indices[categoryKey] >= currentCategoryProducts.length) {
@@ -579,15 +567,33 @@
         }
     }
 
-    function closeModal(modalId) {
+    function closeModal(modalId, fromPopState = false) {
       const modalElement = document.getElementById(modalId);
-      if (modalElement) {
+      if (modalElement && modalElement.style.display === 'block') {
         modalElement.style.display = 'none';
-        // Restaurar el estado de la página cuando se cierra el modal
-        if (window.location.hash) {
-          history.pushState(null, null, window.location.pathname);
+        if (modalElement.classList.contains('product-carousel-modal')) {
+            document.body.classList.remove('product-modal-open');
+        }
+
+        if (!fromPopState) { 
+            const categoryKey = modalId.replace('Modal', '');
+            if (window.location.hash === `#${categoryKey}`) {
+                 history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
         }
       }
+    }
+
+    function closeAllModalsExcept(excludeIds = []) {
+        document.querySelectorAll('.modal').forEach(modal => {
+            if (!excludeIds.includes(modal.id) && modal.style.display === 'block') {
+                // Si el modal que se va a cerrar es un product-carousel-modal, quitar la clase del body
+                if (modal.classList.contains('product-carousel-modal')) {
+                    document.body.classList.remove('product-modal-open');
+                }
+                closeModal(modal.id, true); 
+            }
+        });
     }
 
     function changeSlide(categoryKey, paso) {
@@ -627,8 +633,8 @@
             nextButton.style.display = 'none';
             addToCartButton.style.display = 'none';
             if(isAdminLoggedIn){
-                modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove()); // Limpiar por si acaso
-                addAdminCategoryControlsToProductModal(categoryKey, modalContentElement); // Asegurar que el botón de "Agregar a X" siga ahí
+                modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove()); 
+                addAdminCategoryControlsToProductModal(categoryKey, modalContentElement); 
             }
             return;
         }
@@ -699,7 +705,11 @@
       }, 3000); 
     }
 
-    function openCartModal() { document.getElementById('cartModal').style.display = 'block'; renderCart(); }
+    function openCartModal() { 
+        closeAllModalsExcept(['cartModal']); 
+        document.getElementById('cartModal').style.display = 'block'; 
+        renderCart(); 
+    }
     function renderCart() {
         const cartItemsDiv = document.getElementById('cartItems');
         const cartTotalDiv = document.getElementById('cartTotal');
@@ -791,43 +801,85 @@
         badge.dataset.prevCount = totalItems;
     }
     
-    // Manejar el botón de retroceso en móviles
     window.addEventListener('popstate', function(event) {
-      const openModals = document.querySelectorAll('.modal[style*="display: block"]');
-      if (openModals.length > 0) {
-        event.preventDefault();
-        openModals.forEach(modal => {
-          closeModal(modal.id);
+        let modalWasOpen = false;
+        document.querySelectorAll('.modal.product-carousel-modal[style*="display: block"]').forEach(modal => {
+            closeModal(modal.id, true); 
+            modalWasOpen = true;
         });
-        // Restaurar el estado de la página
-        history.pushState(null, null, window.location.pathname);
-      }
+        
+        // Considerar otros tipos de modales si también usan historial
+        const cartModal = document.getElementById('cartModal');
+        if (cartModal && cartModal.style.display === 'block') {
+            closeModal('cartModal', true);
+            modalWasOpen = true;
+        }
+
+        const adminLoginModal = document.getElementById('adminLoginModal');
+        if (adminLoginModal && adminLoginModal.style.display === 'block') {
+             closeModal('adminLoginModal', true);
+             modalWasOpen = true;
+        }
+        const addCategoryModalElement = document.getElementById('addCategoryModal');
+         if (addCategoryModalElement && addCategoryModalElement.style.display === 'block') {
+             closeModal('addCategoryModal', true);
+             modalWasOpen = true;
+         }
+         const adminFormProductModalElement = document.getElementById('adminFormProductModal');
+         if (adminFormProductModalElement && adminFormProductModalElement.style.display === 'block') {
+             closeModal('adminFormProductModal', true);
+             modalWasOpen = true;
+         }
+
+        // Si cerramos algún modal debido al popstate y el hash ahora está vacío,
+        // es bueno asegurarse de que el estado de la URL refleje esto limpiamente.
+        if (modalWasOpen && !window.location.hash) {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
     });
 
     document.addEventListener('keydown', function(e) {
-      // Manejar tecla Enter en el formulario de producto
-      if (e.key === 'Enter' && document.getElementById('adminFormProductModal').style.display === 'block') {
-        e.preventDefault();
-        document.getElementById('adminProductFormInstance').dispatchEvent(new Event('submit'));
-      }
-      
-      // Manejar tecla Escape para cerrar modales
-      if (e.key === 'Escape') {
-        if (document.getElementById('addCategoryModal').style.display === 'block') closeAddCategoryModal();
-        else if (document.getElementById('adminFormProductModal').style.display === 'block') closeAdminFormProductModal();
-        else if (document.getElementById('adminLoginModal').style.display === 'block') closeAdminLoginModal();
-        else { 
-            document.querySelectorAll('.modal:not(#adminWelcomeModal)').forEach(modal => {
-                if (modal.style.display === 'block') closeModal(modal.id);
-            });
+      let modalHandledByEscape = false;
+      if (e.key === 'Enter') {
+        if (document.getElementById('adminFormProductModal').style.display === 'block') {
+            e.preventDefault();
+            document.getElementById('adminProductFormInstance').dispatchEvent(new Event('submit'));
+        } else if (document.getElementById('addCategoryModal').style.display === 'block') {
+            e.preventDefault();
+            handleAddCategory();
+        } else if (document.getElementById('adminLoginModal').style.display === 'block') {
+            e.preventDefault();
+            handleAdminLoginAttempt();
         }
       }
       
-      // Manejar flechas izquierda/derecha en el carrusel
-      const activeProductModalContainer = document.querySelector('.modal[id$="Modal"][style*="display: block"]:not(#cartModal):not(.admin-login):not(.admin-form-modal):not(#addCategoryModal)');
+      if (e.key === 'Escape') {
+        const modalsToCheck = [
+            'addCategoryModal', 'adminFormProductModal', 'adminLoginModal', 'cartModal'
+        ];
+        // Primero, intentar cerrar modales de admin o carrito
+        for (const modalId of modalsToCheck) {
+            const modalElement = document.getElementById(modalId);
+            if (modalElement && modalElement.style.display === 'block') {
+                closeModal(modalId);
+                modalHandledByEscape = true;
+                break; 
+            }
+        }
+        // Si no se cerró un modal de admin/carrito, cerrar modales de producto
+        if (!modalHandledByEscape) {
+            document.querySelectorAll('.modal.product-carousel-modal[style*="display: block"]').forEach(modal => {
+                closeModal(modal.id);
+                modalHandledByEscape = true;
+            });
+        }
+        if(modalHandledByEscape) e.preventDefault();
+      }
+      
+      const activeProductModalContainer = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
       if(activeProductModalContainer){
           const categoryKey = activeProductModalContainer.id.replace('Modal','');
-           if (galerias[categoryKey] && galerias[categoryKey].products && galerias[categoryKey].products.length > 0) { // Solo si hay productos para navegar
+           if (galerias[categoryKey] && galerias[categoryKey].products && galerias[categoryKey].products.length > 0) { 
                 if (e.key === 'ArrowLeft') changeSlide(categoryKey, -1);
                 if (e.key === 'ArrowRight') changeSlide(categoryKey, 1);
            }

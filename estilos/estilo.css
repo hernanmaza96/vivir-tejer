@@ -27,7 +27,7 @@ body {
 /* Navegación */
 .nav { background-color: #fff0f6; padding: 1rem; text-align: center; }
 .nav ul { list-style: none; padding-left: 0; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
-.nav li { display: inline-block; margin: 0.5rem 1rem; /* Margen para wrap */ }
+.nav li { display: inline-block; margin: 0.5rem 1rem; }
 .nav a { text-decoration: none; color: #d94f70; font-weight: bold; transition: color 0.3s; padding: 5px 0;}
 .nav a:hover { color: #b03a5b; }
 
@@ -76,7 +76,6 @@ body {
 .volver-inicio a { color: #d94f70; text-decoration: none; font-weight: 600; transition: color 0.3s; }
 .volver-inicio a:hover { color: #b03a5b; text-decoration: underline; }
 
-/* Estilo para el mensaje de bienvenida (si aún se usa, no es el de admin) */
 .welcome-modal {
     position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
@@ -92,7 +91,6 @@ body {
     to { opacity: 1; transform: translate(-50%, -50%); }
 }
 
-/* Estilos del Carrito (icono y badge) */
 .cart-icon {
   position: fixed; top: 20px; right: 20px; font-size: 24px;
   color: #d94f70; cursor: pointer; z-index: 1001; background: white;
@@ -113,7 +111,6 @@ body {
   100% { transform: scale(1); }
 }
 
-/* Estilos para la notificación */
 .notification {
     position: fixed; bottom: 20px; right: 20px;
     background-color: #fff0f6; 
@@ -150,100 +147,45 @@ body {
     to { opacity: 0; transform: translateX(5%); }
 }
 
-/* Estilos para el botón "Agregar Nueva Categoría" en la Navegación */
 .nav ul .nav-admin-add-category {
-    margin-left: 1.5rem; /* Espacio para separarlo de las categorías */
-    border-left: 2px solid #ffc5d9; /* Separador visual sutil */
+    margin-left: 1.5rem; 
+    border-left: 2px solid #ffc5d9; 
     padding-left: 1.5rem;
 }
-
-button.admin-nav-button { /* Es un button, no un <a> */
+button.admin-nav-button { 
     background-color: #d94f70; 
-    color: white;
-    border: none;
-    padding: 8px 18px; /* Consistente con .admin-btn */
-    border-radius: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    font-size: 0.9em; 
-    font-weight: bold;
-    cursor: pointer;
+    color: white; border: none; padding: 8px 18px; 
+    border-radius: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-size: 0.9em; font-weight: bold; cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-transform: uppercase; /* Para diferenciarlo */
-    letter-spacing: 0.5px;
+    display: inline-flex; align-items: center; gap: 8px;
+    text-transform: uppercase; letter-spacing: 0.5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
 button.admin-nav-button:hover {
     background-color: #b03a5b; 
     transform: translateY(-1px);
     box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
-
-button.admin-nav-button i {
-    font-size: 1.1em; 
-}
+button.admin-nav-button i { font-size: 1.1em; }
 
 /* Media queries para móviles */
 @media screen and (max-width: 768px) {
-  /* Ocultar carrito cuando el carrusel está abierto */
-  .modal:not(#cartModal)[style*="display: block"] ~ .cart-icon {
+  body.product-modal-open .cart-icon {
     display: none !important;
   }
   
-  /* Ajustar galería para móviles */
-  .galeria {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-    gap: 1rem;
-  }
-  
-  .galeria section {
-    padding: 1rem;
-  }
-  
-  /* Ajustar header para móviles */
-  .header {
-    padding: 1.5rem 1rem;
-  }
-  
-  .header .brand {
-    font-size: 1.5rem;
-  }
-  
-  /* Ajustar navegación para móviles */
-  .nav ul {
-    flex-direction: column;
-  }
-  
-  .nav li {
-    margin: 0.3rem 0;
-  }
-  
+  .galeria { grid-template-columns: 1fr; padding: 1rem; gap: 1rem; }
+  .galeria section { padding: 1rem; }
+  .header { padding: 1.5rem 1rem; }
+  .header .brand { font-size: 1.5rem; }
+  .nav ul { flex-direction: column; }
+  .nav li { margin: 0.3rem 0; }
   .nav ul .nav-admin-add-category {
-    margin-left: 0;
-    border-left: none;
-    padding-left: 0;
-    margin-top: 1rem;
+    margin-left: 0; border-left: none;
+    padding-left: 0; margin-top: 1rem;
   }
-  
-  /* Ajustar footer para móviles */
-  .footer {
-    padding: 1.5rem 1rem;
-  }
-  
-  .redes-sociales img {
-    width: 40px;
-    height: 40px;
-  }
-  
-  /* Ajustar notificaciones para móviles */
-  .notification {
-    min-width: 90%;
-    max-width: 90%;
-    right: 5%;
-    bottom: 10px;
-  }
+  .footer { padding: 1.5rem 1rem; }
+  .redes-sociales img { width: 40px; height: 40px; }
+  .notification { min-width: 90%; max-width: 90%; right: 5%; bottom: 10px; }
 }

@@ -52,7 +52,6 @@
 .prev { left: 15px; }
 .next { right: 15px; }
 
-/* Botón "Agregar al Carrito" */
 .add-to-cart {
     margin-top: 15px; padding: 12px 25px;
     background-image: linear-gradient(to right, #d94f70 0%, #ff85a1 100%);
@@ -69,7 +68,6 @@
 }
 .add-to-cart:active { transform: translateY(0); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
 
-/* Modal del Carrito */
 .cart-modal { max-width: 650px; padding: 2rem; background-color: #fff9fb; border: 1px solid #ffe0ec; }
 .cart-modal h2 { color: #d94f70; font-family: 'Lora', serif; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px;}
 .cart-item { display: flex; align-items: center; border-bottom: 1px solid #ffe0ec; padding: 1rem 0; gap: 15px; }
@@ -82,12 +80,12 @@
 .remove-item-btn { background: none; border: none; color: #f44336; font-size: 1.2em; cursor: pointer; margin-left: auto; padding: 5px; transition: color 0.2s;}
 .remove-item-btn:hover { color: #d32f2f; }
 #cartTotal { margin-top: 1.5rem; font-size: 1.3rem; font-weight: bold; color: #d94f70; text-align: right; }
-.cart-actions { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 10px; } /* Gap entre botones */
+.cart-actions { display: flex; justify-content: space-between; margin-top: 1.5rem; gap: 10px; } 
 .clear-cart-btn, .checkout-btn { 
     padding: 10px 20px; border: none; border-radius: 20px; 
     color: white; cursor: pointer; font-weight: bold;
     transition: background-color 0.3s, transform 0.2s;
-    flex-grow: 1; /* Para que ocupen el espacio disponible si son pocos */
+    flex-grow: 1; 
 }
 .clear-cart-btn { background-color: #ff85a1; }
 .clear-cart-btn:hover { background-color: #f76f8e; transform: translateY(-1px); }
@@ -106,7 +104,7 @@
 .admin-access-btn:hover { transform: scale(1.1) rotate(15deg); box-shadow: 0 6px 18px rgba(0,0,0,0.3); }
 
 .admin-controls { 
-    display: none; grid-template-columns: auto auto; /* Ajustado, ya no tiene 3er botón */
+    display: none; grid-template-columns: auto auto; 
     gap: 10px; align-items: center;
     background: rgba(255, 240, 246, 0.98); backdrop-filter: blur(8px);
     padding: 10px 15px; border-radius: 30px;
@@ -134,8 +132,6 @@
 
 .admin-logout-btn { background-color: #ff6b81 !important; }
 .admin-logout-btn:hover { background-color: #f53f5b !important; }
-/* El .admin-add-category-btn ahora está en la nav, su estilo principal está en estilo.css */
-
 
 .modal.admin-login .modal-content {
     max-width: 380px; background-color: #fff0f6; border: 2px solid #ff85a1;
@@ -147,9 +143,9 @@
     border: 1px solid #ffc5d9; border-radius: 20px;
     text-align: center; font-size: 1em;
 }
-.admin-login .modal-content .admin-btn { /* Botón de ingresar */
+.admin-login .modal-content .admin-btn { 
     width: 100%; padding: 12px; font-size: 1.1em;
-    background-color: #d94f70; /* Asegurar color primario */
+    background-color: #d94f70; 
 }
 .admin-login .modal-content .admin-btn:hover {
     background-color: #b03a5b;
@@ -159,7 +155,7 @@
 .admin-welcome {
     position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0.9);
-    background: linear-gradient(135deg, #d94f70 0%, #ff85a1 100%); /* Tema rosa */
+    background: linear-gradient(135deg, #d94f70 0%, #ff85a1 100%); 
     padding: 25px 40px; border-radius: 15px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     text-align: center; font-family: 'Lora', serif;
@@ -186,10 +182,112 @@
     padding: 8px 18px; 
     font-size: 0.8em;
 }
-/* Colores específicos para botones de acción en carrusel */
-.admin-category-controls .admin-btn[style*="#4CAF50"] { background-color: #4CAF50 !important; } /* Agregar a categoría */
+.admin-category-controls .admin-btn[style*="#4CAF50"] { background-color: #4CAF50 !important; } 
 .admin-category-controls .admin-btn[style*="#4CAF50"]:hover { background-color: #45a049 !important; }
-.admin-product-controls .admin-btn[style*="#FFC107"] { background-color: #FFC107 !important; color: #333 !important; } /* Editar */
+.admin-product-controls .admin-btn[style*="#FFC107"] { background-color: #FFC107 !important; color: #333 !important; } 
 .admin-product-controls .admin-btn[style*="#FFC107"]:hover { background-color: #f0b400 !important; }
-.admin-product-controls .admin-btn[style*="#F44336"] { background-color: #F44336 !important; } /* Eliminar */
+.admin-product-controls .admin-btn[style*="#F44336"] { background-color: #F44336 !important; } 
 .admin-product-controls .admin-btn[style*="#F44336"]:hover { background-color: #e53935 !important; }
+
+.modal.admin-form-modal .modal-content { 
+    max-width: 520px; background-color: #fff; border: none; 
+    padding: 2rem; border-radius: 15px;
+}
+.admin-form-modal .modal-content h2 { 
+    color: #d94f70; margin-bottom: 1.5rem; text-align: center; 
+    font-family: 'Lora', serif; display: flex; align-items: center; 
+    justify-content: center; gap: 10px;
+}
+.admin-form-modal .form-group { margin-bottom: 1.3rem; text-align: left; }
+.admin-form-modal .form-group label { 
+    display: block; margin-bottom: .5rem; color: #c84262; 
+    font-weight: 600; font-size: 0.9em; 
+}
+.admin-form-modal .form-group input[type="text"],
+.admin-form-modal .form-group input[type="number"] { 
+    width: 100%; padding: 12px 15px; 
+    border: 1px solid #f7d4e0; 
+    border-radius: 8px; font-size: 1em; box-sizing: border-box; 
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.admin-form-modal .form-group input:focus { 
+    border-color: #d94f70; box-shadow: 0 0 0 3px rgba(217, 79, 112, 0.15); 
+    outline: none;
+}
+.admin-form-modal .form-group small { font-size: 0.8em; color: #888; display: block; margin-top: 4px; }
+
+.admin-form-modal .file-input label[for="adminProductImageFileSelector"] {
+    display: inline-block; padding: 10px 15px; background-color: #ff85a1;
+    color: white; border-radius: 8px; cursor: pointer; font-size: 0.9em;
+    transition: background-color 0.3s;
+}
+.admin-form-modal .file-input label[for="adminProductImageFileSelector"]:hover { background-color: #d94f70; }
+.admin-form-modal .file-input input[type="file"] {
+    opacity: 0; position: absolute; width: 0.1px; height: 0.1px;
+    overflow: hidden; z-index: -1;
+}
+.admin-form-modal .selected-file { font-size: 0.85em; color: #555; margin-left: 10px; font-style: italic; }
+
+.admin-form-modal .form-actions { 
+    display: flex; gap: 12px; margin-top: 2rem; 
+    justify-content: flex-end; 
+}
+.admin-form-modal .form-actions .admin-btn { 
+    padding: 10px 22px; 
+    font-size: 0.95em;
+}
+.admin-form-modal .save-btn { background-color: #4CAF50; } 
+.admin-form-modal .save-btn:hover { background-color: #45a049; }
+.admin-form-modal .cancel-btn { background-color: #aaa; }
+.admin-form-modal .cancel-btn:hover { background-color: #888; }
+
+/* Media Queries para Modales en Móviles */
+@media screen and (max-width: 768px) {
+  .modal-content {
+    margin: 10% auto; 
+    padding: 1rem;
+    width: 95%; 
+  }
+
+  .modal img {
+    max-height: 300px; 
+  }
+
+  .close, .prev, .next {
+    font-size: 1.8rem; 
+    width: 35px; height: 35px;
+  }
+  .close { top: 10px; right: 10px; }
+  .prev, .next { top: calc(50% - 17px); }
+  .prev { left: 10px; }
+  .next { right: 10px; }
+  
+  .cart-modal {
+    max-width: 95%;
+    padding: 1.5rem 1rem;
+  }
+  .cart-item {
+    flex-direction: column; 
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .cart-item img {
+    width: 60px; height: 60px;
+    align-self: center; 
+  }
+  .cart-item-info { width: 100%; } 
+  .remove-item-btn { align-self: flex-end; } 
+  .cart-actions { flex-direction: column; gap: 10px; }
+
+  .admin-login .modal-content,
+  .modal.admin-form-modal .modal-content {
+    max-width: 95%;
+    padding: 1.5rem 1rem;
+  }
+  .admin-form-modal .form-actions {
+    flex-direction: column; 
+  }
+  .admin-form-modal .form-actions .admin-btn {
+    width: 100%; 
+  }
+}
