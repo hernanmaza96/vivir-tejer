@@ -150,6 +150,20 @@
       </form>
     </div>
   </div>
+  <!-- Modal personalizado de advertencia para eliminar categoría -->
+<div id="deleteCategoryWarningModal" class="modal" style="display:none;">
+  <div class="modal-content warning-modal-content">
+    <p class="warning-text">
+      ⚠️ <strong>ATENCIÓN</strong> ⚠️<br><br>
+      ¿Estás seguro de que quieres eliminar la categoría y <b>TODOS</b> sus productos?<br>
+      <span style="color:#d94f4f;">Esta acción NO se puede deshacer.</span>
+    </p>
+    <div class="warning-actions">
+      <button id="confirmDeleteCategoryBtn" class="admin-btn" style="background:#d94f4f;color:#fff;">Eliminar</button>
+      <button id="cancelDeleteCategoryBtn" class="admin-btn cancel-btn">Cancelar</button>
+    </div>
+  </div>
+</div>
   <script>
     const DEFAULT_GALERIAS = {
       amigurumis: {
@@ -444,15 +458,11 @@
         btnDeleteCategory.style.backgroundColor = '#d94f4f';
         btnDeleteCategory.style.color = '#fff';
         btnDeleteCategory.onclick = () => {
-            const warningMsg = `⚠️ ATENCIÓN ⚠️\n\n¿Estás seguro de que quieres eliminar la categoría "${categoryData.displayName}" y TODOS sus productos?\n\nEsta acción NO se puede deshacer.`;
-            if (confirm(warningMsg)) {
-                delete galerias[categoryKey];
-                delete indices[categoryKey];
-                saveGaleriasToStorage();
-                updateNavigationAndGallerySections();
-                closeAllModalsExcept();
-                showNotification(`Categoría "${categoryData.displayName}" eliminada.`, "success");
-            }
+            window._categoryToDelete = categoryKey;
+            window._lastOpenedCategoryKey = categoryKey; // Guarda la categoría activa
+            document.getElementById('deleteCategoryWarningModal').style.display = 'flex';
+            // Oculta el carrusel mientras está la advertencia
+            document.getElementById(`${categoryKey}Modal`).style.display = 'none';
         };
         categoryControlsDiv.appendChild(btnDeleteCategory);
 
@@ -558,18 +568,82 @@
     
     function handleDeleteProductConfirmation(categoryKey, productIndex) {
         const product = galerias[categoryKey].products[productIndex];
-        if (confirm(`¿Estás seguro de que quieres eliminar "${product.desc}"?`)) {
+
+        // Si ya existe un modal de advertencia de producto, elimínalo primero
+        const existingModal = document.getElementById('deleteProductWarningModal');
+        if (existingModal) existingModal.remove();
+
+        // Crea el modal personalizado
+        const modal = document.createElement('div');
+        modal.id = 'deleteProductWarningModal';
+        modal.className = 'modal';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+          <div class="modal-content warning-modal-content">
+            <p class="warning-text">
+              ⚠️ <strong>ATENCIÓN</strong> ⚠️<br><br>
+              ¿Estás seguro de que quieres eliminar "<b>${product.desc}</b>"?<br>
+              <span style="color:#d94f4f;">Esta acción NO se puede deshacer.</span>
+            </p>
+            <div class="warning-actions">
+              <button id="confirmDeleteProductBtn" class="admin-btn" style="background:#d94f4f;color:#fff;">Eliminar</button>
+              <button id="cancelDeleteProductBtn" class="admin-btn cancel-btn" style="background:#888;color:#fff;">Cancelar</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        // Guardar la categoría activa para reabrir el carrusel
+        window._lastOpenedCategoryKey = categoryKey;
+
+        // Confirmar eliminación
+        modal.querySelector('#confirmDeleteProductBtn').onclick = function() {
             galerias[categoryKey].products.splice(productIndex, 1);
             saveGaleriasToStorage();
-            showNotification(`"${product.desc}" ha sido eliminado.`, "info");
+            showNotification(`"${product.desc}" ha sido eliminado.`, "success");
             if (indices[categoryKey] >= galerias[categoryKey].products.length && galerias[categoryKey].products.length > 0) {
                 indices[categoryKey] = galerias[categoryKey].products.length - 1;
             } else if (galerias[categoryKey].products.length === 0) {
-                 indices[categoryKey] = 0; 
+                indices[categoryKey] = 0;
             }
             updateSlide(categoryKey);
             updateAdminControlsInOpenModals();
+            modal.remove();
+        };
+
+        // Cancelar
+        modal.querySelector('#cancelDeleteProductBtn').onclick = function() {
+            modal.remove();
+            // Reabrir carrusel
+            if (window._lastOpenedCategoryKey) {
+                document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
+            }
+        };
+
+        // Cerrar con ESC
+        function escListener(e) {
+            if (modal.parentNode && (e.key === 'Escape' || e.key === 'Esc')) {
+                modal.remove();
+                if (window._lastOpenedCategoryKey) {
+                    document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
+                }
+                document.removeEventListener('keydown', escListener);
+                e.preventDefault();
+            }
         }
+        document.addEventListener('keydown', escListener);
+
+        // Cerrar con botón de retroceso
+        function popListener() {
+            if (modal.parentNode) {
+                modal.remove();
+                if (window._lastOpenedCategoryKey) {
+                    document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
+                }
+                window.removeEventListener('popstate', popListener);
+            }
+        }
+        window.addEventListener('popstate', popListener);
     }
 
     function openModal(categoryKey) {
@@ -906,21 +980,19 @@
       }
       
       if (e.key === 'Escape') {
-        const modalsToCheckOrder = [ // Prioridad para cerrar
-            'addCategoryModal', 'adminFormProductModal', 'adminLoginModal', 'cartModal'
-        ];
+        const modalesExcepcion = ['adminLoginModal', 'cartModal'];
+        let esModalExcepcionAbierto = false;
         
-        // Primero, modales específicos (admin, carrito)
-        for (const modalId of modalsToCheckOrder) {
+        for (const modalId of modalesExcepcion) {
             const modalElement = document.getElementById(modalId);
             if (modalElement && modalElement.style.display === 'block') {
                 closeModal(modalId);
-                modalHandledByEscape = true;
-                break; 
+                esModalExcepcionAbierto = true;
+                break;
             }
         }
-        // Luego, modales de carrusel de producto
-        if (!modalHandledByEscape) {
+        
+        if (!esModalExcepcionAbierto) {
             const openProductCarousel = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
             if (openProductCarousel) {
                 closeModal(openProductCarousel.id);
@@ -973,6 +1045,107 @@ document.getElementById('newCategoryImageFile').onchange = function(event) {
         preview.style.display = 'none';
     }
 };
+
+document.getElementById('cancelDeleteCategoryBtn').onclick = function() {
+    document.getElementById('deleteCategoryWarningModal').style.display = 'none';
+    window._categoryToDelete = null;
+    // Reabre el carrusel en el mismo lugar
+    if (window._lastOpenedCategoryKey) {
+        document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
+    }
+};
+document.getElementById('confirmDeleteCategoryBtn').onclick = function() {
+    const categoryKey = window._categoryToDelete;
+    if (categoryKey && galerias[categoryKey]) {
+        delete galerias[categoryKey];
+        delete indices[categoryKey];
+        saveGaleriasToStorage();
+        updateNavigationAndGallerySections();
+        closeAllModalsExcept();
+        showNotification("Categoría eliminada.", "success");
+    }
+    document.getElementById('deleteCategoryWarningModal').style.display = 'none';
+    window._categoryToDelete = null;
+};
+
+// Cerrar advertencia con ESC
+document.addEventListener('keydown', function escListener(e) {
+    const warningModal = document.getElementById('deleteCategoryWarningModal');
+    if (warningModal && warningModal.style.display === 'flex' && (e.key === 'Escape' || e.key === 'Esc')) {
+        warningModal.style.display = 'none';
+        window._categoryToDelete = null;
+        if (window._lastOpenedCategoryKey) {
+            document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
+        }
+        e.preventDefault();
+    }
+});
+
+// Cerrar advertencia con botón de retroceso del navegador/móvil
+window.addEventListener('popstate', function() {
+    const warningModal = document.getElementById('deleteCategoryWarningModal');
+    if (warningModal && warningModal.style.display === 'flex') {
+        warningModal.style.display = 'none';
+        window._categoryToDelete = null;
+        if (window._lastOpenedCategoryKey) {
+            document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
+        }
+    }
+});
+
+(function enableEscAndBackForEditProductModal() {
+    const formModal = document.getElementById('adminFormProductModal');
+    let escListener, popListener;
+
+    function reopenCarouselIfNeeded() {
+        if (window._lastOpenedCategoryKey) {
+            const modal = document.getElementById(`${window._lastOpenedCategoryKey}Modal`);
+            if (modal) modal.style.display = 'block';
+        }
+    }
+
+    function removeListeners() {
+        document.removeEventListener('keydown', escListener, true);
+        window.removeEventListener('popstate', popListener, true);
+    }
+
+    function addListeners() {
+        const categoryKey = document.getElementById('adminEditModeCategoryKey').value;
+        window._lastOpenedCategoryKey = categoryKey;
+
+        // ESC
+        escListener = function(e) {
+            if (formModal.style.display === 'block' && (e.key === 'Escape' || e.key === 'Esc')) {
+                closeModal('adminFormProductModal');
+                setTimeout(reopenCarouselIfNeeded, 10);
+                removeListeners();
+                e.preventDefault();
+                e.stopImmediatePropagation(); // <- Esto evita que el handler global cierre el carrusel
+            }
+        };
+        document.addEventListener('keydown', escListener, true);
+
+        // Botón volver
+        popListener = function(ev) {
+            if (formModal.style.display === 'block') {
+                closeModal('adminFormProductModal');
+                setTimeout(reopenCarouselIfNeeded, 10);
+                removeListeners();
+                if (ev) ev.stopImmediatePropagation();
+            }
+        };
+        window.addEventListener('popstate', popListener, true);
+    }
+
+    // Hook para cuando se abre el modal de edición/agregado de producto
+    const originalOpenAdminFormProductModal = window.openAdminFormProductModal;
+    window.openAdminFormProductModal = function(mode, categoryKey, productIndex = -1) {
+        if (typeof originalOpenAdminFormProductModal === 'function') {
+            originalOpenAdminFormProductModal(mode, categoryKey, productIndex);
+            addListeners();
+        }
+    };
+})();
   </script>
 </body>
 </html>

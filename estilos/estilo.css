@@ -172,6 +172,52 @@ button.admin-nav-button:hover {
 }
 button.admin-nav-button i { font-size: 1.1em; }
 
+/* Botones de advertencia iguales */
+.warning-actions .admin-btn {
+  min-width: 90px;
+  font-size: 1em;
+  border-radius: 6px;
+  background: #d94f4f !important;
+  color: #fff !important;
+  border: none;
+  margin: 0 4px;
+  transition: background 0.2s;
+}
+.warning-actions .admin-btn.cancel-btn {
+  background: #888 !important;
+  color: #fff !important;
+}
+.warning-actions .admin-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* Modal de advertencia personalizado */
+#deleteProductWarningModal,
+#deleteCategoryWarningModal {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.45);
+  justify-content: center;
+  align-items: center;
+}
+.warning-modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 28px 24px 28px;
+  max-width: 350px;
+  margin: auto;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
+.warning-text {
+  font-size: 1.15em;
+  color: #d94f4f;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
 /* Media queries para móviles */
 @media screen and (max-width: 768px) {
   body.product-modal-open .cart-icon {
