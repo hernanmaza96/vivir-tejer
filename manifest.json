@@ -1,19 +1,19 @@
 {
   "name": "Vivir Tejer",
   "short_name": "VivirTejer",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffccd5",
   "theme_color": "#d81b60",
   "icons": [
     {
-      "src": "logo_vivirtejer.jpg", 
-      "sizes": "192x192", 
-      "type": "image/jpeg" 
+      "src": "logo_vivirtejer.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
     },
     {
       "src": "logo_vivirtejer.jpg",
-      "sizes": "512x512", 
+      "sizes": "512x512",
       "type": "image/jpeg"
     }
   ]
