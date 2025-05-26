@@ -444,13 +444,14 @@
         btnDeleteCategory.style.backgroundColor = '#d94f4f';
         btnDeleteCategory.style.color = '#fff';
         btnDeleteCategory.onclick = () => {
-            if (confirm(`¿Estás seguro de que quieres eliminar la categoría "${categoryData.displayName}" y todos sus productos? Esta acción no se puede deshacer.`)) {
+            const warningMsg = `⚠️ ATENCIÓN ⚠️\n\n¿Estás seguro de que quieres eliminar la categoría "${categoryData.displayName}" y TODOS sus productos?\n\nEsta acción NO se puede deshacer.`;
+            if (confirm(warningMsg)) {
                 delete galerias[categoryKey];
                 delete indices[categoryKey];
                 saveGaleriasToStorage();
                 updateNavigationAndGallerySections();
                 closeAllModalsExcept();
-                showNotification(`Categoría "${categoryData.displayName}" eliminada.`, "info");
+                showNotification(`Categoría "${categoryData.displayName}" eliminada.`, "success");
             }
         };
         categoryControlsDiv.appendChild(btnDeleteCategory);
@@ -748,19 +749,19 @@
     }
 
     function showNotification(message, type = 'info') {
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`; 
-      let iconClass = 'info-circle'; 
-      if (type === 'success') { iconClass = 'check-circle'; } 
-      else if (type === 'error') { iconClass = 'exclamation-circle'; }
-      notification.innerHTML = `<i class="fas fa-${iconClass} notification-icon"></i><span class="notification-message">${message}</span>`;
-      document.body.appendChild(notification);
-      setTimeout(() => notification.classList.add('show'), 10); 
-      setTimeout(() => {
-        notification.classList.remove('show'); 
-        setTimeout(() => notification.remove(), 400); 
-      }, 3000); 
-    }
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`; 
+  let iconClass = 'info-circle'; 
+  if (type === 'success') { iconClass = 'check-circle'; } 
+  else if (type === 'error') { iconClass = 'exclamation-circle'; }
+  notification.innerHTML = `<i class="fas fa-${iconClass} notification-icon"></i><span class="notification-message">${message}</span>`;
+  document.body.appendChild(notification);
+  setTimeout(() => notification.classList.add('show'), 10); 
+  setTimeout(() => {
+    notification.classList.remove('show'); 
+    setTimeout(() => notification.remove(), 400); 
+  }, 3000); 
+}
 
     function openCartModal() { 
         closeAllModalsExcept(['cartModal']); 
