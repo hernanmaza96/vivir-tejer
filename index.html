@@ -417,6 +417,8 @@
         modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
         const productControlsDiv = document.createElement('div');
         productControlsDiv.className = 'admin-product-controls';
+
+        // Botón Editar
         const btnEdit = document.createElement('button');
         btnEdit.innerHTML = '<i class="fas fa-edit"></i> Editar Producto';
         btnEdit.className = 'admin-btn';
@@ -426,18 +428,37 @@
             openAdminFormProductModal('edit', categoryKey, productIndex);
         };
         productControlsDiv.appendChild(btnEdit);
+
+        // Botón Eliminar
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Producto';
         btnDelete.className = 'admin-btn';
         btnDelete.style.backgroundColor = '#F44336';
         btnDelete.onclick = () => handleDeleteProductConfirmation(categoryKey, productIndex);
         productControlsDiv.appendChild(btnDelete);
+
+        // NUEVO: Botón Elegir como portada
+        const btnSetCover = document.createElement('button');
+        btnSetCover.innerHTML = '<i class="fas fa-image"></i> Elegir como portada';
+        btnSetCover.className = 'admin-btn';
+        btnSetCover.style.backgroundColor = '#2196F3';
+        btnSetCover.style.color = '#fff';
+        btnSetCover.onclick = () => {
+            galerias[categoryKey].sectionImage = galerias[categoryKey].products[productIndex].src;
+            saveGaleriasToStorage();
+            updateNavigationAndGallerySections();
+            showNotification('¡Imagen de portada actualizada!', 'success');
+            // Opcional: cerrar el modal o dejarlo abierto
+        };
+        productControlsDiv.appendChild(btnSetCover);
+
+        // Insertar controles
         const infoOverlay = modalContentElement.querySelector('.info-overlay');
         const targetElementForProductControls = infoOverlay || modalContentElement.querySelector('.admin-category-controls') || modalContentElement.querySelector('.add-to-cart');
         if (targetElementForProductControls === infoOverlay && infoOverlay.nextSibling) {
             infoOverlay.parentNode.insertBefore(productControlsDiv, infoOverlay.nextSibling);
         } else if (targetElementForProductControls) {
-             targetElementForProductControls.parentNode.insertBefore(productControlsDiv, targetElementForProductControls);
+            targetElementForProductControls.parentNode.insertBefore(productControlsDiv, targetElementForProductControls);
         } else {
             modalContentElement.appendChild(productControlsDiv);
         }
