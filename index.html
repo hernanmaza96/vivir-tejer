@@ -479,6 +479,8 @@
         modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
         const productControlsDiv = document.createElement('div');
         productControlsDiv.className = 'admin-product-controls';
+
+        // Botón Editar
         const btnEdit = document.createElement('button');
         btnEdit.innerHTML = '<i class="fas fa-edit"></i> Editar Producto';
         btnEdit.className = 'admin-btn';
@@ -488,12 +490,41 @@
             openAdminFormProductModal('edit', categoryKey, productIndex);
         };
         productControlsDiv.appendChild(btnEdit);
+
+        // Botón Eliminar
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Producto';
         btnDelete.className = 'admin-btn';
         btnDelete.style.backgroundColor = '#F44336';
         btnDelete.onclick = () => handleDeleteProductConfirmation(categoryKey, productIndex);
         productControlsDiv.appendChild(btnDelete);
+
+        // Botón Usar como portada
+        const btnPortada = document.createElement('button');
+        btnPortada.innerHTML = '<i class="fas fa-star"></i> Usar como portada';
+        btnPortada.className = 'admin-btn';
+        btnPortada.style.backgroundColor = '#4CAF50';
+        btnPortada.style.color = '#fff';
+        btnPortada.onclick = () => {
+            const productos = galerias[categoryKey].products;
+            if (productIndex > 0 && productos[productIndex]) {
+                // Mueve el producto a la primera posición
+                const [productoPortada] = productos.splice(productIndex, 1);
+                productos.unshift(productoPortada);
+                // Actualiza la imagen de portada de la categoría
+                galerias[categoryKey].sectionImage = productoPortada.src;
+                indices[categoryKey] = 0;
+                saveGaleriasToStorage();
+                updateNavigationAndGallerySections();
+                showNotification("¡Portada actualizada!", "success");
+                // Reabrir el carrusel en la nueva portada
+                closeAllModalsExcept();
+                openModal(categoryKey);
+            }
+        };
+        productControlsDiv.appendChild(btnPortada);
+
+        // Insertar controles
         const infoOverlay = modalContentElement.querySelector('.info-overlay');
         const targetElementForProductControls = infoOverlay || modalContentElement.querySelector('.admin-category-controls') || modalContentElement.querySelector('.add-to-cart');
         if (targetElementForProductControls === infoOverlay && infoOverlay.nextSibling) {
