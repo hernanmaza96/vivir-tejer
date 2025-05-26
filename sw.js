@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vivir-tejer-v15'; // Nueva versión
+const CACHE_NAME = 'vivir-tejer-v14'; // Nueva versión
 const urlsToCache = [
   '/',
   '/index.html',
@@ -8,10 +8,8 @@ const urlsToCache = [
   '/logo_vivirtejer.jpg', // Favicon que acabamos de agregar
   // Imágenes de productos
   'imagenes/amigurumis1.jpeg', 'imagenes/amigurumis2.jpeg', 'imagenes/amigurumis3.jpeg', 'imagenes/amigurumis4.jpeg', 'imagenes/amigurumis5.jpeg', 'imagenes/amigurumis6.jpeg', 'imagenes/amigurumis7.jpeg', 'imagenes/amigurumis8.jpeg', 'imagenes/amigurumis9.jpeg',
-  'imagenes/tops1.jpeg', 'imagenes/tops2.jpeg', 'imagenes/tops3.jpeg', 'imagenes/tops4.jpeg',
-  // 'imagenes/tops5.jpeg', // ELIMINADO: Top elegante
-  'imagenes/apego.jpeg', 'imagenes/apego2.jpeg', 'imagenes/apego3.jpeg',
-  // 'imagenes/apego2.jpeg', // ELIMINADO: Oso de apego (si corresponde)
+  'imagenes/tops1.jpeg', 'imagenes/tops.jpeg', 'imagenes/tops2.jpeg', 'imagenes/tops3.jpeg', 'imagenes/tops4.jpeg', 'imagenes/tops5.jpeg',
+  'imagenes/apego.jpeg', 'imagenes/apego1.jpeg', 'imagenes/apego2.jpeg', 'imagenes/apego3.jpeg',
   'imagenes/gorritos1.jpeg', 'imagenes/gorritos2.jpeg', 'imagenes/gorritos3.jpeg', 'imagenes/gorritos4.jpeg', 'imagenes/gorritos5.jpeg', 'imagenes/gorritos6.jpeg', 'imagenes/gorritos7.jpeg',
   'imagenes/muñecos.jpeg',
   // Imágenes de placeholder

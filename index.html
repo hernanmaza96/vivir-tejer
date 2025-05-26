@@ -97,9 +97,18 @@
         <input type="text" id="newCategoryName" placeholder="Ej: Bufandas">
       </div>
       <div class="form-group">
-        <label for="newCategoryImage">Imagen Portada (ej: imagenes/bufandas_portada.jpg):</label>
-        <input type="text" id="newCategoryImage" placeholder="imagenes/portada_categoria.jpg">
+        <label for="newCategoryImageFile">Imagen Portada:</label>
+        <input type="file" id="newCategoryImageFile" accept="image/*">
+        <img id="newCategoryImagePreview" src="" alt="Vista previa" style="display:none;max-width:120px;margin-top:8px;">
         <small>Esta imagen se mostrará en la sección principal de la galería.</small>
+      </div>
+      <div class="form-group">
+        <label for="newCategoryProductDesc">Descripción del producto inicial:</label>
+        <input type="text" id="newCategoryProductDesc" placeholder="Ej: Bufanda de lana suave" required>
+      </div>
+      <div class="form-group">
+        <label for="newCategoryProductPrice">Precio (ARS):</label>
+        <input type="number" id="newCategoryProductPrice" placeholder="Ej: 12000" min="0" step="0.01" required>
       </div>
       <div class="form-actions">
           <button onclick="handleAddCategory()" class="admin-btn save-btn"><i class="fas fa-plus"></i> Crear Categoría</button>
@@ -154,32 +163,21 @@
         displayName: "Tops",
         sectionImage: "tops1.jpeg",
         products: [
-          { src: 'tops1.jpeg', desc: 'Top veraniego', price: 25000 },
-          { src: 'tops2.jpeg', desc: 'Top casual', price: 20000 },
-          { src: 'tops3.jpeg', desc: 'Top bohemio', price: 27500 },
-          { src: 'tops4.jpeg', desc: 'Top floral', price: 23750 }
+          { src: 'tops1.jpeg', desc: 'Top veraniego', price: 25000 }, { src: 'tops.jpeg', desc: 'Top elegante', price: 22500 }, { src: 'tops2.jpeg', desc: 'Top casual', price: 20000 }, { src: 'tops3.jpeg', desc: 'Top bohemio', price: 27500 }, { src: 'tops4.jpeg', desc: 'Top floral', price: 23750 }, { src: 'tops5.jpeg', desc: 'Top moderno', price: 21990 }
         ]
       },
       apego: {
         displayName: "De Apego",
         sectionImage: "amigurumis4.jpeg",
         products: [
-          { src: 'amigurumis4.jpeg', desc: 'Muñeco de apego', price: 10000 },
-          { src: 'apego.jpeg', desc: 'Conejo de apego', price: 9500 },
-          { src: 'apego3.jpeg', desc: 'Gatito de apego', price: 10750 }
+          { src: 'amigurumis4.jpeg', desc: 'Muñeco de apego', price: 10000 }, { src: 'apego.jpeg', desc: 'Conejo de apego', price: 9500 }, { src: 'apego1.jpeg', desc: 'Oso de apego', price: 11000 }, { src: 'apego2.jpeg', desc: 'Elefante de apego', price: 12000 }, { src: 'apego3.jpeg', desc: 'Gatito de apego', price: 10750 }
         ]
       },
       gorritos: {
         displayName: "Gorritos",
         sectionImage: "gorritos4.jpeg",
         products: [
-          { src: 'gorritos4.jpeg', desc: 'Gorro de lana', price: 8990 },
-          { src: 'gorritos2.jpeg', desc: 'Gorro con pompones', price: 9500 },
-          { src: 'gorritos3.jpeg', desc: 'Gorro infantil', price: 7990 },
-          { src: 'gorritos1.jpeg', desc: 'Gorro clásico', price: 10000 },
-          { src: 'gorritos5.jpeg', desc: 'Gorro colorido', price: 9250 },
-          { src: 'gorritos6.jpeg', desc: 'Gorro navideño', price: 11500 },
-          { src: 'gorritos7.jpeg', desc: 'Gorro de animales', price: 12000 }
+          { src: 'gorritos4.jpeg', desc: 'Gorro de lana', price: 8990 }, { src: 'gorritos2.jpeg', desc: 'Gorro con pompones', price: 9500 }, { src: 'gorritos3.jpeg', desc: 'Gorro infantil', price: 7990 }, { src: 'gorritos1.jpeg', desc: 'Gorro clásico', price: 10000 }, { src: 'gorritos5.jpeg', desc: 'Gorro colorido', price: 9250 }, { src: 'gorritos6.jpeg', desc: 'Gorro navideño', price: 11500 }, { src: 'gorritos7.jpeg', desc: 'Gorro de animales', price: 12000 }, { src: 'gorritos8.jpeg', desc: 'Gorro personalizado', price: 13000 }
         ]
       }
     };
@@ -286,7 +284,7 @@
     
     function openAddCategoryModal() {
         document.getElementById('newCategoryName').value = '';
-        document.getElementById('newCategoryImage').value = '';
+        document.getElementById('newCategoryImageFile').value = '';
         document.getElementById('addCategoryError').style.display = 'none';
         closeAllModalsExcept(['addCategoryModal']);
         document.getElementById('addCategoryModal').style.display = 'block';
@@ -295,18 +293,27 @@
     
     function handleAddCategory() {
         const categoryNameInput = document.getElementById('newCategoryName');
-        const categoryImageInput = document.getElementById('newCategoryImage');
         const categoryName = categoryNameInput.value.trim();
-        const categoryImage = categoryImageInput.value.trim();
         const errorP = document.getElementById('addCategoryError');
+        const productDesc = document.getElementById('newCategoryProductDesc').value.trim();
+        const productPrice = parseFloat(document.getElementById('newCategoryProductPrice').value);
+
         errorP.style.display = 'none';
 
         if (!categoryName) {
             errorP.textContent = 'El nombre de la categoría no puede estar vacío.';
             errorP.style.display = 'block'; return;
         }
-        if (!categoryImage) {
-            errorP.textContent = 'La imagen de portada no puede estar vacía.';
+        if (!newCategoryImageBase64) {
+            errorP.textContent = 'Debes seleccionar una imagen de portada.';
+            errorP.style.display = 'block'; return;
+        }
+        if (!productDesc) {
+            errorP.textContent = 'Debes ingresar una descripción para el producto inicial.';
+            errorP.style.display = 'block'; return;
+        }
+        if (isNaN(productPrice) || productPrice < 0) {
+            errorP.textContent = 'Debes ingresar un precio válido para el producto inicial.';
             errorP.style.display = 'block'; return;
         }
 
@@ -318,8 +325,14 @@
 
         galerias[categoryKey] = {
             displayName: categoryName,
-            sectionImage: categoryImage,
-            products: []
+            sectionImage: newCategoryImageBase64,
+            products: [
+                {
+                    src: newCategoryImageBase64,
+                    desc: productDesc,
+                    price: productPrice
+                }
+            ]
         };
         indices[categoryKey] = 0; 
 
@@ -327,6 +340,12 @@
         updateNavigationAndGallerySections(); 
         showNotification(`Categoría "${categoryName}" agregada.`, "success");
         closeModal('addCategoryModal');
+        // Limpia la imagen y campos para la próxima vez
+        newCategoryImageBase64 = "";
+        document.getElementById('newCategoryImagePreview').style.display = 'none';
+        document.getElementById('newCategoryImageFile').value = '';
+        document.getElementById('newCategoryProductDesc').value = '';
+        document.getElementById('newCategoryProductPrice').value = '';
     }
 
     function updateNavigationAndGallerySections() {
@@ -406,6 +425,8 @@
         modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove());
         const categoryControlsDiv = document.createElement('div');
         categoryControlsDiv.className = 'admin-category-controls';
+
+        // Botón Agregar Producto
         const btnAdd = document.createElement('button');
         btnAdd.innerHTML = `<i class="fas fa-plus-circle"></i> Agregar a ${categoryData.displayName}`;
         btnAdd.className = 'admin-btn';
@@ -415,6 +436,25 @@
              openAdminFormProductModal('add', categoryKey);
         };
         categoryControlsDiv.appendChild(btnAdd);
+
+        // Botón Eliminar Categoría
+        const btnDeleteCategory = document.createElement('button');
+        btnDeleteCategory.innerHTML = `<i class="fas fa-trash"></i> Eliminar Categoría`;
+        btnDeleteCategory.className = 'admin-btn';
+        btnDeleteCategory.style.backgroundColor = '#d94f4f';
+        btnDeleteCategory.style.color = '#fff';
+        btnDeleteCategory.onclick = () => {
+            if (confirm(`¿Estás seguro de que quieres eliminar la categoría "${categoryData.displayName}" y todos sus productos? Esta acción no se puede deshacer.`)) {
+                delete galerias[categoryKey];
+                delete indices[categoryKey];
+                saveGaleriasToStorage();
+                updateNavigationAndGallerySections();
+                closeAllModalsExcept();
+                showNotification(`Categoría "${categoryData.displayName}" eliminada.`, "info");
+            }
+        };
+        categoryControlsDiv.appendChild(btnDeleteCategory);
+
         const addToCartBtn = modalContentElement.querySelector('.add-to-cart');
         if (addToCartBtn) {
             addToCartBtn.parentNode.insertBefore(categoryControlsDiv, addToCartBtn);
@@ -428,8 +468,6 @@
         modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
         const productControlsDiv = document.createElement('div');
         productControlsDiv.className = 'admin-product-controls';
-
-        // Botón Editar
         const btnEdit = document.createElement('button');
         btnEdit.innerHTML = '<i class="fas fa-edit"></i> Editar Producto';
         btnEdit.className = 'admin-btn';
@@ -439,37 +477,18 @@
             openAdminFormProductModal('edit', categoryKey, productIndex);
         };
         productControlsDiv.appendChild(btnEdit);
-
-        // Botón Eliminar
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Producto';
         btnDelete.className = 'admin-btn';
         btnDelete.style.backgroundColor = '#F44336';
         btnDelete.onclick = () => handleDeleteProductConfirmation(categoryKey, productIndex);
         productControlsDiv.appendChild(btnDelete);
-
-        // NUEVO: Botón Elegir como portada
-        const btnSetCover = document.createElement('button');
-        btnSetCover.innerHTML = '<i class="fas fa-image"></i> Elegir como portada';
-        btnSetCover.className = 'admin-btn';
-        btnSetCover.style.backgroundColor = '#2196F3';
-        btnSetCover.style.color = '#fff';
-        btnSetCover.onclick = () => {
-            galerias[categoryKey].sectionImage = galerias[categoryKey].products[productIndex].src;
-            saveGaleriasToStorage();
-            updateNavigationAndGallerySections();
-            showNotification('¡Imagen de portada actualizada!', 'success');
-            // Opcional: cerrar el modal o dejarlo abierto
-        };
-        productControlsDiv.appendChild(btnSetCover);
-
-        // Insertar controles
         const infoOverlay = modalContentElement.querySelector('.info-overlay');
         const targetElementForProductControls = infoOverlay || modalContentElement.querySelector('.admin-category-controls') || modalContentElement.querySelector('.add-to-cart');
         if (targetElementForProductControls === infoOverlay && infoOverlay.nextSibling) {
             infoOverlay.parentNode.insertBefore(productControlsDiv, infoOverlay.nextSibling);
         } else if (targetElementForProductControls) {
-            targetElementForProductControls.parentNode.insertBefore(productControlsDiv, targetElementForProductControls);
+             targetElementForProductControls.parentNode.insertBefore(productControlsDiv, targetElementForProductControls);
         } else {
             modalContentElement.appendChild(productControlsDiv);
         }
@@ -922,13 +941,37 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         loadGaleriasFromStorage();
+        // Elimina la categoría "bufandas" si existe
+        if (galerias['bufandas']) {
+            delete galerias['bufandas'];
+            saveGaleriasToStorage();
+        }
         updateNavigationAndGallerySections();
         updateCartBadge();
-        // Limpiar cualquier hash al cargar la página por primera vez
         if (window.location.hash) {
             history.replaceState(null, '', window.location.pathname + window.location.search);
         }
     });
+
+let newCategoryImageBase64 = "";
+
+document.getElementById('newCategoryImageFile').onchange = function(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('newCategoryImagePreview');
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            newCategoryImageBase64 = e.target.result;
+            preview.src = newCategoryImageBase64;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        newCategoryImageBase64 = "";
+        preview.src = "";
+        preview.style.display = 'none';
+    }
+};
   </script>
 </body>
 </html>
