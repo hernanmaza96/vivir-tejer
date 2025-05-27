@@ -1,28 +1,37 @@
-const CACHE_NAME = 'vivir-tejer-v14'; // Nueva versión
+const CACHE_NAME = 'vivirtejer-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/estilos/estilo.css',
-  '/estilos/modal.css',
-  '/logo_vivirtejer.png', // Logo del header
-  '/logo_vivirtejer.jpg', // Favicon que acabamos de agregar
-  // Imágenes de productos
-  'imagenes/amigurumis1.jpeg', 'imagenes/amigurumis2.jpeg', 'imagenes/amigurumis3.jpeg', 'imagenes/amigurumis4.jpeg', 'imagenes/amigurumis5.jpeg', 'imagenes/amigurumis6.jpeg', 'imagenes/amigurumis7.jpeg', 'imagenes/amigurumis8.jpeg', 'imagenes/amigurumis9.jpeg',
-  'imagenes/tops1.jpeg', 'imagenes/tops.jpeg', 'imagenes/tops2.jpeg', 'imagenes/tops3.jpeg', 'imagenes/tops4.jpeg', 'imagenes/tops5.jpeg',
-  'imagenes/apego.jpeg', 'imagenes/apego1.jpeg', 'imagenes/apego2.jpeg', 'imagenes/apego3.jpeg',
-  'imagenes/gorritos1.jpeg', 'imagenes/gorritos2.jpeg', 'imagenes/gorritos3.jpeg', 'imagenes/gorritos4.jpeg', 'imagenes/gorritos5.jpeg', 'imagenes/gorritos6.jpeg', 'imagenes/gorritos7.jpeg',
-  'imagenes/muñecos.jpeg',
-  // Imágenes de placeholder
-  'imagenes/placeholder_categoria_vacia.jpg',
-  'imagenes/placeholder_error_producto.jpg',
-  'imagenes/placeholder_imagen_no_encontrada.jpg',
-  'imagenes/placeholder_general.jpg', 
-  'imagenes/placeholder_error.jpg', 
-  // Otros assets
-  'instagram.png',
-  'icons8-whatsapp-50.png',
-  'facebook.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'
+  'index.html',
+  'manifest.json',
+  'logo_vivirtejer.webp',
+  'amigurumis3.webp',
+  'amigurumis1.webp',
+  'amigurumis2.webp',
+  'muñecos.webp',
+  'amigurumis5.webp',
+  'amigurumis6.webp',
+  'amigurumis7.webp',
+  'amigurumis8.webp',
+  'amigurumis9.webp',
+  'tops1.webp',
+  'tops.webp',
+  'tops2.webp',
+  'tops3.webp',
+  'tops4.webp',
+  'tops5.webp',
+  'amigurumis4.webp',
+  'apego.webp',
+  'apego1.webp',
+  'apego2.webp',
+  'apego3.webp',
+  'gorritos4.webp',
+  'gorritos2.webp',
+  'gorritos3.webp',
+  'gorritos1.webp',
+  'gorritos5.webp',
+  'gorritos6.webp',
+  'gorritos7.webp',
+  'gorritos8.webp',
+  // ...otros archivos necesarios...
 ];
 
 self.addEventListener('install', function(event) {

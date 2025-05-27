@@ -170,36 +170,37 @@
   </div>
 </div>
   <script>
-    const DEFAULT_GALERIAS = {
-      amigurumis: {
-        displayName: "Amigurumis",
-        sectionImage: "amigurumis3.jpeg",
-        products: [
-          { src: 'amigurumis3.jpeg', desc: 'Muñeco de crochet', price: 15990 }, { src: 'amigurumis1.jpeg', desc: 'Osito adorable', price: 12500 }, { src: 'amigurumis2.jpeg', desc: 'Conejo suave', price: 14000 }, { src: 'muñecos.jpeg', desc: 'Personaje personalizado', price: 20000 }, { src: 'amigurumis5.jpeg', desc: 'Perrito amigurumi', price: 13750 }, { src: 'amigurumis6.jpeg', desc: 'Gatito kawaii', price: 11990 }, { src: 'amigurumis7.jpeg', desc: 'Unicornio mágico', price: 18500 }, { src: 'amigurumis8.jpeg', desc: 'Elefante tierno', price: 16250 }, { src: 'amigurumis9.jpeg', desc: 'Zorro encantador', price: 17000 }
-        ]
-      },
-      tops: {
-        displayName: "Tops",
-        sectionImage: "tops1.jpeg",
-        products: [
-          { src: 'tops1.jpeg', desc: 'Top veraniego', price: 25000 }, { src: 'tops.jpeg', desc: 'Top elegante', price: 22500 }, { src: 'tops2.jpeg', desc: 'Top casual', price: 20000 }, { src: 'tops3.jpeg', desc: 'Top bohemio', price: 27500 }, { src: 'tops4.jpeg', desc: 'Top floral', price: 23750 }, { src: 'tops5.jpeg', desc: 'Top moderno', price: 21990 }
-        ]
-      },
-      apego: {
-        displayName: "De Apego",
-        sectionImage: "amigurumis4.jpeg",
-        products: [
-          { src: 'amigurumis4.jpeg', desc: 'Muñeco de apego', price: 10000 }, { src: 'apego.jpeg', desc: 'Conejo de apego', price: 9500 }, { src: 'apego1.jpeg', desc: 'Oso de apego', price: 11000 }, { src: 'apego2.jpeg', desc: 'Elefante de apego', price: 12000 }, { src: 'apego3.jpeg', desc: 'Gatito de apego', price: 10750 }
-        ]
-      },
-      gorritos: {
-        displayName: "Gorritos",
-        sectionImage: "gorritos4.jpeg",
-        products: [
-          { src: 'gorritos4.jpeg', desc: 'Gorro de lana', price: 8990 }, { src: 'gorritos2.jpeg', desc: 'Gorro con pompones', price: 9500 }, { src: 'gorritos3.jpeg', desc: 'Gorro infantil', price: 7990 }, { src: 'gorritos1.jpeg', desc: 'Gorro clásico', price: 10000 }, { src: 'gorritos5.jpeg', desc: 'Gorro colorido', price: 9250 }, { src: 'gorritos6.jpeg', desc: 'Gorro navideño', price: 11500 }, { src: 'gorritos7.jpeg', desc: 'Gorro de animales', price: 12000 }, { src: 'gorritos8.jpeg', desc: 'Gorro personalizado', price: 13000 }
-        ]
-      }
-    };
+    // Cambia las imágenes de productos y portadas del catálogo/carrusel a .webp
+const DEFAULT_GALERIAS = {
+  amigurumis: {
+    displayName: "Amigurumis",
+    sectionImage: "amigurumis3.webp",
+    products: [
+      { src: 'amigurumis3.webp', desc: 'Muñeco de crochet', price: 15990 }, { src: 'amigurumis1.webp', desc: 'Osito adorable', price: 12500 }, { src: 'amigurumis2.webp', desc: 'Conejo suave', price: 14000 }, { src: 'muñecos.webp', desc: 'Personaje personalizado', price: 20000 }, { src: 'amigurumis5.webp', desc: 'Perrito amigurumi', price: 13750 }, { src: 'amigurumis6.webp', desc: 'Gatito kawaii', price: 11990 }, { src: 'amigurumis7.webp', desc: 'Unicornio mágico', price: 18500 }, { src: 'amigurumis8.webp', desc: 'Elefante tierno', price: 16250 }, { src: 'amigurumis9.webp', desc: 'Zorro encantador', price: 17000 }
+    ]
+  },
+  tops: {
+    displayName: "Tops",
+    sectionImage: "tops1.webp",
+    products: [
+      { src: 'tops1.webp', desc: 'Top veraniego', price: 25000 }, { src: 'tops.webp', desc: 'Top elegante', price: 22500 }, { src: 'tops2.webp', desc: 'Top casual', price: 20000 }, { src: 'tops3.webp', desc: 'Top bohemio', price: 27500 }, { src: 'tops4.webp', desc: 'Top floral', price: 23750 }, { src: 'tops5.webp', desc: 'Top moderno', price: 21990 }
+    ]
+  },
+  apego: {
+    displayName: "De Apego",
+    sectionImage: "amigurumis4.webp",
+    products: [
+      { src: 'amigurumis4.webp', desc: 'Muñeco de apego', price: 10000 }, { src: 'apego.webp', desc: 'Conejo de apego', price: 9500 }, { src: 'apego1.webp', desc: 'Oso de apego', price: 11000 }, { src: 'apego2.webp', desc: 'Elefante de apego', price: 12000 }, { src: 'apego3.webp', desc: 'Gatito de apego', price: 10750 }
+    ]
+  },
+  gorritos: {
+    displayName: "Gorritos",
+    sectionImage: "gorritos4.webp",
+    products: [
+      { src: 'gorritos4.webp', desc: 'Gorro de lana', price: 8990 }, { src: 'gorritos2.webp', desc: 'Gorro con pompones', price: 9500 }, { src: 'gorritos3.webp', desc: 'Gorro infantil', price: 7990 }, { src: 'gorritos1.webp', desc: 'Gorro clásico', price: 10000 }, { src: 'gorritos5.webp', desc: 'Gorro colorido', price: 9250 }, { src: 'gorritos6.webp', desc: 'Gorro navideño', price: 11500 }, { src: 'gorritos7.webp', desc: 'Gorro de animales', price: 12000 }, { src: 'gorritos8.webp', desc: 'Gorro personalizado', price: 13000 }
+    ]
+  }
+};
 
     let galerias = {}; 
     const indices = {}; 
@@ -379,7 +380,8 @@
             if (galerias.hasOwnProperty(key)) {
                 const categoryData = galerias[key];
                 const displayName = categoryData.displayName || key.charAt(0).toUpperCase() + key.slice(1);
-                const sectionImage = categoryData.sectionImage || (categoryData.products && categoryData.products.length > 0 ? categoryData.products[0].src : 'imagenes/placeholder_general.jpg');
+                // Cambia solo el fallback de portada a .webp
+                const sectionImage = categoryData.sectionImage || (categoryData.products && categoryData.products.length > 0 ? categoryData.products[0].src : 'imagenes/placeholder_general.webp');
 
                 const navLi = document.createElement('li');
                 const navA = document.createElement('a');
@@ -397,7 +399,7 @@
                 img.src = sectionImage; 
                 img.alt = displayName;
                 img.title = `Ver ${displayName}`;
-                img.onerror = function() { this.src = 'imagenes/placeholder_error.jpg'; };
+                img.onerror = function() { this.src = 'imagenes/placeholder_error.webp'; };
                 img.onclick = () => openModal(key);
                 section.appendChild(h3);
                 section.appendChild(img);
@@ -794,7 +796,7 @@
         
         const currentCategory = galerias[categoryKey];
         if (!currentCategory || !currentCategory.products || currentCategory.products.length === 0) {
-            imgElement.src = 'imagenes/placeholder_categoria_vacia.jpg'; 
+            imgElement.src = 'imagenes/placeholder_categoria_vacia.webp';
             imgElement.alt = `No hay productos en ${currentCategory ? currentCategory.displayName : categoryKey}.`;
             infoElement.textContent = 'Categoría vacía.';
             prevButton.style.display = 'none';
@@ -829,7 +831,7 @@
         imgElement.classList.add('fade-out');
         setTimeout(() => {
             imgElement.src = item.src;
-            imgElement.onerror = function() { this.src = 'imagenes/placeholder_imagen_no_encontrada.jpg'; };
+            imgElement.onerror = function() { this.src = 'imagenes/placeholder_imagen_no_encontrada.webp'; };
             imgElement.alt = item.desc;
             imgElement.classList.remove('fade-out');
             infoElement.textContent = `${item.desc} - ${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}`;
