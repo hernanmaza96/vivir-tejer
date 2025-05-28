@@ -12,6 +12,9 @@ body {
     color: #333;
     line-height: 1.6;
 }
+body.product-modal-open { /* Evitar scroll cuando un modal de producto está abierto */
+    overflow: hidden;
+}
 
 /* Encabezado */
 .header {
@@ -76,21 +79,6 @@ body {
 .volver-inicio a { color: #d94f70; text-decoration: none; font-weight: 600; transition: color 0.3s; }
 .volver-inicio a:hover { color: #b03a5b; text-decoration: underline; }
 
-.welcome-modal {
-    position: fixed; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff0f6; padding: 2rem; border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); z-index: 2000;
-    text-align: center; font-family: 'Lora', serif; color: #d94f70;
-    font-size: 1.8rem; animation: fadeInWelcome 0.5s ease-in-out;
-    border: 2px solid #ff85a1;
-}
-.welcome-modal h2 { margin: 0; font-weight: 700; }
-@keyframes fadeInWelcome {
-    from { opacity: 0; transform: translate(-50%, -60%); }
-    to { opacity: 1; transform: translate(-50%, -50%); }
-}
-
 .cart-icon {
   position: fixed; top: 20px; right: 20px; font-size: 24px;
   color: #d94f70; cursor: pointer; z-index: 1001; background: white;
@@ -105,41 +93,47 @@ body {
   font-weight: bold; transition: background-color 0.3s ease, transform 0.3s ease;
 }
 .cart-badge.update-animation { animation: badgePulse 0.5s ease-out; }
+.cart-badge.update { 
+    animation: pulse 0.3s ease-out;
+}
 @keyframes badgePulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.4); background-color: #ff85a1; }
   100% { transform: scale(1); }
 }
+@keyframes pulse { 
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
 
-/* Notificaciones mejoradas */
+
 .notification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9999;
-  background: #fff;
-  color: #333;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s, top 0.4s;
-  min-width: 260px;
-  max-width: 90vw;
-  font-size: 1.1em;
+    position: fixed; bottom: 20px; right: 20px;
+    background-color: #fff0f6; 
+    border-left: 5px solid #ff85a1; 
+    border-radius: 8px; padding: 12px 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    display: none; align-items: center; gap: 12px; 
+    z-index: 1500; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 280px; max-width: 350px; opacity: 0; 
 }
 .notification.show {
-  opacity: 1;
-  pointer-events: auto;
-  top: 60px;
+    display: flex; opacity: 1;
+    animation: slideInRight 0.4s ease-out forwards, 
+               fadeOutNotification 0.4s ease-in 2.6s forwards; 
 }
-.notification.success { border-left: 6px solid #4CAF50; }
-.notification.error { border-left: 6px solid #d94f4f; }
-.notification .notification-icon { margin-right: 10px; font-size: 1.3em; }
+.notification .notification-icon { font-size: 1.4em; color: #d94f70; }
+.notification .notification-message { font-size: 0.95em; line-height: 1.4; color: #333; }
+.notification.success { background-color: #e8f5e9; border-left-color: #4CAF50; }
+.notification.success .notification-icon { color: #4CAF50; }
+.notification.success .notification-message { color: #2e7d32; }
+.notification.error { background-color: #ffebee; border-left-color: #F44336; }
+.notification.error .notification-icon { color: #F44336; }
+.notification.error .notification-message { color: #c62828; }
+.notification.info { background-color: #fff0f6; border-left-color: #d94f70; }
+.notification.info .notification-icon { color: #d94f70; }
+.notification.info .notification-message { color: #5c2c39; }
 
 @keyframes slideInRight {
     from { transform: translateX(100%); opacity: 0; }
@@ -162,7 +156,8 @@ button.admin-nav-button {
     font-size: 0.9em; font-weight: bold; cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
     display: inline-flex; align-items: center; gap: 8px;
-    text-transform: uppercase; letter-spacing: 0.5px;
+    text-transform: uppercase; 
+    letter-spacing: 0.5px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 button.admin-nav-button:hover {
@@ -170,25 +165,8 @@ button.admin-nav-button:hover {
     transform: translateY(-1px);
     box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
-button.admin-nav-button i { font-size: 1.1em; }
-
-/* Botones de advertencia iguales */
-.warning-actions .admin-btn {
-  min-width: 90px;
-  font-size: 1em;
-  border-radius: 6px;
-  background: #d94f4f !important;
-  color: #fff !important;
-  border: none;
-  margin: 0 4px;
-  transition: background 0.2s;
-}
-.warning-actions .admin-btn.cancel-btn {
-  background: #888 !important;
-  color: #fff !important;
-}
-.warning-actions .admin-btn:hover {
-  filter: brightness(1.1);
+button.admin-nav-button i { 
+    font-size: 1.1em; 
 }
 
 /* Modal de advertencia personalizado */
@@ -196,13 +174,13 @@ button.admin-nav-button i { font-size: 1.1em; }
 #deleteCategoryWarningModal {
   display: none;
   position: fixed;
-  z-index: 99999;
+  z-index: 99999; /* Muy alto para estar encima de todo */
   left: 0; top: 0; width: 100vw; height: 100vh;
   background: rgba(0,0,0,0.45);
   justify-content: center;
   align-items: center;
 }
-.warning-modal-content {
+.warning-modal-content { /* Estilo para el contenido del modal de advertencia */
   background: #fff;
   border-radius: 12px;
   padding: 32px 28px 24px 28px;
@@ -213,14 +191,29 @@ button.admin-nav-button i { font-size: 1.1em; }
 }
 .warning-text {
   font-size: 1.15em;
-  color: #d94f4f;
+  color: #333; /* Cambiado de d94f4f para el texto general */
   margin-bottom: 24px;
   line-height: 1.5;
 }
+.warning-text strong { /* Mantener el color para el strong */
+    color: #d94f4f;
+}
+.warning-actions .admin-btn { /* Estilo general para botones en la advertencia */
+    margin: 0 5px; /* Espacio entre botones */
+}
+.warning-actions .admin-btn.cancel-btn {
+  background: #888 !important;
+  color: #fff !important;
+}
+.warning-actions .admin-btn:hover {
+  filter: brightness(1.1);
+}
+
 
 /* Media queries para móviles */
 @media screen and (max-width: 768px) {
-  body.product-modal-open .cart-icon {
+  .modal:not(#cartModal)[style*="display: block"] ~ .cart-icon,
+  body.product-modal-open .cart-icon { 
     display: none !important;
   }
   

@@ -4,6 +4,8 @@
     width: 100%; height: 100%; overflow: auto;
     background-color: rgba(0, 0, 0, 0.85);
     animation: fadeInModal 0.3s ease-in-out;
+    /* align-items: center; Si se descomenta, puede afectar el margin: 5% auto */
+    /* justify-content: center; */
 }
 @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeOutModal { from { opacity: 1; } to { opacity: 0; } }
@@ -27,9 +29,9 @@
     margin-bottom: 10px;
 }
 .modal img.fade-out { opacity: 0; }
-.modal img[src$="placeholder_categoria_vacia.jpg"], 
-.modal img[src$="placeholder_error_producto.jpg"],
-.modal img[src$="placeholder_imagen_no_encontrada.jpg"] {
+.modal img[src$="placeholder_categoria_vacia.webp"], 
+.modal img[src$="placeholder_error_producto.webp"],
+.modal img[src$="placeholder_imagen_no_encontrada.webp"] { 
     height: 300px; object-fit: scale-down; opacity: 0.7;
 }
 
@@ -45,9 +47,10 @@
     background: rgba(255,255,255,0.7); border-radius:50%; width: 40px; height: 40px;
     display:flex; align-items:center; justify-content:center;
     border: none; transition: all 0.25s ease;
+    z-index:10; /* Para que estén sobre la imagen */
 }
 .close:hover, .prev:hover, .next:hover { transform: scale(1.1); color: #fff; background-color: #b03a5b;}
-.close { top: 15px; right: 15px; z-index: 10; width:35px; height:35px; font-size:1.8rem;}
+.close { top: 15px; right: 15px; width:35px; height:35px; font-size:1.8rem;}
 .prev, .next { top: calc(50% - 20px); }
 .prev { left: 15px; }
 .next { right: 15px; }
@@ -151,7 +154,6 @@
     background-color: #b03a5b;
 }
 
-
 .admin-welcome {
     position: fixed; top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0.9);
@@ -182,12 +184,16 @@
     padding: 8px 18px; 
     font-size: 0.8em;
 }
+/* Colores específicos para botones de acción en carrusel */
 .admin-category-controls .admin-btn[style*="#4CAF50"] { background-color: #4CAF50 !important; } 
 .admin-category-controls .admin-btn[style*="#4CAF50"]:hover { background-color: #45a049 !important; }
 .admin-product-controls .admin-btn[style*="#FFC107"] { background-color: #FFC107 !important; color: #333 !important; } 
 .admin-product-controls .admin-btn[style*="#FFC107"]:hover { background-color: #f0b400 !important; }
 .admin-product-controls .admin-btn[style*="#F44336"] { background-color: #F44336 !important; } 
 .admin-product-controls .admin-btn[style*="#F44336"]:hover { background-color: #e53935 !important; }
+.admin-product-controls .admin-btn[style*="#5bc0de"] { background-color: #5bc0de !important; } 
+.admin-product-controls .admin-btn[style*="#5bc0de"]:hover { background-color: #46b8da !important; }
+
 
 .modal.admin-form-modal .modal-content { 
     max-width: 520px; background-color: #fff; border: none; 
@@ -216,13 +222,17 @@
 }
 .admin-form-modal .form-group small { font-size: 0.8em; color: #888; display: block; margin-top: 4px; }
 
-.admin-form-modal .file-input label[for="adminProductImageFileSelector"] {
+.admin-form-modal .file-input label[for="adminProductImageFileSelector"],
+.admin-form-modal .form-group label[for="newCategoryImageFile"] { 
     display: inline-block; padding: 10px 15px; background-color: #ff85a1;
     color: white; border-radius: 8px; cursor: pointer; font-size: 0.9em;
     transition: background-color 0.3s;
 }
-.admin-form-modal .file-input label[for="adminProductImageFileSelector"]:hover { background-color: #d94f70; }
-.admin-form-modal .file-input input[type="file"] {
+.admin-form-modal .file-input label[for="adminProductImageFileSelector"]:hover,
+.admin-form-modal .form-group label[for="newCategoryImageFile"]:hover { background-color: #d94f70; }
+
+.admin-form-modal .file-input input[type="file"],
+.admin-form-modal .form-group input[type="file"]#newCategoryImageFile { 
     opacity: 0; position: absolute; width: 0.1px; height: 0.1px;
     overflow: hidden; z-index: -1;
 }
@@ -241,36 +251,36 @@
 .admin-form-modal .cancel-btn { background-color: #aaa; }
 .admin-form-modal .cancel-btn:hover { background-color: #888; }
 
-/* Botones de advertencia iguales */
-.warning-actions .admin-btn {
-  min-width: 90px;
-  font-size: 1em;
-  border-radius: 6px;
-  background: #d94f4f !important;
-  color: #fff !important;
-  border: none;
-  margin: 0 4px;
-  transition: background 0.2s;
+/* Estilos para modales de advertencia (deleteCategoryWarningModal y el dinámico deleteProductWarningModal) */
+/* Estilos combinados para el contenido del modal de advertencia */
+#deleteCategoryWarningModal .modal-content, /* Aplicado al modal-content del HTML estático */
+#deleteProductWarningModal .modal-content { /* Aplicado al modal-content del modal dinámico */
+    max-width: 450px; 
+    background-color: #fffcfc; 
+    border: 2px solid #d94f4f; 
+    padding: 2rem;
 }
-.warning-actions .admin-btn.cancel-btn {
-  background: #888 !important;
-  color: #fff !important;
+/* Ya existe .warning-modal-content en estilo.css, se puede usar esa o esta */
+/* Si se usa esta, asegurarse que el HTML dinámico de deleteProductWarningModal use esta clase */
+.modal-content.warning-modal-content { /* Para el modal creado dinámicamente */
+    max-width: 450px; 
+    background-color: #fffcfc; 
+    border: 2px solid #d94f4f; 
+    padding: 2rem;
 }
-.warning-actions .admin-btn:hover {
-  filter: brightness(1.1);
-}
-/* Modal de advertencia personalizado */
+
+/* Modal de advertencia personalizado (estilos que estaban en estilo.css, movidos aquí para cohesión) */
 #deleteProductWarningModal,
 #deleteCategoryWarningModal {
-  display: none;
+  display: none; /* Controlado por JS */
   position: fixed;
-  z-index: 99999;
+  z-index: 99999; /* Muy alto para estar encima de todo */
   left: 0; top: 0; width: 100vw; height: 100vh;
   background: rgba(0,0,0,0.45);
   justify-content: center;
   align-items: center;
 }
-.warning-modal-content {
+.warning-modal-content { /* Estilo para el contenido del modal de advertencia */
   background: #fff;
   border-radius: 12px;
   padding: 32px 28px 24px 28px;
@@ -281,17 +291,39 @@
 }
 .warning-text {
   font-size: 1.15em;
-  color: #d94f4f;
+  color: #333; /* Texto general de advertencia */
   margin-bottom: 24px;
   line-height: 1.5;
+}
+.warning-text strong {
+    color: #d94f4f; /* Color para el texto resaltado */
+}
+.warning-actions {
+    display: flex;
+    justify-content: space-around;
+    gap: 1rem;
+}
+.warning-actions .admin-btn.cancel-btn {
+  background: #888 !important; /* Botón cancelar gris */
+  color: #fff !important;
+}
+.warning-actions .admin-btn:hover {
+  filter: brightness(1.1);
 }
 
 /* Media Queries para Modales en Móviles */
 @media screen and (max-width: 768px) {
-  .modal-content {
+  .modal-content,
+  .cart-modal, /* Aplicar también a .cart-modal directamente */
+  .modal.admin-login .modal-content,
+  .modal.admin-form-modal .modal-content,
+  #deleteCategoryWarningModal .modal-content,
+  #deleteProductWarningModal .modal-content,
+  .modal-content.warning-modal-content { /* Incluir el dinámico */
     margin: 10% auto; 
     padding: 1rem;
     width: 95%; 
+    max-width: 95%; 
   }
 
   .modal img {
@@ -307,10 +339,6 @@
   .prev { left: 10px; }
   .next { right: 10px; }
   
-  .cart-modal {
-    max-width: 95%;
-    padding: 1.5rem 1rem;
-  }
   .cart-item {
     flex-direction: column; 
     align-items: flex-start;
@@ -324,11 +352,6 @@
   .remove-item-btn { align-self: flex-end; } 
   .cart-actions { flex-direction: column; gap: 10px; }
 
-  .admin-login .modal-content,
-  .modal.admin-form-modal .modal-content {
-    max-width: 95%;
-    padding: 1.5rem 1rem;
-  }
   .admin-form-modal .form-actions {
     flex-direction: column; 
   }
