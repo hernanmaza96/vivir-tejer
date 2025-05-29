@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vivir_tejer</title>
-  <link rel="icon" href="logo_vivirtejer.webp" type="iconClass">
+  <link rel="icon" href="logo_vivirtejer.webp" type="image/webp">
   <link rel="stylesheet" href="estilos/estilo.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,6 +15,19 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="description" content="Patrones y cursos de crochet, amigurumis, tops y más.">
+  <style>
+    .visually-hidden { /* Para accesibilidad de títulos en modales */
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+  </style>
 </head>
 <body id="top">
   <div class="cart-icon" onclick="openCartModal()">
@@ -23,7 +36,6 @@
   </div>
 
   <header class="header">
-   
     <img src="logo_vivirtejer.png" alt="Logo Vivir Tejer" class="logo-header" width="180" height="170">
     <h1>Somos <span class="brand">Vivir_tejer</span></h1>
     <p>En esta página vas a encontrar patrones y cursos en crochet</p>
@@ -38,10 +50,10 @@
   <main class="galeria">
     </main>
 
-  <div id="cartModal" class="modal">
+  <div id="cartModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="cartModalTitle">
     <div class="modal-content cart-modal">
-      <span class="close" onclick="closeModal('cartModal')">&times;</span>
-      <h2><i class="fas fa-shopping-cart"></i> Tu Carrito de Compras</h2>
+      <span class="close" onclick="closeModal('cartModal')" aria-label="Cerrar modal">&times;</span>
+      <h2 id="cartModalTitle"><i class="fas fa-shopping-cart"></i> Tu Carrito de Compras</h2>
       <div id="cartItems"></div>
       <div id="cartTotal" class="cart-total"></div>
       <div class="cart-actions">
@@ -70,7 +82,7 @@
   </footer>
 
   <div class="admin-panel">
-    <button id="adminAccessBtn" class="admin-access-btn" onclick="openAdminLoginModal()">
+    <button id="adminAccessBtn" class="admin-access-btn" onclick="openAdminLoginModal()" aria-label="Abrir panel de administración">
       <i class="fas fa-user-shield"></i>
     </button>
     <div id="adminControls" class="admin-controls">
@@ -139,12 +151,12 @@
           <input type="number" id="adminProductPriceValue" required min="0" step="0.01">
         </div>
         <div class="form-group">
-          <label for="adminProductImageSrcPath">Ruta Imagen (ej: imagenes/foto.jpg):</label>
-          <input type="text" id="adminProductImageSrcPath" placeholder="imagenes/nombre_archivo.jpg" required>
-          <small>Asegúrate que la imagen exista en esa ruta dentro de tu carpeta 'imagenes'.</small>
+          <label for="adminProductImageSrcPath">Ruta Imagen (ej: imagenes/foto.webp):</label>
+          <input type="text" id="adminProductImageSrcPath" placeholder="imagenes/nombre_archivo.webp" required>
+          <small>Asegúrate que la imagen exista en esa ruta dentro de tu carpeta 'imagenes' (formato .webp).</small>
         </div>
         <div class="form-group file-input">
-            <label for="adminProductImageFileSelector"><i class="fas fa-upload"></i> Seleccionar Archivo (para nombre)</label>
+            <label for="adminProductImageFileSelector"><i class="fas fa-upload"></i> Seleccionar Archivo (.webp preferido)</label>
             <input type="file" id="adminProductImageFileSelector" accept="image/*">
             <span id="adminProductImageSelectedFileName" class="selected-file"></span>
         </div>
@@ -155,79 +167,145 @@
       </form>
     </div>
   </div>
-  <!-- Modal personalizado de advertencia para eliminar categoría -->
-<div id="deleteCategoryWarningModal" class="modal" style="display:none;">
-  <div class="modal-content warning-modal-content">
-    <p class="warning-text">
-      ⚠️ <strong>ATENCIÓN</strong> ⚠️<br><br>
-      ¿Estás seguro de que quieres eliminar la categoría y <b>TODOS</b> sus productos?<br>
-      <span style="color:#d94f4f;">Esta acción NO se puede deshacer.</span>
-    </p>
-    <div class="warning-actions">
-      <button id="confirmDeleteCategoryBtn" class="admin-btn" style="background:#d94f4f;color:#fff;">Eliminar</button>
-      <button id="cancelDeleteCategoryBtn" class="admin-btn cancel-btn">Cancelar</button>
+  
+  <div id="deleteCategoryWarningModal" class="modal">
+    <div class="modal-content warning-modal-content">
+      <span class="close visually-hidden" onclick="document.getElementById('cancelDeleteCategoryBtn').click()">&times;</span>
+      <p class="warning-text">
+        ⚠️ <strong>ATENCIÓN</strong> ⚠️<br><br>
+        ¿Estás seguro de que quieres eliminar la categoría y <b>TODOS</b> sus productos?<br>
+        <span style="color:#d94f4f;">Esta acción NO se puede deshacer.</span>
+      </p>
+      <div class="warning-actions">
+        <button id="confirmDeleteCategoryBtn" class="admin-btn" style="background:#d94f4f;color:#fff;">Eliminar</button>
+        <button id="cancelDeleteCategoryBtn" class="admin-btn cancel-btn">Cancelar</button>
+      </div>
     </div>
   </div>
-</div>
   <script>
-    // Cambia las imágenes de productos y portadas del catálogo/carrusel a .webp
-const DEFAULT_GALERIAS = {
-  amigurumis: {
-    displayName: "Amigurumis",
-    sectionImage: "amigurumis3.webp",
-    products: [
-      { src: 'amigurumis3.webp', desc: 'Muñeco de crochet', price: 15990 }, { src: 'amigurumis1.webp', desc: 'Osito adorable', price: 12500 }, { src: 'amigurumis2.webp', desc: 'Conejo suave', price: 14000 }, { src: 'muñecos.webp', desc: 'Personaje personalizado', price: 20000 }, { src: 'amigurumis5.webp', desc: 'Perrito amigurumi', price: 13750 }, { src: 'amigurumis6.webp', desc: 'Gatito kawaii', price: 11990 }, { src: 'amigurumis7.webp', desc: 'Unicornio mágico', price: 18500 }, { src: 'amigurumis8.webp', desc: 'Elefante tierno', price: 16250 }, { src: 'amigurumis9.webp', desc: 'Zorro encantador', price: 17000 }
-    ]
-  },
-  tops: {
-    displayName: "Tops",
-    sectionImage: "tops1.webp",
-    products: [
-      { src: 'tops1.webp', desc: 'Top veraniego', price: 25000 }, { src: 'tops.webp', desc: 'Top elegante', price: 22500 }, { src: 'tops2.webp', desc: 'Top casual', price: 20000 }, { src: 'tops3.webp', desc: 'Top bohemio', price: 27500 }, { src: 'tops4.webp', desc: 'Top floral', price: 23750 }, { src: 'tops5.webp', desc: 'Top moderno', price: 21990 }
-    ]
-  },
-  apego: {
-    displayName: "De Apego",
-    sectionImage: "amigurumis4.webp",
-    products: [
-      { src: 'amigurumis4.webp', desc: 'Muñeco de apego', price: 10000 }, { src: 'apego.webp', desc: 'Conejo de apego', price: 9500 }, { src: 'apego1.webp', desc: 'Oso de apego', price: 11000 }, { src: 'apego2.webp', desc: 'Elefante de apego', price: 12000 }, { src: 'apego3.webp', desc: 'Gatito de apego', price: 10750 }
-    ]
-  },
-  gorritos: {
-    displayName: "Gorritos",
-    sectionImage: "gorritos4.webp",
-    products: [
-      { src: 'gorritos4.webp', desc: 'Gorro de lana', price: 8990 }, { src: 'gorritos2.webp', desc: 'Gorro con pompones', price: 9500 }, { src: 'gorritos3.webp', desc: 'Gorro infantil', price: 7990 }, { src: 'gorritos1.webp', desc: 'Gorro clásico', price: 10000 }, { src: 'gorritos5.webp', desc: 'Gorro colorido', price: 9250 }, { src: 'gorritos6.webp', desc: 'Gorro navideño', price: 11500 }, { src: 'gorritos7.webp', desc: 'Gorro de animales', price: 12000 }, { src: 'gorritos8.webp', desc: 'Gorro personalizado', price: 13000 }
-    ]
-  }
-};
+    const DEFAULT_GALERIAS = {
+      amigurumis: {
+        displayName: "Amigurumis",
+        sectionImage: "imagenes/amigurumis3.webp",
+        products: [
+          { src: 'imagenes/amigurumis3.webp', desc: 'Muñeco de crochet', price: 15990 }, { src: 'imagenes/amigurumis1.webp', desc: 'Osito adorable', price: 12500 }, { src: 'imagenes/amigurumis2.webp', desc: 'Conejo suave', price: 14000 }, { src: 'imagenes/muñecos.webp', desc: 'Personaje personalizado', price: 20000 }, { src: 'imagenes/amigurumis5.webp', desc: 'Perrito amigurumi', price: 13750 }, { src: 'imagenes/amigurumis6.webp', desc: 'Gatito kawaii', price: 11990 }, { src: 'imagenes/amigurumis7.webp', desc: 'Unicornio mágico', price: 18500 }, { src: 'imagenes/amigurumis8.webp', desc: 'Elefante tierno', price: 16250 }, { src: 'imagenes/amigurumis9.webp', desc: 'Zorro encantador', price: 17000 }
+        ]
+      },
+      tops: {
+        displayName: "Tops",
+        sectionImage: "imagenes/tops1.webp",
+        products: [
+          { src: 'imagenes/tops1.webp', desc: 'Top veraniego', price: 25000 }, { src: 'imagenes/tops.webp', desc: 'Top elegante', price: 22500 }, { src: 'imagenes/tops2.webp', desc: 'Top casual', price: 20000 }, { src: 'imagenes/tops3.webp', desc: 'Top bohemio', price: 27500 }, { src: 'imagenes/tops4.webp', desc: 'Top floral', price: 23750 }, { src: 'imagenes/tops5.webp', desc: 'Top moderno', price: 21990 }
+        ]
+      },
+      apego: {
+        displayName: "De Apego",
+        sectionImage: "imagenes/amigurumis4.webp",
+        products: [
+          { src: 'imagenes/amigurumis4.webp', desc: 'Muñeco de apego', price: 10000 }, { src: 'imagenes/apego.webp', desc: 'Conejo de apego', price: 9500 }, { src: 'imagenes/apego1.webp', desc: 'Oso de apego', price: 11000 }, { src: 'imagenes/apego2.webp', desc: 'Elefante de apego', price: 12000 }, { src: 'imagenes/apego3.webp', desc: 'Gatito de apego', price: 10750 }
+        ]
+      },
+      gorritos: {
+        displayName: "Gorritos",
+        sectionImage: "imagenes/gorritos4.webp",
+        products: [
+          { src: 'imagenes/gorritos4.webp', desc: 'Gorro de lana', price: 8990 }, { src: 'imagenes/gorritos2.webp', desc: 'Gorro con pompones', price: 9500 }, { src: 'imagenes/gorritos3.webp', desc: 'Gorro infantil', price: 7990 }, { src: 'imagenes/gorritos1.webp', desc: 'Gorro clásico', price: 10000 }, { src: 'imagenes/gorritos5.webp', desc: 'Gorro colorido', price: 9250 }, { src: 'imagenes/gorritos6.webp', desc: 'Gorro navideño', price: 11500 }, { src: 'imagenes/gorritos7.webp', desc: 'Gorro de animales', price: 12000 }, { src: 'imagenes/gorritos8.webp', desc: 'Gorro personalizado', price: 13000 }
+        ]
+      }
+    };
 
     let galerias = {}; 
     const indices = {}; 
 
     let isAdminLoggedIn = false;
-    const ADMIN_PANEL_PASSWORD = "Happiness281013";
+    const ADMIN_PANEL_PASSWORD = "Happiness281013"; 
 
     function generateCategoryKey(name) {
         return name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_ñ]/gi, '');
     }
 
+    function sanitizeImagePath(path, preferredExtension = 'webp') {
+        if (!path) return `imagenes/placeholder_error.${preferredExtension}`;
+        if (path.startsWith('data:image')) return path;
+
+        let filename = path.split('/').pop(); 
+        let namePart = filename;
+        let currentExtension = '';
+
+        if (filename.includes('.')) {
+            namePart = filename.substring(0, filename.lastIndexOf('.'));
+            currentExtension = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+        }
+        
+        if (currentExtension !== preferredExtension.toLowerCase()) {
+            filename = `${namePart}.${preferredExtension}`;
+        }
+        
+        if (!path.startsWith('imagenes/')) {
+             return `imagenes/${filename}`;
+        }
+        return path.substring(0, path.lastIndexOf('/') + 1) + filename;
+    }
+
     function loadGaleriasFromStorage() {
         const storedGalerias = localStorage.getItem('vivirTejerGalerias');
         if (storedGalerias) {
-            galerias = JSON.parse(storedGalerias);
-            for (const key in DEFAULT_GALERIAS) {
-                if (!galerias[key] || typeof galerias[key].products === 'undefined' || typeof galerias[key].displayName === 'undefined') {
-                    galerias[key] = JSON.parse(JSON.stringify(DEFAULT_GALERIAS[key]));
+            try {
+                galerias = JSON.parse(storedGalerias);
+                let changesMade = false; 
+
+                for (const key in DEFAULT_GALERIAS) {
+                    if (!galerias[key] || typeof galerias[key].products === 'undefined' || typeof galerias[key].displayName === 'undefined') {
+                        galerias[key] = JSON.parse(JSON.stringify(DEFAULT_GALERIAS[key])); 
+                        changesMade = true;
+                    } else { 
+                        const originalSectionImage = galerias[key].sectionImage;
+                        galerias[key].sectionImage = sanitizeImagePath(galerias[key].sectionImage);
+                        if (originalSectionImage !== galerias[key].sectionImage) changesMade = true;
+
+                        if (galerias[key].products) {
+                            galerias[key].products.forEach(p => {
+                                const originalProductSrc = p.src;
+                                p.src = sanitizeImagePath(p.src);
+                                if (originalProductSrc !== p.src) changesMade = true;
+                            });
+                        }
+                    }
                 }
+                for (const keyInStorage in galerias) {
+                    if (!DEFAULT_GALERIAS.hasOwnProperty(keyInStorage) && !galerias[keyInStorage].isCustom) {
+                        delete galerias[keyInStorage];
+                        changesMade = true;
+                    } else if (galerias[keyInStorage] && galerias[keyInStorage].products) { 
+                        const originalSectionImage = galerias[keyInStorage].sectionImage;
+                        galerias[keyInStorage].sectionImage = sanitizeImagePath(galerias[keyInStorage].sectionImage);
+                         if (originalSectionImage !== galerias[keyInStorage].sectionImage) changesMade = true;
+
+                        galerias[keyInStorage].products.forEach(p => {
+                            const originalProductSrc = p.src;
+                            p.src = sanitizeImagePath(p.src);
+                             if (originalProductSrc !== p.src) changesMade = true;
+                        });
+                    }
+                }
+
+                if (changesMade) {
+                    saveGaleriasToStorage(); 
+                }
+
+            } catch (e) {
+                console.error("Error al parsear galerias desde localStorage o al sanitizar, usando valores por defecto.", e);
+                galerias = JSON.parse(JSON.stringify(DEFAULT_GALERIAS));
+                saveGaleriasToStorage(); 
             }
+            
             for (const key in galerias) {
                 if (galerias.hasOwnProperty(key) && typeof indices[key] === 'undefined') {
                     indices[key] = 0;
                 }
             }
         } else {
-            galerias = JSON.parse(JSON.stringify(DEFAULT_GALERIAS));
+            galerias = JSON.parse(JSON.stringify(DEFAULT_GALERIAS)); 
             for (const key in galerias) { 
                 if (galerias.hasOwnProperty(key)) {
                     indices[key] = 0;
@@ -302,10 +380,36 @@ const DEFAULT_GALERIAS = {
         }
     }
     
+    let newCategoryImageBase64 = ""; 
+
+    document.getElementById('newCategoryImageFile').onchange = function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('newCategoryImagePreview');
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                newCategoryImageBase64 = e.target.result; 
+                preview.src = newCategoryImageBase64;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            newCategoryImageBase64 = "";
+            preview.src = "";
+            preview.style.display = 'none';
+        }
+    };
+
     function openAddCategoryModal() {
         document.getElementById('newCategoryName').value = '';
-        document.getElementById('newCategoryImageFile').value = '';
+        document.getElementById('newCategoryImageFile').value = ''; 
+        document.getElementById('newCategoryImagePreview').src = '';
+        document.getElementById('newCategoryImagePreview').style.display = 'none';
+        document.getElementById('newCategoryProductDesc').value = '';
+        document.getElementById('newCategoryProductPrice').value = '';
+        newCategoryImageBase64 = ""; 
         document.getElementById('addCategoryError').style.display = 'none';
+        
         closeAllModalsExcept(['addCategoryModal']);
         document.getElementById('addCategoryModal').style.display = 'block';
         document.getElementById('newCategoryName').focus();
@@ -318,17 +422,17 @@ const DEFAULT_GALERIAS = {
         const productDesc = document.getElementById('newCategoryProductDesc').value.trim();
         const productPrice = parseFloat(document.getElementById('newCategoryProductPrice').value);
 
-        errorP.style.display = 'none';
+        errorP.style.display = 'none'; 
 
         if (!categoryName) {
             errorP.textContent = 'El nombre de la categoría no puede estar vacío.';
             errorP.style.display = 'block'; return;
         }
-        if (!newCategoryImageBase64) {
+        if (!newCategoryImageBase64) { 
             errorP.textContent = 'Debes seleccionar una imagen de portada.';
             errorP.style.display = 'block'; return;
         }
-        if (!productDesc) {
+         if (!productDesc) {
             errorP.textContent = 'Debes ingresar una descripción para el producto inicial.';
             errorP.style.display = 'block'; return;
         }
@@ -345,33 +449,32 @@ const DEFAULT_GALERIAS = {
 
         galerias[categoryKey] = {
             displayName: categoryName,
-            sectionImage: newCategoryImageBase64,
+            sectionImage: newCategoryImageBase64, 
             products: [
-                {
-                    src: newCategoryImageBase64,
+                { 
+                    src: newCategoryImageBase64, 
                     desc: productDesc,
                     price: productPrice
                 }
-            ]
+            ],
+            isCustom: true 
         };
         indices[categoryKey] = 0; 
 
         saveGaleriasToStorage();
         updateNavigationAndGallerySections(); 
-        showNotification(`Categoría "${categoryName}" agregada.`, "success");
+        showNotification(`Categoría "${categoryName}" agregada con su primer producto.`, "success");
         closeModal('addCategoryModal');
-        // Limpia la imagen y campos para la próxima vez
-        newCategoryImageBase64 = "";
+        
+        newCategoryImageBase64 = ""; 
         document.getElementById('newCategoryImagePreview').style.display = 'none';
-        document.getElementById('newCategoryImageFile').value = '';
-        document.getElementById('newCategoryProductDesc').value = '';
-        document.getElementById('newCategoryProductPrice').value = '';
+        document.getElementById('newCategoryImageFile').value = ''; 
     }
 
     function updateNavigationAndGallerySections() {
         const navUl = document.querySelector('.nav ul');
         const galeriaMain = document.querySelector('main.galeria');
-        if (!navUl || !galeriaMain) { console.error("Error: Contenedores de navegación o galería no encontrados."); return;}
+        if (!navUl || !galeriaMain) { console.error("Error crítico: Contenedores de navegación o galería no encontrados en el DOM."); return;}
 
         navUl.innerHTML = ''; 
         galeriaMain.innerHTML = ''; 
@@ -379,9 +482,19 @@ const DEFAULT_GALERIAS = {
         for (const key in galerias) {
             if (galerias.hasOwnProperty(key)) {
                 const categoryData = galerias[key];
-                const displayName = categoryData.displayName || key.charAt(0).toUpperCase() + key.slice(1);
-                // Cambia solo el fallback de portada a .webp
-                const sectionImage = categoryData.sectionImage || (categoryData.products && categoryData.products.length > 0 ? categoryData.products[0].src : 'imagenes/placeholder_general.webp');
+                if (!categoryData || typeof categoryData.displayName === 'undefined') {
+                    console.warn(`Datos inválidos para la categoría '${key}'. Saltando.`);
+                    continue;
+                }
+
+                const displayName = categoryData.displayName;
+                let sectionImage = categoryData.sectionImage;
+                if (!sectionImage || (!sectionImage.startsWith('data:image') && !/\.(webp|jpeg|jpg|png)$/i.test(sectionImage))) {
+                     sectionImage = (categoryData.products && categoryData.products.length > 0 && categoryData.products[0].src) ? 
+                                    categoryData.products[0].src : 'imagenes/placeholder_general.webp';
+                }
+                sectionImage = sanitizeImagePath(sectionImage);
+
 
                 const navLi = document.createElement('li');
                 const navA = document.createElement('a');
@@ -399,7 +512,7 @@ const DEFAULT_GALERIAS = {
                 img.src = sectionImage; 
                 img.alt = displayName;
                 img.title = `Ver ${displayName}`;
-                img.onerror = function() { this.src = 'imagenes/placeholder_error.webp'; };
+                img.onerror = function() { this.src = 'imagenes/placeholder_error.webp'; console.error(`Error al cargar imagen de sección: ${this.src} para ${displayName}`); };
                 img.onclick = () => openModal(key);
                 section.appendChild(h3);
                 section.appendChild(img);
@@ -407,6 +520,11 @@ const DEFAULT_GALERIAS = {
 
                 if (!document.getElementById(`${key}Modal`)) {
                     createModalForCategory(key, displayName);
+                } else { 
+                    const modalImgElement = document.getElementById(`${key}Slide`);
+                    if(modalImgElement) modalImgElement.alt = `Galería ${displayName}`;
+                    const modalTitleElement = document.getElementById(`${key}ModalTitle`);
+                    if(modalTitleElement) modalTitleElement.textContent = `Carrusel de ${displayName}`;
                 }
             }
         }
@@ -426,12 +544,16 @@ const DEFAULT_GALERIAS = {
         const modalDiv = document.createElement('div');
         modalDiv.id = `${categoryKey}Modal`;
         modalDiv.className = 'modal product-carousel-modal'; 
+        modalDiv.setAttribute('role', 'dialog');
+        modalDiv.setAttribute('aria-modal', 'true');
+        modalDiv.setAttribute('aria-labelledby', `${categoryKey}ModalTitle`);
         modalDiv.innerHTML = `
             <div class="modal-content">
-              <span class="close" onclick="closeModal('${categoryKey}Modal')">&times;</span>
-              <span class="prev" onclick="changeSlide('${categoryKey}', -1)">&#10094;</span>
+              <span class="close" onclick="closeModal('${categoryKey}Modal')" aria-label="Cerrar carrusel">&times;</span>
+              <h2 id="${categoryKey}ModalTitle" class="visually-hidden">Carrusel de ${displayName}</h2>
+              <span class="prev" onclick="changeSlide('${categoryKey}', -1)" aria-label="Anterior">&#10094;</span>
               <img id="${categoryKey}Slide" src="" alt="Galería ${displayName}">
-              <span class="next" onclick="changeSlide('${categoryKey}', 1)">&#10095;</span>
+              <span class="next" onclick="changeSlide('${categoryKey}', 1)" aria-label="Siguiente">&#10095;</span>
               <div class="info-overlay" id="${categoryKey}Info"></div>
               <button class="add-to-cart" onclick="addToCart('${categoryKey}')">Agregar al Carrito</button>
             </div>
@@ -446,10 +568,9 @@ const DEFAULT_GALERIAS = {
         modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove());
         const categoryControlsDiv = document.createElement('div');
         categoryControlsDiv.className = 'admin-category-controls';
-
-        // Botón Agregar Producto
+        
         const btnAdd = document.createElement('button');
-        btnAdd.innerHTML = `<i class="fas fa-plus-circle"></i> Agregar a ${categoryData.displayName}`;
+        btnAdd.innerHTML = `<i class="fas fa-plus-circle"></i> Agregar Producto a ${categoryData.displayName}`;
         btnAdd.className = 'admin-btn';
         btnAdd.style.backgroundColor = '#4CAF50';
         btnAdd.onclick = () => {
@@ -458,21 +579,20 @@ const DEFAULT_GALERIAS = {
         };
         categoryControlsDiv.appendChild(btnAdd);
 
-        // Botón Eliminar Categoría
         const btnDeleteCategory = document.createElement('button');
-        btnDeleteCategory.innerHTML = `<i class="fas fa-trash"></i> Eliminar Categoría`;
+        btnDeleteCategory.innerHTML = `<i class="fas fa-trash"></i> Eliminar Categoría ${categoryData.displayName}`;
         btnDeleteCategory.className = 'admin-btn';
         btnDeleteCategory.style.backgroundColor = '#d94f4f';
         btnDeleteCategory.style.color = '#fff';
         btnDeleteCategory.onclick = () => {
-            window._categoryToDelete = categoryKey;
-            window._lastOpenedCategoryKey = categoryKey; // Guarda la categoría activa
-            document.getElementById('deleteCategoryWarningModal').style.display = 'flex';
-            // Oculta el carrusel mientras está la advertencia
-            document.getElementById(`${categoryKey}Modal`).style.display = 'none';
+            window._categoryToDelete = categoryKey; 
+            window._lastOpenedCategoryKey = categoryKey;
+            const carruselModal = document.getElementById(`${categoryKey}Modal`);
+            if (carruselModal) carruselModal.style.display = 'none'; 
+            document.getElementById('deleteCategoryWarningModal').style.display = 'flex'; 
         };
         categoryControlsDiv.appendChild(btnDeleteCategory);
-
+        
         const addToCartBtn = modalContentElement.querySelector('.add-to-cart');
         if (addToCartBtn) {
             addToCartBtn.parentNode.insertBefore(categoryControlsDiv, addToCartBtn);
@@ -481,13 +601,41 @@ const DEFAULT_GALERIAS = {
         }
     }
 
+    document.getElementById('cancelDeleteCategoryBtn').onclick = function() {
+        document.getElementById('deleteCategoryWarningModal').style.display = 'none';
+        window._categoryToDelete = null; 
+        if (window._lastOpenedCategoryKey) {
+            const modalToReopen = document.getElementById(`${window._lastOpenedCategoryKey}Modal`);
+            if (modalToReopen) {
+                modalToReopen.style.display = 'block'; 
+                if (modalToReopen.classList.contains('product-carousel-modal')) {
+                    document.body.classList.add('product-modal-open');
+                }
+            }
+        }
+    };
+    document.getElementById('confirmDeleteCategoryBtn').onclick = function() {
+        const categoryKey = window._categoryToDelete;
+        if (categoryKey && galerias[categoryKey]) {
+            delete galerias[categoryKey];
+            delete indices[categoryKey]; 
+            saveGaleriasToStorage();
+            updateNavigationAndGallerySections();
+            showNotification("Categoría eliminada.", "success");
+        }
+        document.getElementById('deleteCategoryWarningModal').style.display = 'none';
+        closeAllModalsExcept(); 
+        window._categoryToDelete = null;
+        window._lastOpenedCategoryKey = null; 
+    };
+    
+
     function addAdminItemSpecificControls(categoryKey, productIndex, modalContentElement) {
         if (!isAdminLoggedIn || !galerias[categoryKey] || !galerias[categoryKey].products || !galerias[categoryKey].products[productIndex]) return;
         modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
         const productControlsDiv = document.createElement('div');
         productControlsDiv.className = 'admin-product-controls';
-
-        // Botón Editar
+        
         const btnEdit = document.createElement('button');
         btnEdit.innerHTML = '<i class="fas fa-edit"></i> Editar Producto';
         btnEdit.className = 'admin-btn';
@@ -497,8 +645,7 @@ const DEFAULT_GALERIAS = {
             openAdminFormProductModal('edit', categoryKey, productIndex);
         };
         productControlsDiv.appendChild(btnEdit);
-
-        // Botón Eliminar
+        
         const btnDelete = document.createElement('button');
         btnDelete.innerHTML = '<i class="fas fa-trash-alt"></i> Eliminar Producto';
         btnDelete.className = 'admin-btn';
@@ -506,32 +653,24 @@ const DEFAULT_GALERIAS = {
         btnDelete.onclick = () => handleDeleteProductConfirmation(categoryKey, productIndex);
         productControlsDiv.appendChild(btnDelete);
 
-        // Botón Usar como portada
-        const btnPortada = document.createElement('button');
-        btnPortada.innerHTML = '<i class="fas fa-star"></i> Usar como portada';
-        btnPortada.className = 'admin-btn';
-        btnPortada.style.backgroundColor = '#4CAF50';
-        btnPortada.style.color = '#fff';
-        btnPortada.onclick = () => {
-            const productos = galerias[categoryKey].products;
-            if (productIndex > 0 && productos[productIndex]) {
-                // Mueve el producto a la primera posición
-                const [productoPortada] = productos.splice(productIndex, 1);
-                productos.unshift(productoPortada);
-                // Actualiza la imagen de portada de la categoría
-                galerias[categoryKey].sectionImage = productoPortada.src;
-                indices[categoryKey] = 0;
-                saveGaleriasToStorage();
-                updateNavigationAndGallerySections();
-                showNotification("¡Portada actualizada!", "success");
-                // Reabrir el carrusel en la nueva portada
-                closeAllModalsExcept();
-                openModal(categoryKey);
-            }
+        const btnSetCover = document.createElement('button');
+        btnSetCover.innerHTML = '<i class="fas fa-image"></i> Usar como Portada';
+        btnSetCover.className = 'admin-btn';
+        btnSetCover.style.backgroundColor = '#5bc0de'; 
+        btnSetCover.onclick = () => {
+            const currentProductSrc = galerias[categoryKey].products[productIndex].src;
+            galerias[categoryKey].sectionImage = currentProductSrc; 
+            const productToMove = galerias[categoryKey].products.splice(productIndex, 1)[0];
+            galerias[categoryKey].products.unshift(productToMove);
+            indices[categoryKey] = 0; 
+            saveGaleriasToStorage();
+            updateNavigationAndGallerySections(); 
+            showNotification("Imagen de portada de categoría actualizada.", "success");
+            closeModal(`${categoryKey}Modal`);
+            openModal(categoryKey);
         };
-        productControlsDiv.appendChild(btnPortada);
-
-        // Insertar controles
+        productControlsDiv.appendChild(btnSetCover);
+        
         const infoOverlay = modalContentElement.querySelector('.info-overlay');
         const targetElementForProductControls = infoOverlay || modalContentElement.querySelector('.admin-category-controls') || modalContentElement.querySelector('.add-to-cart');
         if (targetElementForProductControls === infoOverlay && infoOverlay.nextSibling) {
@@ -546,8 +685,8 @@ const DEFAULT_GALERIAS = {
     function openAdminFormProductModal(mode, categoryKey, productIndex = -1) {
         const formModal = document.getElementById('adminFormProductModal');
         const form = document.getElementById('adminProductFormInstance');
-        form.reset();
-        document.getElementById('adminProductImageSelectedFileName').textContent = '';
+        form.reset(); 
+        document.getElementById('adminProductImageSelectedFileName').textContent = ''; 
         document.getElementById('adminEditModeCategoryKey').value = categoryKey;
         document.getElementById('adminEditModeProductIndex').value = productIndex;
         const categoryDisplayName = galerias[categoryKey] ? galerias[categoryKey].displayName : categoryKey;
@@ -563,14 +702,21 @@ const DEFAULT_GALERIAS = {
         } else { console.error("Error al abrir formulario de producto: modo o datos inválidos."); return; }
         closeAllModalsExcept(['adminFormProductModal']);
         formModal.style.display = 'block';
-        document.getElementById('adminProductDesc').focus();
+        document.getElementById('adminProductDesc').focus(); 
     }
     
     document.getElementById('adminProductImageFileSelector').onchange = function(event) {
         const file = event.target.files[0];
         if (file) {
-            document.getElementById('adminProductImageSelectedFileName').textContent = `Seleccionado: ${file.name}`;
-            document.getElementById('adminProductImageSrcPath').value = `imagenes/${file.name}`;
+            const fileNameWithExtension = file.name;
+            let fileNameWithoutExtension = fileNameWithExtension;
+            if (fileNameWithExtension.includes('.')) {
+                 fileNameWithoutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.lastIndexOf('.'));
+            }
+            const finalFileName = `${fileNameWithoutExtension}.webp`;
+            document.getElementById('adminProductImageSelectedFileName').textContent = `Seleccionado: ${finalFileName} (convertir a WebP si es necesario)`;
+            document.getElementById('adminProductImageSrcPath').value = `imagenes/${finalFileName}`;
+            showNotification("Recuerda subir esta imagen como .webp en la carpeta 'imagenes'.", "info");
         } else {
             document.getElementById('adminProductImageSelectedFileName').textContent = '';
         }
@@ -582,12 +728,14 @@ const DEFAULT_GALERIAS = {
         const productIndex = parseInt(document.getElementById('adminEditModeProductIndex').value, 10);
         const desc = document.getElementById('adminProductDesc').value.trim();
         const price = parseFloat(document.getElementById('adminProductPriceValue').value);
-        const src = document.getElementById('adminProductImageSrcPath').value.trim();
+        let srcInput = document.getElementById('adminProductImageSrcPath').value.trim();
+        
+        let src = sanitizeImagePath(srcInput); 
 
         if (!desc || isNaN(price) || price < 0 || !src || !categoryKey) {
             showNotification("Por favor, completa todos los campos correctamente.", "error"); return;
         }
-        const productData = { src, desc, price };
+        const productData = { src, desc, price }; 
         if (!galerias[categoryKey] || !galerias[categoryKey].products) {
              galerias[categoryKey] = galerias[categoryKey] || { displayName: categoryKey, sectionImage: '', products: [] };
              galerias[categoryKey].products = galerias[categoryKey].products || [];
@@ -595,93 +743,81 @@ const DEFAULT_GALERIAS = {
         if (productIndex === -1) { 
             galerias[categoryKey].products.push(productData);
             showNotification("Producto agregado.", "success");
-            indices[categoryKey] = galerias[categoryKey].products.length - 1;
+            indices[categoryKey] = galerias[categoryKey].products.length - 1; 
         } else { 
             galerias[categoryKey].products[productIndex] = productData;
             showNotification("Producto actualizado.", "success");
         }
         saveGaleriasToStorage();
-        closeModal('adminFormProductModal'); 
+        closeModal('adminFormProductModal');
+        openModal(categoryKey); 
     };
     
     function handleDeleteProductConfirmation(categoryKey, productIndex) {
-        const product = galerias[categoryKey].products[productIndex];
-
-        // Si ya existe un modal de advertencia de producto, elimínalo primero
+        const product = galerias[categoryKey]?.products?.[productIndex];
+        if(!product) {
+            showNotification("Error: Producto no encontrado para eliminar.", "error");
+            return;
+        }
+        
         const existingModal = document.getElementById('deleteProductWarningModal');
         if (existingModal) existingModal.remove();
 
-        // Crea el modal personalizado
-        const modal = document.createElement('div');
-        modal.id = 'deleteProductWarningModal';
-        modal.className = 'modal';
-        modal.style.display = 'flex';
-        modal.innerHTML = `
+        const warningModal = document.createElement('div'); 
+        warningModal.id = 'deleteProductWarningModal';
+        warningModal.className = 'modal'; 
+        warningModal.style.display = 'flex'; 
+        warningModal.innerHTML = `
           <div class="modal-content warning-modal-content">
+            <span class="close visually-hidden" onclick="this.closest('#deleteProductWarningModal').querySelector('#cancelDeleteProductBtn_dyn').click()">&times;</span>
             <p class="warning-text">
               ⚠️ <strong>ATENCIÓN</strong> ⚠️<br><br>
               ¿Estás seguro de que quieres eliminar "<b>${product.desc}</b>"?<br>
               <span style="color:#d94f4f;">Esta acción NO se puede deshacer.</span>
             </p>
             <div class="warning-actions">
-              <button id="confirmDeleteProductBtn" class="admin-btn" style="background:#d94f4f;color:#fff;">Eliminar</button>
-              <button id="cancelDeleteProductBtn" class="admin-btn cancel-btn" style="background:#888;color:#fff;">Cancelar</button>
+              <button id="confirmDeleteProductBtn_dyn" class="admin-btn" style="background:#d94f4f;color:#fff;">Eliminar</button>
+              <button id="cancelDeleteProductBtn_dyn" class="admin-btn cancel-btn" style="background:#888;color:#fff;">Cancelar</button>
             </div>
           </div>
         `;
-        document.body.appendChild(modal);
+        document.body.appendChild(warningModal);
+        
+        const carruselModal = document.getElementById(`${categoryKey}Modal`);
+        if (carruselModal) carruselModal.style.display = 'none';
 
-        // Guardar la categoría activa para reabrir el carrusel
-        window._lastOpenedCategoryKey = categoryKey;
-
-        // Confirmar eliminación
-        modal.querySelector('#confirmDeleteProductBtn').onclick = function() {
+        warningModal.querySelector('#confirmDeleteProductBtn_dyn').onclick = function() {
             galerias[categoryKey].products.splice(productIndex, 1);
             saveGaleriasToStorage();
             showNotification(`"${product.desc}" ha sido eliminado.`, "success");
+            
             if (indices[categoryKey] >= galerias[categoryKey].products.length && galerias[categoryKey].products.length > 0) {
                 indices[categoryKey] = galerias[categoryKey].products.length - 1;
             } else if (galerias[categoryKey].products.length === 0) {
-                indices[categoryKey] = 0;
+                indices[categoryKey] = 0; 
             }
-            updateSlide(categoryKey);
-            updateAdminControlsInOpenModals();
-            modal.remove();
+            
+            warningModal.remove(); 
+            
+            if(carruselModal) { 
+                carruselModal.style.display = 'block'; 
+                 if (carruselModal.classList.contains('product-carousel-modal')) {
+                    document.body.classList.add('product-modal-open');
+                }
+                updateSlide(categoryKey); 
+                updateAdminControlsInOpenModals(); 
+            }
         };
 
-        // Cancelar
-        modal.querySelector('#cancelDeleteProductBtn').onclick = function() {
-            modal.remove();
-            // Reabrir carrusel
-            if (window._lastOpenedCategoryKey) {
-                document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
+        warningModal.querySelector('#cancelDeleteProductBtn_dyn').onclick = function() {
+            warningModal.remove();
+            if(carruselModal) {
+                carruselModal.style.display = 'block'; 
+                if (carruselModal.classList.contains('product-carousel-modal')) {
+                    document.body.classList.add('product-modal-open');
+                }
             }
         };
-
-        // Cerrar con ESC
-        function escListener(e) {
-            if (modal.parentNode && (e.key === 'Escape' || e.key === 'Esc')) {
-                modal.remove();
-                if (window._lastOpenedCategoryKey) {
-                    document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
-                }
-                document.removeEventListener('keydown', escListener);
-                e.preventDefault();
-            }
-        }
-        document.addEventListener('keydown', escListener);
-
-        // Cerrar con botón de retroceso
-        function popListener() {
-            if (modal.parentNode) {
-                modal.remove();
-                if (window._lastOpenedCategoryKey) {
-                    document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
-                }
-                window.removeEventListener('popstate', popListener);
-            }
-        }
-        window.addEventListener('popstate', popListener);
     }
 
     function openModal(categoryKey) {
@@ -696,18 +832,24 @@ const DEFAULT_GALERIAS = {
 
         if (!modalElement) { 
             const categoryData = galerias[categoryKey];
-            if (categoryData) {
+            if (categoryData && categoryData.displayName) {
                 createModalForCategory(categoryKey, categoryData.displayName);
                 modalElement = document.getElementById(modalId);
-            } else { return; }
+            } else { 
+                console.error(`No se pudo crear o encontrar el modal para la categoría: ${categoryKey}`);
+                return; 
+            } 
         }
-        if (!modalElement) { return;} 
+        if (!modalElement) { 
+            console.error(`Modal ${modalId} no existe ni pudo ser creado.`);
+            return;
+        }
 
         closeAllModalsExcept([modalId]); 
         
         modalElement.style.display = 'block';
         if (modalElement.classList.contains('product-carousel-modal')) {
-            document.body.classList.add('product-modal-open');
+            document.body.classList.add('product-modal-open'); // Clase para ocultar el carrito, etc.
         }
         
         const currentHash = `#${categoryKey}`;
@@ -718,34 +860,38 @@ const DEFAULT_GALERIAS = {
         indices[categoryKey] = indices[categoryKey] || 0; 
         const currentCategoryProducts = galerias[categoryKey].products;
         if (currentCategoryProducts && currentCategoryProducts.length > 0 && indices[categoryKey] >= currentCategoryProducts.length) {
-            indices[categoryKey] = 0;
+            indices[categoryKey] = 0; 
         }
         updateSlide(categoryKey); 
 
         if (isAdminLoggedIn) {
             const modalContentElement = modalElement.querySelector('.modal-content');
-            modalContentElement.querySelectorAll('.admin-category-controls, .admin-product-controls').forEach(el => el.remove());
-            addAdminCategoryControlsToProductModal(categoryKey, modalContentElement);
-            if(currentCategoryProducts && currentCategoryProducts.length > 0 && currentCategoryProducts[indices[categoryKey]]) {
-                addAdminItemSpecificControls(categoryKey, indices[categoryKey], modalContentElement);
+            if (modalContentElement) {
+                modalContentElement.querySelectorAll('.admin-category-controls, .admin-product-controls').forEach(el => el.remove()); 
+                addAdminCategoryControlsToProductModal(categoryKey, modalContentElement);
+                if(currentCategoryProducts && currentCategoryProducts.length > 0 && currentCategoryProducts[indices[categoryKey]]) { 
+                    addAdminItemSpecificControls(categoryKey, indices[categoryKey], modalContentElement);
+                }
             }
         }
     }
 
     function closeModal(modalId, fromPopState = false) {
       const modalElement = document.getElementById(modalId);
-      if (modalElement && modalElement.style.display === 'block') {
+      if (modalElement && modalElement.style.display !== 'none') { 
         modalElement.style.display = 'none';
         if (modalElement.classList.contains('product-carousel-modal')) {
-            document.body.classList.remove('product-modal-open');
+            document.body.classList.remove('product-modal-open'); // Quitar clase al cerrar
         }
 
         if (!fromPopState) { 
-            const categoryKey = modalId.replace('Modal', '');
-             // Solo modificar el historial si el hash actual corresponde al modal que se cierra
-            if (window.location.hash === `#${categoryKey}` || 
-                (modalId === 'cartModal' && window.location.hash === '#cart') || // Ejemplo para otros modales
-                (modalId === 'adminLoginModal' && window.location.hash === '#adminLogin') ) { // Ejemplo
+            let expectedHash = '';
+            if (modalElement.classList.contains('product-carousel-modal')) {
+                expectedHash = `#${modalId.replace('Modal', '')}`;
+            } else if (modalId === 'cartModal') {
+                expectedHash = '#cart';
+            }
+            if (window.location.hash === expectedHash && expectedHash !== '') {
                  history.replaceState(null, '', window.location.pathname + window.location.search);
             }
         }
@@ -754,13 +900,10 @@ const DEFAULT_GALERIAS = {
 
     function closeAllModalsExcept(excludeIds = []) {
         document.querySelectorAll('.modal').forEach(modal => {
-            if (!excludeIds.includes(modal.id) && modal.style.display === 'block') {
+            if (!excludeIds.includes(modal.id) && modal.style.display !== 'none') {
                 if (modal.classList.contains('product-carousel-modal')) {
                     document.body.classList.remove('product-modal-open');
                 }
-                // No llamar a closeModal con fromPopState=true aquí directamente,
-                // ya que este es un cierre proactivo, no una reacción al botón atrás.
-                // La lógica de historial se manejará en el closeModal individual.
                 closeModal(modal.id); 
             }
         });
@@ -776,52 +919,54 @@ const DEFAULT_GALERIAS = {
     function updateSlide(categoryKey) {
         const modalId = `${categoryKey}Modal`;
         const modalElement = document.getElementById(modalId);
-        if (!modalElement) return;
+        if (!modalElement || modalElement.style.display === 'none') return; 
 
         const imgElement = document.getElementById(`${categoryKey}Slide`);
         const infoElement = document.getElementById(`${categoryKey}Info`);
         const modalContentElement = modalElement.querySelector('.modal-content');
-        const prevButton = modalElement.querySelector('.prev');
-        const nextButton = modalElement.querySelector('.next');
-        const addToCartButton = modalContentElement.querySelector('.add-to-cart');
-
-        if (!imgElement || !infoElement || !modalContentElement || !prevButton || !nextButton || !addToCartButton) {
-             console.warn(`Elementos del modal para '${categoryKey}' no encontrados.`);
+        
+        if (!imgElement || !infoElement || !modalContentElement) {
+             console.warn(`Elementos críticos del modal para '${categoryKey}' (imagen, info o contenido) no encontrados.`);
              return; 
         }
+        const prevButton = modalContentElement.querySelector('.prev'); 
+        const nextButton = modalContentElement.querySelector('.next');
+        const addToCartButton = modalContentElement.querySelector('.add-to-cart');
 
-        if(isAdminLoggedIn) { 
+
+        if(isAdminLoggedIn && modalContentElement) { 
              modalContentElement.querySelectorAll('.admin-product-controls').forEach(el => el.remove());
         }
         
         const currentCategory = galerias[categoryKey];
         if (!currentCategory || !currentCategory.products || currentCategory.products.length === 0) {
-            imgElement.src = 'imagenes/placeholder_categoria_vacia.webp';
+            imgElement.src = sanitizeImagePath('imagenes/placeholder_categoria_vacia.webp'); 
             imgElement.alt = `No hay productos en ${currentCategory ? currentCategory.displayName : categoryKey}.`;
             infoElement.textContent = 'Categoría vacía.';
-            prevButton.style.display = 'none';
-            nextButton.style.display = 'none';
-            addToCartButton.style.display = 'none';
-            if(isAdminLoggedIn){
+            if (prevButton) prevButton.style.display = 'none';
+            if (nextButton) nextButton.style.display = 'none';
+            if (addToCartButton) addToCartButton.style.display = 'none';
+            if(isAdminLoggedIn && modalContentElement){ 
                 modalContentElement.querySelectorAll('.admin-category-controls').forEach(el => el.remove()); 
                 addAdminCategoryControlsToProductModal(categoryKey, modalContentElement); 
             }
             return;
         }
         
-        prevButton.style.display = currentCategory.products.length > 1 ? 'block' : 'none';
-        nextButton.style.display = currentCategory.products.length > 1 ? 'block' : 'none';
-        addToCartButton.style.display = 'block';
+        if (prevButton) prevButton.style.display = currentCategory.products.length > 1 ? 'flex' : 'none'; 
+        if (nextButton) nextButton.style.display = currentCategory.products.length > 1 ? 'flex' : 'none';
+        if (addToCartButton) addToCartButton.style.display = 'inline-flex'; 
 
         const currentProductIndex = indices[categoryKey];
         const item = currentCategory.products[currentProductIndex];
         
         if (!item) { 
+            console.error(`Producto no encontrado en índice ${currentProductIndex} para categoría ${categoryKey}`);
             if (currentCategory.products.length > 0) { 
-                indices[categoryKey] = 0;
+                indices[categoryKey] = 0; 
                 updateSlide(categoryKey); 
-            } else {
-                 imgElement.src = 'imagenes/placeholder_error_producto.jpg';
+            } else { 
+                 imgElement.src = sanitizeImagePath('imagenes/placeholder_error_producto.webp');
                  imgElement.alt = 'Error al cargar producto.';
                  infoElement.textContent = 'Error.';
             }
@@ -830,15 +975,15 @@ const DEFAULT_GALERIAS = {
 
         imgElement.classList.add('fade-out');
         setTimeout(() => {
-            imgElement.src = item.src;
-            imgElement.onerror = function() { this.src = 'imagenes/placeholder_imagen_no_encontrada.webp'; };
+            imgElement.src = item.src; 
+            imgElement.onerror = function() { this.src = sanitizeImagePath('imagenes/placeholder_imagen_no_encontrada.webp'); console.error(`Error al cargar imagen de producto: ${this.src} para ${item.desc}`); };
             imgElement.alt = item.desc;
             imgElement.classList.remove('fade-out');
             infoElement.textContent = `${item.desc} - ${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}`;
-            if (isAdminLoggedIn) {
+            if (isAdminLoggedIn && modalContentElement) { 
                 addAdminItemSpecificControls(categoryKey, currentProductIndex, modalContentElement);
             }
-        }, 300);
+        }, 300); 
     }
 
     function addToCart(categoryKey) {
@@ -861,24 +1006,26 @@ const DEFAULT_GALERIAS = {
     }
 
     function showNotification(message, type = 'info') {
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`; 
-  let iconClass = 'info-circle'; 
-  if (type === 'success') { iconClass = 'check-circle'; } 
-  else if (type === 'error') { iconClass = 'exclamation-circle'; }
-  notification.innerHTML = `<i class="fas fa-${iconClass} notification-icon"></i><span class="notification-message">${message}</span>`;
-  document.body.appendChild(notification);
-  setTimeout(() => notification.classList.add('show'), 10); 
-  setTimeout(() => {
-    notification.classList.remove('show'); 
-    setTimeout(() => notification.remove(), 400); 
-  }, 3000); 
-}
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`; 
+      let iconClass = 'info-circle'; 
+      if (type === 'success') { iconClass = 'check-circle'; } 
+      else if (type === 'error') { iconClass = 'exclamation-circle'; }
+      notification.innerHTML = `<i class="fas fa-${iconClass} notification-icon"></i><span class="notification-message">${message}</span>`;
+      document.body.appendChild(notification);
+      setTimeout(() => notification.classList.add('show'), 10); 
+      setTimeout(() => {
+        notification.classList.remove('show'); 
+        setTimeout(() => notification.remove(), 400); 
+      }, 3000); 
+    }
 
     function openCartModal() { 
+        const cartModalElem = document.getElementById('cartModal');
+        if (!cartModalElem) return;
         closeAllModalsExcept(['cartModal']); 
-        document.getElementById('cartModal').style.display = 'block'; 
-        if (window.location.hash !== '#cart') { // Solo empujar al historial si no estamos ya ahí
+        cartModalElem.style.display = 'block'; 
+        if (window.location.hash !== '#cart') {
             history.pushState({ openedModalId: 'cartModal' }, '', '#cart');
         }
         renderCart(); 
@@ -886,8 +1033,10 @@ const DEFAULT_GALERIAS = {
     function renderCart() {
         const cartItemsDiv = document.getElementById('cartItems');
         const cartTotalDiv = document.getElementById('cartTotal');
+        if(!cartItemsDiv || !cartTotalDiv) return;
+
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        cartItemsDiv.innerHTML = '';
+        cartItemsDiv.innerHTML = ''; 
         if (cart.length === 0) {
             cartItemsDiv.innerHTML = '<p>Tu carrito está vacío.</p>';
             cartTotalDiv.innerHTML = '';
@@ -900,18 +1049,18 @@ const DEFAULT_GALERIAS = {
             itemElement.className = 'cart-item';
             const itemSubtotal = item.price * (item.quantity || 1);
             itemElement.innerHTML = `
-            <img src="${item.src}" alt="${item.desc}" onerror="this.src='imagenes/placeholder_imagen_no_encontrada.jpg';">
+            <img src="${item.src}" alt="${item.desc}" onerror="this.src='imagenes/placeholder_imagen_no_encontrada.webp';">
             <div class="cart-item-info">
                 <p><strong>${item.desc}</strong></p>
                 <p>${item.price.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} x ${item.quantity || 1} = ${itemSubtotal.toLocaleString('es-AR', {style: 'currency', currency: 'ARS'})}</p>
                 <div class="cart-item-quantity">
                 Cantidad: 
-                <button onclick="updateQuantity(${index}, -1)" class="quantity-btn">-</button>
+                <button onclick="updateQuantity(${index}, -1)" class="quantity-btn" aria-label="Disminuir cantidad">-</button>
                 <span>${item.quantity || 1}</span>
-                <button onclick="updateQuantity(${index}, 1)" class="quantity-btn">+</button>
+                <button onclick="updateQuantity(${index}, 1)" class="quantity-btn" aria-label="Aumentar cantidad">+</button>
                 </div>
             </div>
-            <button onclick="removeFromCart(${index})" class="remove-item-btn"><i class="fas fa-times"></i></button>
+            <button onclick="removeFromCart(${index})" class="remove-item-btn" aria-label="Eliminar producto del carrito"><i class="fas fa-times"></i></button>
             `;
             cartItemsDiv.appendChild(itemElement);
             total += itemSubtotal;
@@ -924,7 +1073,7 @@ const DEFAULT_GALERIAS = {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         if (cart[index]) {
             cart[index].quantity = (cart[index].quantity || 1) + change;
-            if (cart[index].quantity < 1) cart.splice(index, 1);
+            if (cart[index].quantity < 1) cart.splice(index, 1); 
             localStorage.setItem('cart', JSON.stringify(cart));
             renderCart();
         }
@@ -937,13 +1086,15 @@ const DEFAULT_GALERIAS = {
     }
     function clearCart() {
         localStorage.removeItem('cart');
-        renderCart();
+        renderCart(); 
         showNotification('Tu carrito ha sido vaciado', 'info'); 
+        closeModal('cartModal'); 
     }
     function checkout() { 
         const cart = JSON.parse(localStorage.getItem('cart')) || []; 
         if (cart.length === 0) { 
             showNotification('Tu carrito está vacío', 'error'); 
+            closeModal('cartModal'); 
             return; 
         } 
         let message = "¡Hola! Quiero realizar la siguiente compra:\n\n"; 
@@ -958,6 +1109,7 @@ const DEFAULT_GALERIAS = {
         message += "Por favor, indíquenme cómo proceder con el pago y envío. ¡Gracias!"; 
         const encodedMessage = encodeURIComponent(message); 
         window.open(`https://wa.me/5492266535128?text=${encodedMessage}`, '_blank'); 
+        closeModal('cartModal'); 
     }
   
     function updateCartBadge() {
@@ -969,75 +1121,109 @@ const DEFAULT_GALERIAS = {
         const prevCount = parseInt(badge.dataset.prevCount || "0");
         if (totalItems !== prevCount && !badge.classList.contains('update-animation')) { 
             badge.classList.add('update-animation');
-            setTimeout(() => badge.classList.remove('update-animation'), 500);
+            setTimeout(() => badge.classList.remove('update-animation'), 500); 
         }
-        badge.dataset.prevCount = totalItems;
+        badge.dataset.prevCount = totalItems; 
     }
     
     window.addEventListener('popstate', function(event) {
-        // Este evento se dispara cuando el usuario presiona "atrás" o "adelante" en el navegador.
-        // Si hay un estado guardado y ese estado indica que un modal estaba abierto,
-        // o si simplemente hay un hash que podría corresponder a un modal, intentamos cerrarlo.
-        
-        // Primero, intentamos cerrar cualquier modal de producto que coincida con el hash anterior
-        // o que simplemente esté abierto.
         let modalIdFromState = event.state ? event.state.openedModalId : null;
+        let closedAModalViaPopState = false;
 
-        document.querySelectorAll('.modal[style*="display: block"]').forEach(openModal => {
-            // Si el modal abierto es el que causó el estado anterior, O si no hay estado (pero hay hash), ciérralo.
-            // O si el hash actual es la URL base (sin hash), cierra todos los modales de producto.
-            if (openModal.classList.contains('product-carousel-modal') || openModal.id === 'cartModal' || openModal.id.includes('admin')) {
-                 if (!window.location.hash || (modalIdFromState && openModal.id === modalIdFromState) || (window.location.hash && openModal.id.toLowerCase().includes(window.location.hash.substring(1).toLowerCase()))) {
-                    closeModal(openModal.id, true); // 'true' indica que es desde popstate
-                 } else if (!window.location.hash && openModal.style.display === 'block') { // Si no hay hash, cierra cualquier modal abierto
-                    closeModal(openModal.id, true);
-                 }
+        document.querySelectorAll('.modal[style*="display: block"], .modal[style*="display: flex"]').forEach(openModalElem => {
+            let expectedHashForThisModal = '';
+            let shouldCloseThisModal = false;
+
+            if (openModalElem.classList.contains('product-carousel-modal')) {
+                expectedHashForThisModal = `#${openModalElem.id.replace('Modal', '')}`;
+            } else if (openModalElem.id === 'cartModal') {
+                expectedHashForThisModal = '#cart';
+            }
+
+            if (!window.location.hash && openModalElem.style.display !== 'none') {
+                shouldCloseThisModal = true;
+            } else if (window.location.hash !== expectedHashForThisModal && expectedHashForThisModal !== '') {
+                if (modalIdFromState === openModalElem.id || (!modalIdFromState && openModalElem.style.display !== 'none')) {
+                    shouldCloseThisModal = true;
+                }
+            } else if (expectedHashForThisModal === '' && window.location.hash && openModalElem.style.display !== 'none') {
+                shouldCloseThisModal = true;
+            }
+            
+            if (shouldCloseThisModal) {
+                closedAModalViaPopState = true;
+                if (openModalElem.id === 'deleteProductWarningModal') {
+                    const cancelButton = openModalElem.querySelector('#cancelDeleteProductBtn_dyn');
+                    if (cancelButton) cancelButton.click(); else closeModal(openModalElem.id, true);
+                } else if (openModalElem.id === 'deleteCategoryWarningModal') {
+                    const cancelButton = openModalElem.querySelector('#cancelDeleteCategoryBtn');
+                    if (cancelButton) cancelButton.click(); else closeModal(openModalElem.id, true);
+                } else {
+                    closeModal(openModalElem.id, true);
+                }
             }
         });
 
-        // Asegurar que la clase del body se limpie si no hay modales de producto abiertos
+        if (closedAModalViaPopState && !window.location.hash) { 
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
         const anyProductModalOpen = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
-        if (!anyProductModalOpen) {
-            document.body.classList.remove('product-modal-open');
+        if (!anyProductModalOpen) { // Si no hay ningún carrusel de producto abierto
+            document.body.classList.remove('product-modal-open'); // Quitar clase
         }
     });
 
     document.addEventListener('keydown', function(e) {
       let modalHandledByEscape = false;
       if (e.key === 'Enter') {
-        if (document.getElementById('adminFormProductModal').style.display === 'block') {
+        const adminFormModal = document.getElementById('adminFormProductModal');
+        const addCategoryModal = document.getElementById('addCategoryModal');
+        const adminLoginModal = document.getElementById('adminLoginModal');
+
+        if (adminFormModal && adminFormModal.style.display === 'block') {
             e.preventDefault();
             document.getElementById('adminProductFormInstance').dispatchEvent(new Event('submit'));
-        } else if (document.getElementById('addCategoryModal').style.display === 'block') {
+        } else if (addCategoryModal && addCategoryModal.style.display === 'block') {
             e.preventDefault();
             handleAddCategory();
-        } else if (document.getElementById('adminLoginModal').style.display === 'block') {
+        } else if (adminLoginModal && adminLoginModal.style.display === 'block') {
             e.preventDefault();
             handleAdminLoginAttempt();
         }
       }
       
       if (e.key === 'Escape') {
-        const modalesExcepcion = ['adminLoginModal', 'cartModal'];
-        let esModalExcepcionAbierto = false;
-        
-        for (const modalId of modalesExcepcion) {
+        const priorityModalsIds = ['deleteCategoryWarningModal', 'deleteProductWarningModal', 'addCategoryModal', 'adminFormProductModal', 'adminLoginModal', 'cartModal'];
+        let closedPriorityModal = false;
+
+        for (const modalId of priorityModalsIds) {
             const modalElement = document.getElementById(modalId);
-            if (modalElement && modalElement.style.display === 'block') {
-                closeModal(modalId);
-                esModalExcepcionAbierto = true;
-                break;
+            if (modalElement && modalElement.style.display !== 'none' && modalElement.style.display !== '') { 
+                if (modalId === 'deleteCategoryWarningModal') {
+                    const cancelButton = modalElement.querySelector('#cancelDeleteCategoryBtn');
+                    if(cancelButton) cancelButton.click(); 
+                } else if (modalId === 'deleteProductWarningModal') {
+                     const cancelButton = modalElement.querySelector('#cancelDeleteProductBtn_dyn');
+                    if(cancelButton) cancelButton.click();
+                } else {
+                     if (modalId !== 'adminFormProductModal') { // Dejar que el IIFE maneje adminFormProductModal
+                         closeModal(modalId);
+                    }
+                }
+                closedPriorityModal = true;
+                modalHandledByEscape = true;
+                break; 
             }
         }
         
-        if (!esModalExcepcionAbierto) {
+        if (!closedPriorityModal) { 
             const openProductCarousel = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
             if (openProductCarousel) {
                 closeModal(openProductCarousel.id);
                 modalHandledByEscape = true;
             }
         }
-        if(modalHandledByEscape) e.preventDefault();
+        if(modalHandledByEscape && e.key === 'Escape') e.preventDefault();
       }
       
       const activeProductModalContainer = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
@@ -1051,94 +1237,28 @@ const DEFAULT_GALERIAS = {
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-        loadGaleriasFromStorage();
-        // Elimina la categoría "bufandas" si existe
-        if (galerias['bufandas']) {
-            delete galerias['bufandas'];
-            saveGaleriasToStorage();
-        }
-        updateNavigationAndGallerySections();
+        loadGaleriasFromStorage(); 
+        updateNavigationAndGallerySections(); 
         updateCartBadge();
-        if (window.location.hash) {
+        if (window.location.hash) { 
             history.replaceState(null, '', window.location.pathname + window.location.search);
         }
     });
 
-let newCategoryImageBase64 = "";
-
-document.getElementById('newCategoryImageFile').onchange = function(event) {
-    const file = event.target.files[0];
-    const preview = document.getElementById('newCategoryImagePreview');
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            newCategoryImageBase64 = e.target.result;
-            preview.src = newCategoryImageBase64;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        newCategoryImageBase64 = "";
-        preview.src = "";
-        preview.style.display = 'none';
-    }
-};
-
-document.getElementById('cancelDeleteCategoryBtn').onclick = function() {
-    document.getElementById('deleteCategoryWarningModal').style.display = 'none';
-    window._categoryToDelete = null;
-    // Reabre el carrusel en el mismo lugar
-    if (window._lastOpenedCategoryKey) {
-        document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
-    }
-};
-document.getElementById('confirmDeleteCategoryBtn').onclick = function() {
-    const categoryKey = window._categoryToDelete;
-    if (categoryKey && galerias[categoryKey]) {
-        delete galerias[categoryKey];
-        delete indices[categoryKey];
-        saveGaleriasToStorage();
-        updateNavigationAndGallerySections();
-        closeAllModalsExcept();
-        showNotification("Categoría eliminada.", "success");
-    }
-    document.getElementById('deleteCategoryWarningModal').style.display = 'none';
-    window._categoryToDelete = null;
-};
-
-// Cerrar advertencia con ESC
-document.addEventListener('keydown', function escListener(e) {
-    const warningModal = document.getElementById('deleteCategoryWarningModal');
-    if (warningModal && warningModal.style.display === 'flex' && (e.key === 'Escape' || e.key === 'Esc')) {
-        warningModal.style.display = 'none';
-        window._categoryToDelete = null;
-        if (window._lastOpenedCategoryKey) {
-            document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
-        }
-        e.preventDefault();
-    }
-});
-
-// Cerrar advertencia con botón de retroceso del navegador/móvil
-window.addEventListener('popstate', function() {
-    const warningModal = document.getElementById('deleteCategoryWarningModal');
-    if (warningModal && warningModal.style.display === 'flex') {
-        warningModal.style.display = 'none';
-        window._categoryToDelete = null;
-        if (window._lastOpenedCategoryKey) {
-            document.getElementById(`${window._lastOpenedCategoryKey}Modal`).style.display = 'block';
-        }
-    }
-});
-
-(function enableEscAndBackForEditProductModal() {
+(function enableEscAndBackForAdminForm() {
     const formModal = document.getElementById('adminFormProductModal');
+    if (!formModal) return;
+
     let escListener, popListener;
+    let lastOpenedCarouselKeyForForm = null;
 
     function reopenCarouselIfNeeded() {
-        if (window._lastOpenedCategoryKey) {
-            const modal = document.getElementById(`${window._lastOpenedCategoryKey}Modal`);
-            if (modal) modal.style.display = 'block';
+        if (lastOpenedCarouselKeyForForm) {
+            const modalToReopen = document.getElementById(`${lastOpenedCarouselKeyForForm}Modal`);
+            if (modalToReopen) {
+                openModal(lastOpenedCarouselKeyForForm);
+            }
+            lastOpenedCarouselKeyForForm = null;
         }
     }
 
@@ -1148,39 +1268,44 @@ window.addEventListener('popstate', function() {
     }
 
     function addListeners() {
-        const categoryKey = document.getElementById('adminEditModeCategoryKey').value;
-        window._lastOpenedCategoryKey = categoryKey;
+        removeListeners(); 
 
-        // ESC
+        const categoryKeyInput = document.getElementById('adminEditModeCategoryKey');
+        if (categoryKeyInput) {
+            lastOpenedCarouselKeyForForm = categoryKeyInput.value;
+        } else {
+            lastOpenedCarouselKeyForForm = null;
+        }
+        
         escListener = function(e) {
             if (formModal.style.display === 'block' && (e.key === 'Escape' || e.key === 'Esc')) {
-                closeModal('adminFormProductModal');
-                setTimeout(reopenCarouselIfNeeded, 10);
-                removeListeners();
                 e.preventDefault();
-                e.stopImmediatePropagation(); // <- Esto evita que el handler global cierre el carrusel
+                e.stopImmediatePropagation(); 
+                closeModal('adminFormProductModal');
+                setTimeout(reopenCarouselIfNeeded, 10); 
+                removeListeners();
             }
         };
         document.addEventListener('keydown', escListener, true);
 
-        // Botón volver
         popListener = function(ev) {
             if (formModal.style.display === 'block') {
-                closeModal('adminFormProductModal');
+                 if (ev) ev.stopImmediatePropagation(); 
+                closeModal('adminFormProductModal', true); 
                 setTimeout(reopenCarouselIfNeeded, 10);
                 removeListeners();
-                if (ev) ev.stopImmediatePropagation();
             }
         };
         window.addEventListener('popstate', popListener, true);
     }
 
-    // Hook para cuando se abre el modal de edición/agregado de producto
     const originalOpenAdminFormProductModal = window.openAdminFormProductModal;
     window.openAdminFormProductModal = function(mode, categoryKey, productIndex = -1) {
         if (typeof originalOpenAdminFormProductModal === 'function') {
             originalOpenAdminFormProductModal(mode, categoryKey, productIndex);
-            addListeners();
+            if (formModal.style.display === 'block') { 
+                addListeners();
+            }
         }
     };
 })();

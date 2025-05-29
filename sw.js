@@ -1,37 +1,49 @@
-const CACHE_NAME = 'vivirtejer-cache-v1';
+const CACHE_NAME = 'vivirtejer-cache-v1'; // Considera incrementar la versión si cambias urlsToCache
 const urlsToCache = [
   'index.html',
   'manifest.json',
-  'logo_vivirtejer.webp',
-  'amigurumis3.webp',
-  'amigurumis1.webp',
-  'amigurumis2.webp',
-  'muñecos.webp',
-  'amigurumis5.webp',
-  'amigurumis6.webp',
-  'amigurumis7.webp',
-  'amigurumis8.webp',
-  'amigurumis9.webp',
-  'tops1.webp',
-  'tops.webp',
-  'tops2.webp',
-  'tops3.webp',
-  'tops4.webp',
-  'tops5.webp',
-  'amigurumis4.webp',
-  'apego.webp',
-  'apego1.webp',
-  'apego2.webp',
-  'apego3.webp',
-  'gorritos4.webp',
-  'gorritos2.webp',
-  'gorritos3.webp',
-  'gorritos1.webp',
-  'gorritos5.webp',
-  'gorritos6.webp',
-  'gorritos7.webp',
-  'gorritos8.webp',
-  // ...otros archivos necesarios...
+  'logo_vivirtejer.webp', 
+  'icon-192.png', 
+  'estilos/estilo.css',
+  'estilos/modal.css',
+  'instagram.png',
+  'icons8-whatsapp-50.png',
+  'facebook.png',
+  'imagenes/placeholder_general.webp',
+  'imagenes/placeholder_error.webp',
+  'imagenes/placeholder_categoria_vacia.webp',
+  'imagenes/placeholder_imagen_no_encontrada.webp',
+  'imagenes/placeholder_error_producto.webp',
+  'imagenes/amigurumis3.webp',
+  'imagenes/amigurumis1.webp',
+  'imagenes/amigurumis2.webp',
+  'imagenes/muñecos.webp',
+  'imagenes/amigurumis5.webp',
+  'imagenes/amigurumis6.webp',
+  'imagenes/amigurumis7.webp',
+  'imagenes/amigurumis8.webp',
+  'imagenes/amigurumis9.webp',
+  'imagenes/tops1.webp',
+  'imagenes/tops.webp',
+  'imagenes/tops2.webp',
+  'imagenes/tops3.webp',
+  'imagenes/tops4.webp',
+  'imagenes/tops5.webp',
+  'imagenes/amigurumis4.webp',
+  'imagenes/apego.webp',
+  'imagenes/apego1.webp',
+  'imagenes/apego2.webp',
+  'imagenes/apego3.webp',
+  'imagenes/gorritos4.webp',
+  'imagenes/gorritos2.webp',
+  'imagenes/gorritos3.webp',
+  'imagenes/gorritos1.webp',
+  'imagenes/gorritos5.webp',
+  'imagenes/gorritos6.webp',
+  'imagenes/gorritos7.webp',
+  'imagenes/gorritos8.webp'
+  // Si 'logo_vivirtejer.png' (usado en el header) también debe ser cacheado, añádelo aquí:
+  // 'logo_vivirtejer.png' 
 ];
 
 self.addEventListener('install', function(event) {
@@ -39,10 +51,13 @@ self.addEventListener('install', function(event) {
     caches.open(CACHE_NAME)
       .then(function(cache) {
         console.log('Cache abierto: ', CACHE_NAME);
-        const requests = urlsToCache.map(url => new Request(url, {cache: 'reload'}));
+        const requests = urlsToCache.map(url => new Request(url, {cache: 'reload'})); 
         return Promise.all(requests.map(req => cache.add(req).catch(err => console.warn(`No se pudo cachear ${req.url}: ${err}`))));
       })
-      .then(() => self.skipWaiting())
+      .then(() => {
+        console.log('Todos los archivos cacheados. Service Worker instalado.');
+        return self.skipWaiting();
+      }) 
       .catch(err => console.error('Falló el precacheo de archivos: ', err))
   );
 });
@@ -60,7 +75,10 @@ self.addEventListener('activate', function(event) {
         })
       );
     })
-    .then(() => self.clients.claim())
+    .then(() => {
+        console.log('Service Worker activado. Controlando clientes.');
+        return self.clients.claim();
+    }) 
   );
 });
 
@@ -89,8 +107,8 @@ self.addEventListener('fetch', function(event) {
               });
             return networkResponse;
           }
-        ).catch(function() {
-          console.log('Fetch fallido y no en caché para:', event.request.url);
+        ).catch(function(error) {
+          console.error('Fetch fallido y no en caché para:', event.request.url, error);
         });
       })
   );
