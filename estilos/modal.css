@@ -253,73 +253,45 @@
 
 /* Estilos para modales de advertencia (deleteCategoryWarningModal y el dinámico deleteProductWarningModal) */
 /* Estilos combinados para el contenido del modal de advertencia */
-#deleteCategoryWarningModal .modal-content, /* Aplicado al modal-content del HTML estático */
-#deleteProductWarningModal .modal-content { /* Aplicado al modal-content del modal dinámico */
-    max-width: 450px; 
-    background-color: #fffcfc; 
-    border: 2px solid #d94f4f; 
-    padding: 2rem;
-}
-/* Ya existe .warning-modal-content en estilo.css, se puede usar esa o esta */
-/* Si se usa esta, asegurarse que el HTML dinámico de deleteProductWarningModal use esta clase */
-.modal-content.warning-modal-content { /* Para el modal creado dinámicamente */
+#deleteCategoryWarningModal .modal-content, 
+#deleteProductWarningModal .modal-content {
     max-width: 450px; 
     background-color: #fffcfc; 
     border: 2px solid #d94f4f; 
     padding: 2rem;
 }
 
-/* Modal de advertencia personalizado (estilos que estaban en estilo.css, movidos aquí para cohesión) */
-#deleteProductWarningModal,
-#deleteCategoryWarningModal {
-  display: none; /* Controlado por JS */
-  position: fixed;
-  z-index: 99999; /* Muy alto para estar encima de todo */
-  left: 0; top: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.45);
-  justify-content: center;
-  align-items: center;
+.modal-content.warning-modal-content { 
+    max-width: 450px; 
+    background-color: #fffcfc; 
+    border: 2px solid #d94f4f; 
+    padding: 2rem;
 }
-.warning-modal-content { /* Estilo para el contenido del modal de advertencia */
-  background: #fff;
-  border-radius: 12px;
-  padding: 32px 28px 24px 28px;
-  max-width: 350px;
-  margin: auto;
-  text-align: center;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+
+.warning-modal-content .warning-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    color: #333; 
 }
-.warning-text {
-  font-size: 1.15em;
-  color: #333; /* Texto general de advertencia */
-  margin-bottom: 24px;
-  line-height: 1.5;
+.warning-modal-content .warning-text strong {
+    color: #d94f4f; 
 }
-.warning-text strong {
-    color: #d94f4f; /* Color para el texto resaltado */
-}
-.warning-actions {
+.warning-modal-content .warning-actions { 
     display: flex;
-    justify-content: space-around;
+    justify-content: space-around; 
     gap: 1rem;
-}
-.warning-actions .admin-btn.cancel-btn {
-  background: #888 !important; /* Botón cancelar gris */
-  color: #fff !important;
-}
-.warning-actions .admin-btn:hover {
-  filter: brightness(1.1);
 }
 
 /* Media Queries para Modales en Móviles */
 @media screen and (max-width: 768px) {
   .modal-content,
-  .cart-modal, /* Aplicar también a .cart-modal directamente */
+  .cart-modal, 
   .modal.admin-login .modal-content,
   .modal.admin-form-modal .modal-content,
   #deleteCategoryWarningModal .modal-content,
   #deleteProductWarningModal .modal-content,
-  .modal-content.warning-modal-content { /* Incluir el dinámico */
+  .modal-content.warning-modal-content { 
     margin: 10% auto; 
     padding: 1rem;
     width: 95%; 

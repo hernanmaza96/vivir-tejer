@@ -1,22 +1,19 @@
-const CACHE_NAME = 'vivirtejer-cache-v1';
+const CACHE_NAME = 'vivirtejer-cache-v1'; // Considera incrementar la versión si cambias urlsToCache
 const urlsToCache = [
   'index.html',
   'manifest.json',
-  'logo_vivirtejer.webp', // Logo principal
-  'icon-192.png', // Ícono para Apple touch o PWA si se usa (el index.html lo referencia)
+  'logo_vivirtejer.webp', 
+  'icon-192.png', 
   'estilos/estilo.css',
   'estilos/modal.css',
-  // Imágenes de redes sociales
   'instagram.png',
   'icons8-whatsapp-50.png',
   'facebook.png',
-  // Placeholder images
   'imagenes/placeholder_general.webp',
   'imagenes/placeholder_error.webp',
   'imagenes/placeholder_categoria_vacia.webp',
   'imagenes/placeholder_imagen_no_encontrada.webp',
   'imagenes/placeholder_error_producto.webp',
-  // Default product images (asegúrate que estas rutas sean correctas y los archivos existan)
   'imagenes/amigurumis3.webp',
   'imagenes/amigurumis1.webp',
   'imagenes/amigurumis2.webp',
@@ -45,7 +42,8 @@ const urlsToCache = [
   'imagenes/gorritos6.webp',
   'imagenes/gorritos7.webp',
   'imagenes/gorritos8.webp'
-  // No olvides añadir logo_vivirtejer.png si también se usa y se quiere cachear.
+  // Si 'logo_vivirtejer.png' (usado en el header) también debe ser cacheado, añádelo aquí:
+  // 'logo_vivirtejer.png' 
 ];
 
 self.addEventListener('install', function(event) {

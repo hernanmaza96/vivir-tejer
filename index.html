@@ -849,7 +849,7 @@
         
         modalElement.style.display = 'block';
         if (modalElement.classList.contains('product-carousel-modal')) {
-            document.body.classList.add('product-modal-open');
+            document.body.classList.add('product-modal-open'); // Clase para ocultar el carrito, etc.
         }
         
         const currentHash = `#${categoryKey}`;
@@ -881,7 +881,7 @@
       if (modalElement && modalElement.style.display !== 'none') { 
         modalElement.style.display = 'none';
         if (modalElement.classList.contains('product-carousel-modal')) {
-            document.body.classList.remove('product-modal-open');
+            document.body.classList.remove('product-modal-open'); // Quitar clase al cerrar
         }
 
         if (!fromPopState) { 
@@ -891,7 +891,6 @@
             } else if (modalId === 'cartModal') {
                 expectedHash = '#cart';
             }
-            // Solo limpia el hash si coincide con el modal que se está cerrando
             if (window.location.hash === expectedHash && expectedHash !== '') {
                  history.replaceState(null, '', window.location.pathname + window.location.search);
             }
@@ -1023,7 +1022,7 @@
 
     function openCartModal() { 
         const cartModalElem = document.getElementById('cartModal');
-        if (!cartModalElem) return; // Chequeo
+        if (!cartModalElem) return;
         closeAllModalsExcept(['cartModal']); 
         cartModalElem.style.display = 'block'; 
         if (window.location.hash !== '#cart') {
@@ -1034,7 +1033,7 @@
     function renderCart() {
         const cartItemsDiv = document.getElementById('cartItems');
         const cartTotalDiv = document.getElementById('cartTotal');
-        if(!cartItemsDiv || !cartTotalDiv) return; // Chequeo
+        if(!cartItemsDiv || !cartTotalDiv) return;
 
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         cartItemsDiv.innerHTML = ''; 
@@ -1089,13 +1088,13 @@
         localStorage.removeItem('cart');
         renderCart(); 
         showNotification('Tu carrito ha sido vaciado', 'info'); 
-        closeModal('cartModal'); // MODIFICADO: Asegurar cierre del modal
+        closeModal('cartModal'); 
     }
     function checkout() { 
         const cart = JSON.parse(localStorage.getItem('cart')) || []; 
         if (cart.length === 0) { 
             showNotification('Tu carrito está vacío', 'error'); 
-            closeModal('cartModal'); // MODIFICADO: Asegurar cierre del modal
+            closeModal('cartModal'); 
             return; 
         } 
         let message = "¡Hola! Quiero realizar la siguiente compra:\n\n"; 
@@ -1110,7 +1109,7 @@
         message += "Por favor, indíquenme cómo proceder con el pago y envío. ¡Gracias!"; 
         const encodedMessage = encodeURIComponent(message); 
         window.open(`https://wa.me/5492266535128?text=${encodedMessage}`, '_blank'); 
-        closeModal('cartModal'); // MODIFICADO: Asegurar cierre del modal
+        closeModal('cartModal'); 
     }
   
     function updateCartBadge() {
@@ -1139,24 +1138,15 @@
                 expectedHashForThisModal = `#${openModalElem.id.replace('Modal', '')}`;
             } else if (openModalElem.id === 'cartModal') {
                 expectedHashForThisModal = '#cart';
-            } else if (openModalElem.id === 'adminLoginModal') {
-                // Admin login no usa hash específico por ahora
-            } else if (openModalElem.id === 'addCategoryModal') {
-                // Add category no usa hash específico
-            } else if (openModalElem.id === 'adminFormProductModal') {
-                // Admin form product no usa hash específico
             }
-
 
             if (!window.location.hash && openModalElem.style.display !== 'none') {
                 shouldCloseThisModal = true;
-            } else if (window.location.hash !== expectedHashForThisModal && expectedHashForThisModal !== '') { // Solo si hay un hash esperado y no coincide
+            } else if (window.location.hash !== expectedHashForThisModal && expectedHashForThisModal !== '') {
                 if (modalIdFromState === openModalElem.id || (!modalIdFromState && openModalElem.style.display !== 'none')) {
                     shouldCloseThisModal = true;
                 }
             } else if (expectedHashForThisModal === '' && window.location.hash && openModalElem.style.display !== 'none') {
-                 // Si el modal no espera hash (ej. admin modals) pero hay un hash (ej. de un carrusel cerrado por back)
-                 // y el modal sin hash está abierto, se cierra.
                 shouldCloseThisModal = true;
             }
             
@@ -1178,8 +1168,8 @@
             history.replaceState(null, '', window.location.pathname + window.location.search);
         }
         const anyProductModalOpen = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
-        if (!anyProductModalOpen) {
-            document.body.classList.remove('product-modal-open');
+        if (!anyProductModalOpen) { // Si no hay ningún carrusel de producto abierto
+            document.body.classList.remove('product-modal-open'); // Quitar clase
         }
     });
 
@@ -1216,14 +1206,8 @@
                      const cancelButton = modalElement.querySelector('#cancelDeleteProductBtn_dyn');
                     if(cancelButton) cancelButton.click();
                 } else {
-                    // Para adminFormProductModal, el IIFE de abajo maneja Escape más específicamente
-                    if (modalId !== 'adminFormProductModal') {
+                     if (modalId !== 'adminFormProductModal') { // Dejar que el IIFE maneje adminFormProductModal
                          closeModal(modalId);
-                    } else {
-                        // Dejar que el listener específico del IIFE para adminFormProductModal lo maneje
-                        // o llamar a su botón cancelar si existe
-                        const cancelButton = modalElement.querySelector('.cancel-btn');
-                        if(cancelButton) cancelButton.click(); else closeModal(modalId);
                     }
                 }
                 closedPriorityModal = true;
@@ -1239,7 +1223,7 @@
                 modalHandledByEscape = true;
             }
         }
-        if(modalHandledByEscape && e.key === 'Escape') e.preventDefault(); // Solo si se manejó un modal y fue Escape
+        if(modalHandledByEscape && e.key === 'Escape') e.preventDefault();
       }
       
       const activeProductModalContainer = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
@@ -1261,7 +1245,6 @@
         }
     });
 
-// IIFE para manejo específico de ESC y Popstate en adminFormProductModal
 (function enableEscAndBackForAdminForm() {
     const formModal = document.getElementById('adminFormProductModal');
     if (!formModal) return;
@@ -1273,9 +1256,9 @@
         if (lastOpenedCarouselKeyForForm) {
             const modalToReopen = document.getElementById(`${lastOpenedCarouselKeyForForm}Modal`);
             if (modalToReopen) {
-                openModal(lastOpenedCarouselKeyForForm); // Usar openModal para restaurar estado
+                openModal(lastOpenedCarouselKeyForForm);
             }
-            lastOpenedCarouselKeyForForm = null; // Limpiar después de usar
+            lastOpenedCarouselKeyForForm = null;
         }
     }
 
@@ -1285,21 +1268,21 @@
     }
 
     function addListeners() {
-        removeListeners(); // Remover previos por si acaso
+        removeListeners(); 
 
         const categoryKeyInput = document.getElementById('adminEditModeCategoryKey');
         if (categoryKeyInput) {
             lastOpenedCarouselKeyForForm = categoryKeyInput.value;
         } else {
-            lastOpenedCarouselKeyForForm = null; // No hay info de carrusel
+            lastOpenedCarouselKeyForForm = null;
         }
         
         escListener = function(e) {
             if (formModal.style.display === 'block' && (e.key === 'Escape' || e.key === 'Esc')) {
                 e.preventDefault();
-                e.stopImmediatePropagation(); // Evitar que el handler global de Escape actúe
+                e.stopImmediatePropagation(); 
                 closeModal('adminFormProductModal');
-                setTimeout(reopenCarouselIfNeeded, 10); // Dar tiempo para que se cierre antes de reabrir
+                setTimeout(reopenCarouselIfNeeded, 10); 
                 removeListeners();
             }
         };
@@ -1307,8 +1290,8 @@
 
         popListener = function(ev) {
             if (formModal.style.display === 'block') {
-                 if (ev) ev.stopImmediatePropagation(); // Evitar que el handler global de popstate actúe
-                closeModal('adminFormProductModal', true); // fromPopState = true
+                 if (ev) ev.stopImmediatePropagation(); 
+                closeModal('adminFormProductModal', true); 
                 setTimeout(reopenCarouselIfNeeded, 10);
                 removeListeners();
             }
@@ -1320,7 +1303,7 @@
     window.openAdminFormProductModal = function(mode, categoryKey, productIndex = -1) {
         if (typeof originalOpenAdminFormProductModal === 'function') {
             originalOpenAdminFormProductModal(mode, categoryKey, productIndex);
-            if (formModal.style.display === 'block') { // Solo añadir listeners si el modal se abrió
+            if (formModal.style.display === 'block') { 
                 addListeners();
             }
         }

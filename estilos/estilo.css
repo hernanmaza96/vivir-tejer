@@ -169,51 +169,14 @@ button.admin-nav-button i {
     font-size: 1.1em; 
 }
 
-/* Modal de advertencia personalizado */
-#deleteProductWarningModal,
-#deleteCategoryWarningModal {
-  display: none;
-  position: fixed;
-  z-index: 99999; /* Muy alto para estar encima de todo */
-  left: 0; top: 0; width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.45);
-  justify-content: center;
-  align-items: center;
-}
-.warning-modal-content { /* Estilo para el contenido del modal de advertencia */
-  background: #fff;
-  border-radius: 12px;
-  padding: 32px 28px 24px 28px;
-  max-width: 350px;
-  margin: auto;
-  text-align: center;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-}
-.warning-text {
-  font-size: 1.15em;
-  color: #333; /* Cambiado de d94f4f para el texto general */
-  margin-bottom: 24px;
-  line-height: 1.5;
-}
-.warning-text strong { /* Mantener el color para el strong */
-    color: #d94f4f;
-}
-.warning-actions .admin-btn { /* Estilo general para botones en la advertencia */
-    margin: 0 5px; /* Espacio entre botones */
-}
-.warning-actions .admin-btn.cancel-btn {
-  background: #888 !important;
-  color: #fff !important;
-}
-.warning-actions .admin-btn:hover {
-  filter: brightness(1.1);
-}
-
-
 /* Media queries para móviles */
 @media screen and (max-width: 768px) {
-  .modal:not(#cartModal)[style*="display: block"] ~ .cart-icon,
+  /* Ocultar carrito cuando el carrusel de producto (que no sea el modal del carrito) está abierto */
   body.product-modal-open .cart-icon { 
+    display: none !important;
+  }
+  /* Esta regla es más general y puede ser útil también */
+  .modal:not(#cartModal)[style*="display: block"] ~ .cart-icon {
     display: none !important;
   }
   
@@ -230,4 +193,34 @@ button.admin-nav-button i {
   .footer { padding: 1.5rem 1rem; }
   .redes-sociales img { width: 40px; height: 40px; }
   .notification { min-width: 90%; max-width: 90%; right: 5%; bottom: 10px; }
+}
+
+/* Estilos para modales de advertencia (ya estaban en modal.css, pero si se mueven aquí, asegurarse que no haya duplicados) */
+.warning-modal-content { 
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 28px 24px 28px;
+  max-width: 350px;
+  margin: auto;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+}
+.warning-text {
+  font-size: 1.15em;
+  color: #333; 
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+.warning-text strong { 
+    color: #d94f4f;
+}
+.warning-actions .admin-btn { 
+    margin: 0 5px; 
+}
+.warning-actions .admin-btn.cancel-btn {
+  background: #888 !important;
+  color: #fff !important;
+}
+.warning-actions .admin-btn:hover {
+  filter: brightness(1.1);
 }
