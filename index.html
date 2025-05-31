@@ -849,7 +849,7 @@
         
         modalElement.style.display = 'block';
         if (modalElement.classList.contains('product-carousel-modal')) {
-            document.body.classList.add('product-modal-open'); // Clase para ocultar el carrito, etc.
+            document.body.classList.add('product-modal-open');
         }
         
         const currentHash = `#${categoryKey}`;
@@ -880,8 +880,12 @@
       const modalElement = document.getElementById(modalId);
       if (modalElement && modalElement.style.display !== 'none') { 
         modalElement.style.display = 'none';
+        
         if (modalElement.classList.contains('product-carousel-modal')) {
-            document.body.classList.remove('product-modal-open'); // Quitar clase al cerrar
+            document.body.classList.remove('product-modal-open');
+        }
+        if (modalId === 'cartModal') { // <<< MODIFICADO
+            document.body.classList.remove('cart-modal-open');
         }
 
         if (!fromPopState) { 
@@ -903,6 +907,9 @@
             if (!excludeIds.includes(modal.id) && modal.style.display !== 'none') {
                 if (modal.classList.contains('product-carousel-modal')) {
                     document.body.classList.remove('product-modal-open');
+                }
+                if (modal.id === 'cartModal') { // <<< MODIFICADO
+                    document.body.classList.remove('cart-modal-open');
                 }
                 closeModal(modal.id); 
             }
@@ -1025,6 +1032,7 @@
         if (!cartModalElem) return;
         closeAllModalsExcept(['cartModal']); 
         cartModalElem.style.display = 'block'; 
+        document.body.classList.add('cart-modal-open'); // <<< MODIFICADO
         if (window.location.hash !== '#cart') {
             history.pushState({ openedModalId: 'cartModal' }, '', '#cart');
         }
@@ -1159,7 +1167,7 @@
                     const cancelButton = openModalElem.querySelector('#cancelDeleteCategoryBtn');
                     if (cancelButton) cancelButton.click(); else closeModal(openModalElem.id, true);
                 } else {
-                    closeModal(openModalElem.id, true);
+                    closeModal(openModalElem.id, true); // closeModal se encargará de quitar las clases del body
                 }
             }
         });
@@ -1167,9 +1175,15 @@
         if (closedAModalViaPopState && !window.location.hash) { 
             history.replaceState(null, '', window.location.pathname + window.location.search);
         }
+        
+        // <<< MODIFICADO: Asegurar que las clases del body se limpien correctamente después de popstate
         const anyProductModalOpen = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
-        if (!anyProductModalOpen) { // Si no hay ningún carrusel de producto abierto
-            document.body.classList.remove('product-modal-open'); // Quitar clase
+        if (!anyProductModalOpen && document.body.classList.contains('product-modal-open')) {
+            document.body.classList.remove('product-modal-open');
+        }
+        const cartModalStillOpen = document.getElementById('cartModal')?.style.display === 'block';
+        if (!cartModalStillOpen && document.body.classList.contains('cart-modal-open')) {
+            document.body.classList.remove('cart-modal-open');
         }
     });
 
@@ -1206,8 +1220,8 @@
                      const cancelButton = modalElement.querySelector('#cancelDeleteProductBtn_dyn');
                     if(cancelButton) cancelButton.click();
                 } else {
-                     if (modalId !== 'adminFormProductModal') { // Dejar que el IIFE maneje adminFormProductModal
-                         closeModal(modalId);
+                     if (modalId !== 'adminFormProductModal') { 
+                         closeModal(modalId); // closeModal se encargará de quitar las clases del body
                     }
                 }
                 closedPriorityModal = true;
@@ -1219,7 +1233,7 @@
         if (!closedPriorityModal) { 
             const openProductCarousel = document.querySelector('.modal.product-carousel-modal[style*="display: block"]');
             if (openProductCarousel) {
-                closeModal(openProductCarousel.id);
+                closeModal(openProductCarousel.id); // closeModal se encargará de quitar product-modal-open
                 modalHandledByEscape = true;
             }
         }

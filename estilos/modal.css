@@ -331,3 +331,8 @@
     width: 100%; 
   }
 }
+
+/* Ocultar el icono del carrito cuando el modal del carrito está abierto en dispositivos móviles */
+body.cart-modal-open .cart-icon {
+    display: none;
+}
